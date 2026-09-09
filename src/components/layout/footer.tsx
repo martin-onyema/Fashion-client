@@ -3,10 +3,18 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Instagram, ArrowRight } from 'lucide-react'
+import { Instagram, ArrowRight, MessageCircle, Mail, Phone } from 'lucide-react'
 import { subscribeToNewsletter } from '@/actions/store'
 import { usePathname } from 'next/navigation'
 import { SERVICES } from '@/lib/services-data'
+
+// Store contact details
+const CONTACT = {
+  whatsappDisplay: '0802 613 3770',
+  whatsappHref: 'https://wa.me/2348026133770',
+  phoneHref: 'tel:+2348026133770',
+  email: 'wardrobecare@gmail.com',
+}
 
 const FOOTER_LINKS = [
   {
@@ -14,7 +22,6 @@ const FOOTER_LINKS = [
     links: [
       { label: 'New Arrivals', href: '/shop?sort=newest' },
       { label: 'Clothing', href: '/shop?category=clothing' },
-      { label: 'Bottoms', href: '/shop?category=bottoms' },
       { label: 'Footwear', href: '/shop?category=footwear' },
       { label: 'Accessories', href: '/shop?category=accessories' },
       { label: 'Fragrance & Grooming', href: '/shop?category=fragrance-grooming' },
@@ -89,6 +96,33 @@ export function Footer() {
               <Instagram className="h-4 w-4" strokeWidth={1.5} />
               <span className="link-underline">@wardrobecareng</span>
             </a>
+
+            {/* Contact block — WhatsApp / phone / email */}
+            <div className="mt-8 space-y-3">
+              <a
+                href={CONTACT.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors group"
+              >
+                <MessageCircle className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+                <span className="link-underline">WhatsApp {CONTACT.whatsappDisplay}</span>
+              </a>
+              <a
+                href={CONTACT.phoneHref}
+                className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors"
+              >
+                <Phone className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+                <span className="link-underline">{CONTACT.whatsappDisplay}</span>
+              </a>
+              <a
+                href={`mailto:${CONTACT.email}`}
+                className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors"
+              >
+                <Mail className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+                <span className="link-underline">{CONTACT.email}</span>
+              </a>
+            </div>
           </div>
 
           <div className="lg:col-span-6 flex flex-col justify-end">
