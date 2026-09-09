@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { ServiceEnquiryForm } from '@/components/services/service-enquiry-form'
-import { SERVICES, getServiceBySlug, getRelatedServices } from '@/lib/services-data'
+import { getServiceBySlug, getRelatedServices } from '@/lib/services-data'
 import { db } from '@/lib/db'
 import { whatsappLink } from '@/lib/format'
 import {
@@ -52,11 +52,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   }
 }
 
-// ─── Static params (pre-render all 6 service pages) ──────────────────────────
-
-export function generateStaticParams() {
-  return SERVICES.map((s) => ({ slug: s.slug }))
-}
+// (Service pages render per request — see `dynamic = "force-dynamic"` in the
+// root layout. Keeping the build database-free means deploys never fail.)
 
 // ─── Page ───────────────────────────────────────────────────────────────────
 

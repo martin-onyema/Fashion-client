@@ -18,6 +18,14 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+// ─── Rendering mode ──────────────────────────────────────────────────────────
+// The entire storefront is server-rendered per request (no static prerender).
+// Why: catalogue, CMS content and settings are managed live via the admin
+// dashboard, so pages must always reflect the database. This also guarantees
+// `next build` never touches the database — deploys succeed even before
+// DATABASE_URL is provisioned, and no stale data gets baked into the bundle.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: {
     default: "Wardrobecare Clothing — Premium Men's Fashion",

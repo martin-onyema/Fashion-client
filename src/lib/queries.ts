@@ -2,6 +2,25 @@ import { db } from '@/lib/db'
 import { Prisma } from '@prisma/client'
 
 // ============================================================
+// RESILIENCE HELPER
+// ----------------------------------------------------------
+// Storefront queries degrade gracefully: if the database is
+// briefly unreachable (cold start, provisioning, network
+// blip) the page still renders with fallback data instead of
+// returning a hard 500. Admin analytics stay strict so real
+// faults surface loudly in the dashboard.
+// ============================================================
+
+async function safe<T>(label: string, fallback: T, run: () => Promise<T>): Promise<T> {
+  try {
+    return await run()
+  } catch (error) {
+    console.error(`[queries] ${label} failed — serving fallback:`, error)
+    return fallback
+  }
+}
+
+// ============================================================
 // CATALOGUE QUERIES
 // ============================================================
 
@@ -13,12 +32,14 @@ export type ProductWithRelations = Prisma.ProductGetPayload<{
   }
 }>
 
-export async function getCategories() {
-  return db.category.findMany({
-    where: { parentId: null },
-    orderBy: { order: 'asc' },
-    include: { children: { orderBy: { name: 'asc' } } },
-  })
+export function getCategories() {
+  return safe('getCategories', [], () =>
+    db.category.findMany({
+      where: { parentId: null },
+      orderBy: { order: 'asc' },
+      include: { children: { orderBy: { name: 'asc' } } },
+    }),
+  )
 }
 
 export async function getAllCategories() {
@@ -28,11 +49,13 @@ export async function getAllCategories() {
   })
 }
 
-export async function getCategoryBySlug(slug: string) {
-  return db.category.findUnique({
-    where: { slug },
-    include: { parent: true, children: true },
-  })
+export function getCategoryBySlug(slug: string) {
+  return safe('getCategoryBySlug', null, () =>
+    db.category.findUnique({
+      where: { slug },
+      include: { parent: true, children: true },
+    }),
+  )
 }
 
 export async function getProducts(params: {
@@ -102,105 +125,121 @@ export async function getProducts(params: {
           ? { price: 'desc' }
           : { featured: 'desc' }
 
-  return db.product.findMany({
-    where,
-    orderBy,
-    take: limit,
-    include: {
-      images: { orderBy: { position: 'asc' } },
-      variants: true,
-      category: { include: { parent: true } },
-    },
-  })
+  return safe('getProducts', [], () =>
+    db.product.findMany({
+      where,
+      orderBy,
+      take: limit,
+      include: {
+        images: { orderBy: { position: 'asc' } },
+        variants: true,
+        category: { include: { parent: true } },
+      },
+    }),
+  )
 }
 
-export async function getProductBySlug(slug: string) {
-  return db.product.findUnique({
-    where: { slug },
-    include: {
-      images: { orderBy: { position: 'asc' } },
-      variants: true,
-      category: { include: { parent: true } },
-      reviews: { where: { published: true }, orderBy: { createdAt: 'desc' } },
-    },
-  })
+export function getProductBySlug(slug: string) {
+  return safe('getProductBySlug', null, () =>
+    db.product.findUnique({
+      where: { slug },
+      include: {
+        images: { orderBy: { position: 'asc' } },
+        variants: true,
+        category: { include: { parent: true } },
+        reviews: { where: { published: true }, orderBy: { createdAt: 'desc' } },
+      },
+    }),
+  )
 }
 
-export async function getFeaturedProducts(limit = 8) {
-  return db.product.findMany({
-    where: { featured: true, published: true },
-    orderBy: { createdAt: 'desc' },
-    take: limit,
-    include: {
-      images: { orderBy: { position: 'asc' }, take: 2 },
-      variants: true,
-      category: true,
-    },
-  })
+export function getFeaturedProducts(limit = 8) {
+  return safe('getFeaturedProducts', [], () =>
+    db.product.findMany({
+      where: { featured: true, published: true },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      include: {
+        images: { orderBy: { position: 'asc' }, take: 2 },
+        variants: true,
+        category: true,
+      },
+    }),
+  )
 }
 
-export async function getNewArrivals(limit = 12) {
-  return db.product.findMany({
-    where: { published: true },
-    orderBy: { createdAt: 'desc' },
-    take: limit,
-    include: {
-      images: { orderBy: { position: 'asc' }, take: 2 },
-      variants: true,
-      category: true,
-    },
-  })
+export function getNewArrivals(limit = 12) {
+  return safe('getNewArrivals', [], () =>
+    db.product.findMany({
+      where: { published: true },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      include: {
+        images: { orderBy: { position: 'asc' }, take: 2 },
+        variants: true,
+        category: true,
+      },
+    }),
+  )
 }
 
-export async function getRelatedProducts(productId: string, categoryId: string, limit = 4) {
-  return db.product.findMany({
-    where: {
-      categoryId,
-      published: true,
-      id: { not: productId },
-    },
-    take: limit,
-    include: {
-      images: { orderBy: { position: 'asc' }, take: 1 },
-      variants: true,
-      category: true,
-    },
-  })
+export function getRelatedProducts(productId: string, categoryId: string, limit = 4) {
+  return safe('getRelatedProducts', [], () =>
+    db.product.findMany({
+      where: {
+        categoryId,
+        published: true,
+        id: { not: productId },
+      },
+      take: limit,
+      include: {
+        images: { orderBy: { position: 'asc' }, take: 1 },
+        variants: true,
+        category: true,
+      },
+    }),
+  )
 }
 
 // ============================================================
 // HOMEPAGE / CMS CONTENT
 // ============================================================
 
-export async function getHomepageContent() {
-  const c = await db.homepageContent.findUnique({ where: { id: 'singleton' } })
-  return c
+export function getHomepageContent() {
+  return safe('getHomepageContent', null, () =>
+    db.homepageContent.findUnique({ where: { id: 'singleton' } }),
+  )
 }
 
-export async function getAdminSettings() {
-  const s = await db.adminSettings.findUnique({ where: { id: 'singleton' } })
-  return s
+export function getAdminSettings() {
+  return safe('getAdminSettings', null, () =>
+    db.adminSettings.findUnique({ where: { id: 'singleton' } }),
+  )
 }
 
-export async function getActiveBanners() {
+export function getActiveBanners() {
   const now = new Date()
-  return db.promotionalBanner.findMany({
-    where: {
-      active: true,
-      AND: [
-        { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
-        { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
-      ],
-    },
-    orderBy: { order: 'asc' },
-  })
+  return safe('getActiveBanners', [], () =>
+    db.promotionalBanner.findMany({
+      where: {
+        active: true,
+        AND: [
+          { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
+          { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+        ],
+      },
+      orderBy: { order: 'asc' },
+    }),
+  )
 }
 
-export async function getFAQs(category?: string) {
-  return db.fAQ.findMany({
-    where: { published: true, ...(category ? { category } : {}) },
-    orderBy: [{ order: 'asc' }, { createdAt: 'asc' }],
-  })
+export function getFAQs(category?: string) {
+  return safe('getFAQs', [], () =>
+    db.fAQ.findMany({
+      where: { published: true, ...(category ? { category } : {}) },
+      orderBy: [{ order: 'asc' }, { createdAt: 'asc' }],
+    }),
+  )
 }
 
 // ============================================================
@@ -209,13 +248,19 @@ export async function getFAQs(category?: string) {
 
 export async function getCartWithProducts(lines: { productId: string; variantId?: string | null; size?: string | null; quantity: number }[]) {
   if (!lines.length) return []
-  const products = await db.product.findMany({
-    where: { id: { in: lines.map((l) => l.productId) } },
-    include: {
-      images: { orderBy: { position: 'asc' }, take: 1 },
-      variants: true,
-    },
-  })
+  let products
+  try {
+    products = await db.product.findMany({
+      where: { id: { in: lines.map((l) => l.productId) } },
+      include: {
+        images: { orderBy: { position: 'asc' }, take: 1 },
+        variants: true,
+      },
+    })
+  } catch (error) {
+    console.error('[queries] getCartWithProducts failed — serving empty cart:', error)
+    return []
+  }
   return lines.map((line) => {
     const p = products.find((p) => p.id === line.productId)
     if (!p) return null
