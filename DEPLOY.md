@@ -101,13 +101,15 @@ from §1 in your platform's dashboard (or export them in the shell / `.env`).
 
 ## 4. Local development (from the download)
 
-The database (`db/custom.db`) is **included** — no setup beyond:
+The database (`db/custom.db`) is **included** and the Prisma client **generates
+automatically** on `bun install` (postinstall) and before every `bun run dev`:
 
 ```bash
 bun install
-bun run db:generate:local     # generate the SQLite client
 bun run dev                   # http://localhost:3000
 ```
+
+(Manual fallback if ever needed: `bun run db:generate:local`.)
 
 `.env` (bundled, portable relative path):
 
