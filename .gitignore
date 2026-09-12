@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# .env.production ships pre-configured for zero-config Vercel deploy —
+# keep it in git ONLY if the repository is PRIVATE
+!.env.production
 
 # vercel
 .vercel

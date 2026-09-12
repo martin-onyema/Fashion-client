@@ -1,146 +1,141 @@
 # Deploying Wardrobecare Clothing
 
 This project is a **Next.js 16 (App Router) + Prisma** storefront with a full admin
-dashboard. It ships with two Prisma schemas:
+dashboard. **Everything is pre-configured for deployment** — your production database
+is live and fully loaded, and the environment variables are already bundled in the
+project (`.env.production`). Unzip → deploy → done.
 
 | Schema | Provider | Used for |
 |---|---|---|
-| `prisma/schema.prisma` | **PostgreSQL** | Production (Supabase / Neon / Railway / any Postgres) |
-| `prisma/schema.sqlite.prisma` | SQLite | Local development (uses the bundled `db/custom.db`) |
+| `prisma/schema.prisma` | **PostgreSQL** | Production (Supabase — already connected & loaded) |
+| `prisma/schema.sqlite.prisma` | SQLite | Local development (bundled `db/custom.db`) |
 
-The whole site is **server-rendered on demand** (`dynamic = "force-dynamic"` in the root
-layout). `next build` therefore **never touches the database** — deploys succeed even
-before your production database exists, and content edited in the admin dashboard is
-live immediately (no rebuilds needed).
-
----
-
-## 1. Environment variables
-
-| Variable | Required | Example / notes |
-|---|---|---|
-| `DATABASE_URL` | ✅ | Postgres connection string (see §2). Pooled URL on Supabase/Vercel. |
-| `DIRECT_URL` | ✅ for DB setup | Direct (non-pooled) URL. Used by `prisma db push` / migrations. Can equal `DATABASE_URL` on simple providers. |
-| `NEXTAUTH_SECRET` | ✅ | Generate: `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | ✅ | Your live URL, e.g. `https://wardrobecare.com.ng` (no trailing slash) |
-| `PAYSTACK_SECRET_KEY` | ⬜ later | Payments phase — the checkout hides "Pay Online" until enabled |
-
-> The bundled `.env` is tuned for **local development** (SQLite). On any hosting
-> platform, environment variables you set in the dashboard **override** it.
+The whole site is **server-rendered on demand** (`dynamic = "force-dynamic"` in the
+root layout). `next build` **never touches the database** — deploys succeed without
+any database access, and admin-dashboard edits go live instantly (no rebuilds).
 
 ---
 
-## 2. Option A — Vercel + Supabase (recommended)
+## ✅ Already done for you (nothing to repeat)
 
-### Step 1 — Create the production database (Supabase)
-1. Create a project at [supabase.com](https://supabase.com) (region close to Nigeria, e.g. `eu-central-1` / `eu-west-2`).
-2. Open **Project Settings → Database → Connection string** and copy:
-   - **Transaction pooler** (port `6543`) → this is `DATABASE_URL`.
-     Append `?pgbouncer=true&prepared_statements=false` if not present.
-     Example:
-     `postgresql://postgres.<ref>:<PASSWORD>@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true&prepared_statements=false`
-   - **Direct connection** (port `5432`) → this is `DIRECT_URL`.
-     Example:
-     `postgresql://postgres.<ref>:<PASSWORD>@aws-0-eu-central-1.pooler.supabase.com:5432/postgres`
+| Item | Status |
+|---|---|
+| Production database (Supabase, Ireland) | ✅ Live — schema pushed |
+| Product catalogue | ✅ 532 products / 902 variants / 868 images imported |
+| Categories, FAQs, store settings, homepage content | ✅ Seeded |
+| Admin account | ✅ `admin@wardrobecare.com` / `wardrobecare2026` |
+| Environment variables | ✅ Bundled in `.env.production` (loaded automatically) |
+| Product photos | ✅ Included in the deployment (`public/products/`, 1,374 files) |
+| Image config fix (`next.config.ts`) | ✅ Included — images render on Vercel |
 
-### Step 2 — Push the schema and seed the catalogue
-Run these **from your machine** in the project folder (Postgres client is generated
-automatically — your local SQLite setup is untouched afterwards as long as you
-re-run `bun run db:generate:local` at the end):
+> ⚠️ **Do NOT re-run** `scripts/import-wc.ts` or `scripts/seed.ts` against the
+> production database — the catalogue is already loaded, and re-importing can
+> duplicate products.
 
-```bash
-bunx prisma generate                          # generates the PostgreSQL client
-DATABASE_URL="<DATABASE_URL>" \
-DIRECT_URL="<DIRECT_URL>" \
-  bunx prisma db push                         # creates all tables
+---
 
-DATABASE_URL="<DATABASE_URL>" bun scripts/seed.ts        # categories, settings, admin user
-DATABASE_URL="<DATABASE_URL>" bun scripts/import-wc.ts   # full 532-product catalogue + images
-```
+## 1. Deploy to Vercel (2 minutes)
 
-The seed prints your admin login at the end
-(`admin@wardrobecare.com` / `wardrobecare2026` — keep these private).
+### Option A — Vercel CLI (fastest)
 
-### Step 3 — Deploy to Vercel
-1. Push this project to a **GitHub repo** (or use `vercel` CLI: `bunx vercel`).
-2. On [vercel.com](https://vercel.com) → **Add New → Project** → import the repo.
-   The `vercel-build` script (`prisma generate && next build`) runs automatically.
-3. Before the first deploy, open **Settings → Environment Variables** and add:
+1. Install Node.js 18+ ([nodejs.org](https://nodejs.org), LTS installer) if you
+   don't have it, then open a terminal **inside the unzipped project folder**:
+   - Windows: open the folder → click the address bar → type `cmd` → Enter
+   - Mac: Terminal → type `cd ` → drag the folder in → Enter
+2. Run:
 
-   ```
-   DATABASE_URL   = <transaction pooler URL from Step 1>
-   DIRECT_URL     = <direct URL from Step 1>
-   NEXTAUTH_SECRET = <openssl rand -base64 32 output>
-   NEXTAUTH_URL   = https://<your-vercel-domain>   (or your custom domain)
+   ```bash
+   npx vercel login          # sign in with your Vercel account (free)
+   npx vercel --prod         # deploy — accept the defaults it suggests
    ```
 
-4. Deploy. The build completes without any database access.
-5. **Custom domain** (optional): Project → Settings → Domains → add
-   `wardrobecare.com.ng`, then point your DNS (A record `76.76.21.21` or CNAME as
-   Vercel instructs). Update `NEXTAUTH_URL` to the final domain and redeploy.
+   First run asks a few questions (project name, framework) — **press Enter to
+   accept the detected defaults**. The build runs `prisma generate && next build`
+   automatically (the `vercel-build` script) and needs no database access.
+
+3. When it finishes it prints your live URL — e.g.
+   `https://fashion-client-7npv.vercel.app`. Open it: products, images and the AI
+   chatbot are live, straight from your Supabase database.
+
+### Option B — GitHub
+
+1. Create a **private** repository on GitHub and upload the unzipped project
+   (`git init && git add -A && git commit -m "Wardrobecare" && git push`). The
+   pre-configured `.env.production` ships with the repo (gitignore already allows it).
+2. On [vercel.com](https://vercel.com) → **Add New → Project** → import the repo →
+   **Deploy**. No env vars to type, no settings to change.
+
+> Prefer not to include `.env.production` in git? Delete it and instead paste the
+> four variables from §2 into Vercel → Settings → Environment Variables — both
+> routes produce the same result.
 
 ---
 
-## 3. Option B — Any Node server (VPS, Railway, Render, Docker)
+## 2. Environment variables (pre-configured)
 
-```bash
-bun install                       # or: npm install
-bunx prisma generate              # PostgreSQL client from the default schema
-bun run build                     # next build + copies assets into .next/standalone
+These already live in **`.env.production`** and are loaded automatically during
+build and runtime. You only need them if you prefer dashboard setup, or if you
+change something later:
 
-# start (standalone server, no bun required at runtime):
-NODE_ENV=production node .next/standalone/server.js
-# or with bun:
-bun run start
-```
+| Variable | Value (pre-set) |
+|---|---|
+| `DATABASE_URL` | `postgresql://postgres.uvnuhhazklixymhtcshq:mm4you,,A..@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true&prepared_statements=false` |
+| `DIRECT_URL` | `postgresql://postgres.uvnuhhazklixymhtcshq:mm4you,,A..@aws-1-eu-west-1.pooler.supabase.com:5432/postgres` |
+| `NEXTAUTH_SECRET` | `hhzNdctvn9smxilpARymKf9I9QDcSx6rm22VJ5m2BUY=` |
+| `NEXTAUTH_URL` | `https://fashion-client-7npv.vercel.app` |
 
-The server listens on `PORT` (default 3000). Set the four environment variables
-from §1 in your platform's dashboard (or export them in the shell / `.env`).
+Notes:
+- `DATABASE_URL` uses Supabase's **transaction pooler** (port 6543 + PgBouncer) —
+  required on Vercel's serverless runtime. `DIRECT_URL` (session pooler, 5432) is
+  used by Prisma CLI for schema operations.
+- **Keep these values private** — anyone with them can read your database.
+  If you ever need to rotate: change the Supabase password in Project Settings →
+  Database, then update both URLs here (and redeploy).
+- Vercel-dashboard variables (if any) **override** `.env.production`.
+
+---
+
+## 3. Custom domain (e.g. wardrobecare.com.ng)
+
+1. Vercel → your project → **Settings → Domains** → add the domain.
+2. Point DNS as Vercel instructs (A record `76.76.21.21` or CNAME).
+3. Edit `.env.production`: set `NEXTAUTH_URL=https://wardrobecare.com.ng`
+4. Redeploy (`npx vercel --prod`). Done.
+
+> Login breaks if `NEXTAUTH_URL` doesn't exactly match the address in the browser
+> bar (scheme + host), so this step matters when you switch domains.
 
 ---
 
 ## 4. Local development (from the download)
 
-The database (`db/custom.db`) is **included** and the Prisma client **generates
-automatically** on `bun install` (postinstall) and before every `bun run dev`:
+The SQLite database (`db/custom.db`) is **included**, and the Prisma client
+generates automatically:
 
 ```bash
-bun install
-bun run dev                   # http://localhost:3000
+npm install        # or: bun install
+npm run dev        # http://localhost:3000
 ```
 
-(Manual fallback if ever needed: `bun run db:generate:local`.)
-
-`.env` (bundled, portable relative path):
-
-```
-DATABASE_URL=file:../db/custom.db
-NEXTAUTH_SECRET=...
-NEXTAUTH_URL=http://localhost:3000
-```
+`.env` (bundled) keeps local development on SQLite — production values in
+`.env.production` do not affect `npm run dev`.
 
 Admin login: `admin@wardrobecare.com` / `wardrobecare2026` → `/admin/login`.
-
-### Local production preview (optional)
-
-```bash
-bun run db:generate:local     # SQLite client + sqlite URL = consistent locally
-bun run build
-bun run start                 # production server on :3000 using the local DB
-```
 
 ---
 
 ## 5. Post-deploy checklist
 
-- [ ] Open `https://<domain>` — homepage renders products.
-- [ ] `/admin/login` → sign in with the seeded admin account → dashboard shows real stats.
-- [ ] Place a **bank-transfer test order** end-to-end (checkout shows Sparkle Bank /
-      Wardrobecare Nigeria Enterprises / 1000447933) and confirm it appears in
-      Admin → Orders. Mark it cancelled afterwards to keep data clean.
+- [ ] Open `https://<your-domain>` — homepage renders with product photos.
+- [ ] Product page → photos, sizes and prices all render.
+- [ ] `/admin/login` → sign in → dashboard shows real stats.
+- [ ] Ask the AI chatbot (bottom-right): *"show me office shirts under 50000"* —
+      it should reply with real product cards from the catalogue.
+- [ ] Place a **bank-transfer test order** end-to-end (checkout shows Sparkle
+      Bank / Wardrobecare Nigeria Enterprises / 1000447933) and confirm it appears
+      in Admin → Orders (mark it cancelled afterwards to keep data clean).
 - [ ] WhatsApp links open `wa.me/2348026133770` (footer, services, product pages).
 - [ ] `/sitemap.xml` returns product + category URLs.
-- [ ] Product images load (they are served from `/images/products/...` inside the app).
 
 ---
 
@@ -148,8 +143,10 @@ bun run start                 # production server on :3000 using the local DB
 
 | Symptom | Cause / fix |
 |---|---|
-| Build error: *"the URL must start with the protocol postgresql://"* on `/about` | **Fixed in this codebase** — pages no longer query the DB at build time. If you ever re-introduce a static page that queries Prisma, add `export const dynamic = "force-dynamic"` to it. |
-| *"prepared statement s0 already exists"* at runtime | You're using the direct URL with PgBouncer. Use the **transaction pooler** URL (port 6543) with `?pgbouncer=true&prepared_statements=false` as `DATABASE_URL`. |
-| 500 on every page after deploy | `DATABASE_URL` missing/wrong in the platform dashboard. Check the platform's runtime logs — storefront queries log `[queries] ... failed` before degrading. |
-| Login loops / CSRF error | `NEXTAUTH_URL` doesn't match the address in the browser bar (scheme + host must match exactly). |
-| "Pay Online" missing at checkout | Intentional — Paystack activates in the payments phase when keys are added and enabled in Admin → Settings. |
+| Build error: *"the URL must start with the protocol postgresql://"* | **Fixed in this codebase** — pages don't query the DB at build time. If you ever add a static page that queries Prisma, add `export const dynamic = "force-dynamic"`. |
+| *"prepared statement s0 already exists"* at runtime | Non-pooled connection in use. `DATABASE_URL` must be the **transaction pooler** URL (port 6543, `?pgbouncer=true&prepared_statements=false`). |
+| 500 on every page after deploy | Database unreachable. Check Vercel → Deployments → Runtime Logs; verify `DATABASE_URL` (dashboard overrides `.env.production`). |
+| Login loops / CSRF error | `NEXTAUTH_URL` doesn't match the browser address exactly — see §3. |
+| Images 404 / broken after a fresh deploy | Make sure the `public/` folder was included (the zip ships it complete; if deploying via git, don't delete `public/products`). |
+| "Pay Online" missing at checkout | Intentional — Paystack activates in the payments phase when keys are added in Admin → Settings. |
+| Chatbot replies but shows no product cards | Product search needs the live DB; if the DB is unreachable the bot still answers with general help. Check the runtime logs. |

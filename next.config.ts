@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
     ]
   },
   images: {
+    // Serve images directly from the CDN without the /_next/image optimizer.
+    // Why: Vercel returns HTTP 402 OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED once
+    // the plan's image-optimization quota is hit (1,384 product photos exhaust it
+    // quickly). The raw files are small (~30-50 KB JPGs) and load fine unoptimized.
+    unoptimized: true,
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },
