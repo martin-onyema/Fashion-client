@@ -31,6 +31,8 @@ with zipfile.ZipFile(NEW, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
         if name.endswith("/"):
             z.writestr(name, "")  # explicit directory entry, preserve it
             continue
+        if name == ".env":
+            continue  # replaced by the portable override written below
         path = os.path.join(PROJ, name)
         if not os.path.isfile(path):
             missing.append(name)
@@ -99,6 +101,18 @@ with zipfile.ZipFile(NEW, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
         added += 1
     if added:
         print(f"  + added {added} new file(s) from disk")
+
+    # Override the shipped .env with a PORTABLE version: the sandbox copy has
+    # an absolute path (file:/home/z/my-project/db/custom.db) that breaks on
+    # any other machine and poisons `next build` when .env.production is absent.
+    env_local = (
+        "# Local development database (SQLite, bundled at db/custom.db).\n"
+        "# `npm run dev` uses this automatically.\n"
+        "# Production deployments use .env.production (Supabase PostgreSQL) instead.\n"
+        'DATABASE_URL="file:./db/custom.db"\n'
+    )
+    z.writestr(".env", env_local)
+    print("  + .env overridden with portable local-dev content")
 
 unexpected_missing = [m for m in missing if m not in REMOVED_OK]
 if missing:

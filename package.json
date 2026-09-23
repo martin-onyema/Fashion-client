@@ -5,9 +5,9 @@
   "scripts": {
     "postinstall": "prisma generate --schema=prisma/schema.sqlite.prisma",
     "predev": "prisma generate --schema=prisma/schema.sqlite.prisma",
-    "dev": "next dev -p 3000 2>&1 | tee dev.log",
-    "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && if [ -f .env.production ]; then cp .env.production .next/standalone/; fi",
-    "start": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
+    "dev": "next dev -p 3000",
+    "build": "prisma generate && next build && node scripts/prepare-standalone.mjs",
+    "start": "node .next/standalone/server.js",
     "lint": "eslint .",
     "db:push": "prisma db push --accept-data-loss",
     "db:generate": "prisma generate",

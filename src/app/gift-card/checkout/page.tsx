@@ -4,6 +4,10 @@ import { Footer } from '@/components/layout/footer'
 import { db } from '@/lib/db'
 import { GiftCardWizard } from './gift-card-wizard'
 
+// Reads live admin settings from the DB on every request — must never be
+// prerendered at build time (build machines may not have DATABASE_URL).
+export const dynamic = 'force-dynamic'
+
 // Checkout is a transactional utility page — keep it out of search indexes.
 export const metadata: Metadata = {
   title: 'Gift Card Checkout — Wardrobecare',

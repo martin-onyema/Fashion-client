@@ -28,6 +28,10 @@ import {
 
 type Params = Promise<{ slug: string }>
 
+// Queries the DB (live admin settings) on every request — must never be
+// prerendered at build time (build machines may not have DATABASE_URL).
+export const dynamic = 'force-dynamic'
+
 // ─── SEO ─────────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {

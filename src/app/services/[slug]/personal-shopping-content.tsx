@@ -24,6 +24,17 @@ import { ServiceEnquiryForm } from '@/components/services/service-enquiry-form'
 import { effectivePrice, formatNGN } from '@/lib/format'
 import type { Service } from '@/lib/services-data'
 
+/** One product on the "live shortlist" shelf — a slim projection of a shop product. */
+export type ShelfProduct = {
+  id: string
+  name: string
+  slug: string
+  price: number
+  salePrice: number | null
+  category: string | null
+  image: string | null
+}
+
 /**
  * Personal Shopping — bespoke landing page (service 01).
  *

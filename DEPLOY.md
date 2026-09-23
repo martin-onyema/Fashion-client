@@ -105,6 +105,8 @@ change something later:
 | `DIRECT_URL` | `postgresql://postgres.uvnuhhazklixymhtcshq:mm4you,,A..@aws-1-eu-west-1.pooler.supabase.com:5432/postgres` |
 | `NEXTAUTH_SECRET` | `hhzNdctvn9smxilpARymKf9I9QDcSx6rm22VJ5m2BUY=` |
 | `NEXTAUTH_URL` | `https://fashion-client-7npv.vercel.app` |
+| `RESEND_API_KEY` | `re_KBLC1fbu_FTzGZerDxLuGZuHus9jY47M7` (send-only key, tested live) |
+| `EMAIL_FROM` | `Wardrobecare <codes@wardrobecare.com.ng>` (domain verified) |
 
 Notes:
 - `DATABASE_URL` uses Supabase's **transaction pooler** (port 6543 + PgBouncer) —
@@ -114,6 +116,9 @@ Notes:
   If you ever need to rotate: change the Supabase password in Project Settings →
   Database, then update both URLs here (and redeploy).
 - Vercel-dashboard variables (if any) **override** `.env.production`.
+- **Deploying on Vercel?** Vercel does not read committed env files at runtime —
+  paste the six variables above into **Settings → Environment Variables** once
+  and redeploy. Self-hosting the standalone build needs no dashboard at all.
 
 ---
 
@@ -159,31 +164,27 @@ entries are capped at 5, resends wait 60 seconds). Customers who sign up with
 Both features are already wired into the site. They switch on with two free
 environment variables; until then the signup page says exactly what's missing.
 
-### Email the OTP codes (Resend) — required for production
+### Email the OTP codes (Resend) — ✅ DONE, nothing left to buy or verify
 
-Without this, the site runs in demo mode: the verification code is **shown on
-the screen** instead of being emailed. Fine for testing, not for real customers.
+This part is finished: the API key is inside `.env.production`, the build
+copies it into the standalone output, **and `wardrobecare.com.ng` is now a
+verified sending domain**. Both were tested live — branded test emails from
+`Wardrobecare <codes@wardrobecare.com.ng>` were accepted by Resend for
+delivery to non-owner addresses, which is the exact restriction that used to
+block strangers from receiving codes. Any customer email address now gets its
+signup code.
 
-**Your API key is already inside this download** — `.env.production` ships with
-a working send-only Resend key, and the build copies it into the standalone
-output automatically. Two things remain:
+The only reason codes would not arrive on a **Vercel** deployment: Vercel does
+not read committed env files at runtime, so paste the two variables into the
+dashboard once:
 
-1. **Verify your sending domain** (required before strangers can get mail):
-   [resend.com](https://resend.com) → **Domains** → add `wardrobecare.com.ng`
-   → add the DNS records Resend shows at your domain registrar → wait for the
-   green "Verified" tick.
-2. **Tell the site who emails come from** — in Vercel → your project →
-   **Settings → Environment Variables** → add:
-   - `RESEND_API_KEY` = the `re_…` key (already in `.env.production`; paste it
-     here too, Vercel does not read committed env files at runtime)
-   - `EMAIL_FROM` = `Wardrobecare <codes@wardrobecare.com.ng>` (only AFTER the
-     domain shows Verified — sending from an unverified domain fails)
-3. Redeploy. Signup codes now arrive by email.
-
-> Until the domain is verified, Resend only delivers to the account owner's
-> own address (`martinonyema90@gmail.com`) — perfect for testing the signup
-> flow with your own email, and the exact restriction that domain verification
-> lifts.
+1. Vercel → your project → **Settings → Environment Variables** → add:
+   - `RESEND_API_KEY` = the `re_…` key (already in `.env.production`)
+   - `EMAIL_FROM` = `Wardrobecare <codes@wardrobecare.com.ng>` (already in
+     `.env.production` too — paste both)
+2. Redeploy. Signup codes arrive by email to every customer.
+   (Self-hosting via the standalone build / Docker? Skip step 1 entirely —
+   `.env.production` is copied in by the build and loaded automatically.)
 
 ### Google sign-in (Google Cloud Console)
 
@@ -243,7 +244,9 @@ Admin login: `admin@wardrobecare.com` / `wardrobecare2026` → `/admin/login`.
 
 | Symptom | Cause / fix |
 |---|---|
-| Build error: *"the URL must start with the protocol postgresql://"* | **Fixed in this codebase** — pages don't query the DB at build time. If you ever add a static page that queries Prisma, add `export const dynamic = "force-dynamic"`. |
+| Build error: *"Error validating datasource `db`: the URL must start with the protocol `postgresql://`"* while prerendering `/sitemap.xml` | `DATABASE_URL` was empty/missing **at build time**. Fixed in this codebase — `/sitemap.xml` and every other page tolerate a missing DB during builds. Two checks: (1) if building **locally**, build from the unzipped folder that contains `.env.production` (run `npm install` first so Prisma generates the right client); (2) if building **on Vercel**, the env file is not read at runtime — paste `DATABASE_URL`, `DIRECT_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `RESEND_API_KEY`, `EMAIL_FROM` into Vercel → Settings → Environment Variables (§2), then redeploy. |
+| Env vars seem missing on Vercel although `.env.production` is in the project | Uploading the folder to GitHub through the **web drag-and-drop silently drops dotfiles** (`.env.production`, `.env`, `.gitignore`…). Push with git from a terminal instead — or simply set the variables in the Vercel dashboard (§2), which is the recommended way anyway. |
+| Windows: *"'cp' is not recognized"* / *"NODE_ENV is not recognized"* during build or start | Fixed in this codebase — build/start now use a Node script (`scripts/prepare-standalone.mjs`) and plain `node`, which work on every OS. Pull the latest zip. |
 | *"prepared statement s0 already exists"* at runtime | Non-pooled connection in use. `DATABASE_URL` must be the **transaction pooler** URL (port 6543, `?pgbouncer=true&prepared_statements=false`). |
 | 500 on every page after deploy | Database unreachable. Check Vercel → Deployments → Runtime Logs; verify `DATABASE_URL` (dashboard overrides `.env.production`). |
 | Login loops / CSRF error | `NEXTAUTH_URL` doesn't match the browser address exactly — see §3. |

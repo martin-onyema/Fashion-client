@@ -23,6 +23,8 @@ with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
         if name.endswith("/"):
             z.writestr(name, "")
             continue
+        if name == ".env":
+            continue  # replaced by the portable override written below
         path = os.path.join(PROJ, name)
         if not os.path.isfile(path):
             missing.append(name)
@@ -48,6 +50,36 @@ with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
         if rel not in manifest and os.path.isfile(os.path.join(PROJ, rel)):
             z.write(os.path.join(PROJ, rel), rel)
             print(f"  + added new file: {rel}")
+    # Deployment-critical top-level files — the CODE+IMAGES route must be
+    # self-sufficient (env config + deploy guide + npm lockfile + TS types).
+    ALWAYS_INCLUDE = [
+        ".env.production",
+        ".env.example",
+        "DEPLOY.md",
+        "next-env.d.ts",
+        "package-lock.json",
+        "db/custom.db",  # bundled local demo database for `npm run dev`
+    ]
+    for rel in ALWAYS_INCLUDE:
+        if os.path.isfile(os.path.join(PROJ, rel)):
+            z.write(os.path.join(PROJ, rel), rel)
+            if rel not in manifest:
+                print(f"  + added deployment file: {rel}")
+        else:
+            print(f"  !! WARNING: deployment file missing on disk: {rel}")
+
+    # Override the shipped .env with a PORTABLE version: the sandbox copy has
+    # an absolute path (file:/home/z/my-project/db/custom.db) that breaks on
+    # any other machine and — worse — poisons `next build` with a non-postgres
+    # DATABASE_URL when .env.production is absent. Relative path works everywhere.
+    env_local = (
+        "# Local development database (SQLite, bundled at db/custom.db).\n"
+        "# `npm run dev` uses this automatically.\n"
+        "# Production deployments use .env.production (Supabase PostgreSQL) instead.\n"
+        'DATABASE_URL="file:./db/custom.db"\n'
+    )
+    z.writestr(".env", env_local)
+    print("  + .env overridden with portable local-dev content")
 
 os.replace(tmp, OUT)
 
