@@ -21,6 +21,7 @@ type Settings = {
   whatsappNumber?: string | null
   whatsappEnabled: boolean
   paystackPublicKey?: string | null
+  paystackSecretKeySet?: boolean
   paystackEnabled: boolean
   storeName: string
   storeTagline: string
@@ -46,6 +47,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
   const [whatsappNumber, setWhatsappNumber] = useState(initial?.whatsappNumber ?? '')
   const [whatsappEnabled, setWhatsappEnabled] = useState(initial?.whatsappEnabled ?? true)
   const [paystackPublicKey, setPaystackPublicKey] = useState(initial?.paystackPublicKey ?? '')
+  const [paystackSecretKey, setPaystackSecretKey] = useState('')
   const [paystackEnabled, setPaystackEnabled] = useState(initial?.paystackEnabled ?? true)
   const [storeName, setStoreName] = useState(initial?.storeName ?? 'Wardrobecare Clothing')
   const [storeTagline, setStoreTagline] = useState(
@@ -79,6 +81,8 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
       whatsappNumber: whatsappNumber || null,
       whatsappEnabled,
       paystackPublicKey: paystackPublicKey || null,
+      // write-only: only send when the admin typed a new secret; empty = keep saved value
+      ...(paystackSecretKey.trim() ? { paystackSecretKey: paystackSecretKey.trim() } : {}),
       paystackEnabled,
       storeName,
       storeTagline,
@@ -255,11 +259,26 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
               id="paystackPublicKey"
               value={paystackPublicKey}
               onChange={(e) => setPaystackPublicKey(e.target.value)}
-              placeholder="pk_test_…"
+              placeholder="pk_test_… or pk_live_…"
               className="font-mono text-xs"
             />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="paystackSecretKey">Paystack secret key</Label>
+            <Input
+              id="paystackSecretKey"
+              type="password"
+              value={paystackSecretKey}
+              onChange={(e) => setPaystackSecretKey(e.target.value)}
+              placeholder={paystackSecretKeySet ? '•••••• saved — type to replace' : 'sk_test_… or sk_live_…'}
+              className="font-mono text-xs"
+              autoComplete="off"
+            />
             <p className="text-xs text-muted-foreground">
-              The secret key lives in server env (PAYSTACK_SECRET_KEY) and is not editable here.
+              {paystackSecretKeySet
+                ? 'A secret key is saved. Leave this empty to keep it, or type a new one to replace it.'
+                : 'Paste your secret key from paystack.com → Settings → API Keys. Saved securely and never shown to customers.'}
+              {' '}Both keys together switch on Paystack card/bank/USSD payments at checkout.
             </p>
           </div>
         </CardContent>

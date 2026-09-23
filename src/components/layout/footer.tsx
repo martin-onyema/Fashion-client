@@ -7,6 +7,7 @@ import { Instagram, ArrowRight, MessageCircle, Mail, Phone } from 'lucide-react'
 import { subscribeToNewsletter } from '@/actions/store'
 import { usePathname } from 'next/navigation'
 import { SERVICES } from '@/lib/services-data'
+import { GiftCardCompact } from '@/components/gift-card/gc-compact'
 
 // Store contact details
 const CONTACT = {
@@ -21,10 +22,10 @@ const FOOTER_LINKS = [
     title: 'Shop',
     links: [
       { label: 'New Arrivals', href: '/shop?sort=newest' },
-      { label: 'Clothing', href: '/shop?category=clothing' },
-      { label: 'Footwear', href: '/shop?category=footwear' },
-      { label: 'Accessories', href: '/shop?category=accessories' },
-      { label: 'Fragrance & Grooming', href: '/shop?category=fragrance-grooming' },
+      { label: 'Clothing', href: '/clothing' },
+      { label: 'Footwear', href: '/footwear' },
+      { label: 'Accessories', href: '/accessories' },
+      { label: 'Fragrance & Grooming', href: '/fragrance-grooming' },
     ],
   },
   {
@@ -34,6 +35,8 @@ const FOOTER_LINKS = [
       { label: 'FAQs', href: '/faq' },
       { label: 'Shipping', href: '/shipping' },
       { label: 'Returns', href: '/returns' },
+      { label: 'Measurement Guide', href: '/measurement-guide' },
+      { label: 'Gift Cards', href: '/gift-card' },
       { label: 'Order Tracking', href: '/track-order' },
     ],
   },
@@ -70,6 +73,8 @@ export function Footer() {
 
   return (
     <footer className="mt-auto bg-[#121110] text-[#f7f6f3]">
+      {/* Gift card strip (artifact gc-compact — footer placement) */}
+      <GiftCardCompact tone="dark" />
       <div className="container-editorial py-16 lg:py-20">
         {/* Top — brand + newsletter */}
         <div className="grid lg:grid-cols-12 gap-12 pb-14 border-b border-white/12">
@@ -167,6 +172,14 @@ export function Footer() {
                   className="text-sm text-white/80 hover:text-white link-underline"
                 >
                   All Services
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/digital-closet"
+                  className="text-sm text-white/80 hover:text-white link-underline"
+                >
+                  Digital Closet — Coming soon
                 </Link>
               </li>
               {SERVICES.slice(0, 5).map((s) => (

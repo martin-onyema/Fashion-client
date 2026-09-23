@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // Hide the floating Next.js dev "N" badge in dev/preview — the preview
+  // should look like the production storefront (errors still overlay).
+  devIndicators: false,
   allowedDevOrigins: [
     "preview-*.space-z.ai",
     "*.space-z.ai",

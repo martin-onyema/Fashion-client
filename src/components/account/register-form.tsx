@@ -3,15 +3,15 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { signIn } from 'next-auth/react'
 import { toast } from 'sonner'
 import { Loader2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { registerUser } from '@/actions/store'
+import { GoogleButton, AuthDivider } from '@/components/account/google-button'
 
-export function RegisterForm() {
+export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
   const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -31,7 +31,8 @@ export function RegisterForm() {
     }
     setLoading(true)
     try {
-      // 1. Register the user via server action
+      // 1. Register the user via server action — the account is created
+      //    unverified and a 6-digit OTP is issued for the email address.
       const fd = new FormData()
       fd.set('name', name)
       fd.set('email', email)
@@ -43,27 +44,20 @@ export function RegisterForm() {
         setLoading(false)
         return
       }
-      // 2. Auto sign-in via credentials
-      const sign = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
-      if (!sign || sign.error) {
-        toast.success('Account created. Please sign in.')
-        router.push('/account/login')
-        return
+      // 2. Hand off to the OTP verification step. The password rides along
+      //    in sessionStorage (this tab only) so the verify form can sign the
+      //    user in automatically once the code checks out.
+      const devCode = 'devCode' in res && typeof res.devCode === 'string' ? res.devCode : null
+      try {
+        sessionStorage.setItem(
+          'wb_verify',
+          JSON.stringify({ email: email.toLowerCase(), password, devCode })
+        )
+      } catch {
+        /* private browsing etc. — verify falls back to sign-in handoff */
       }
-      toast.success('Welcome to Wardrobecare')
-      // Hard redirect — ensures the new session cookie is sent on the next
-      // request. Client-side router.push can race the cookie being persisted,
-      // causing the freshly registered user to bounce back to /account/login.
-      if (typeof window !== 'undefined') {
-        window.location.href = '/account'
-      } else {
-        router.push('/account')
-        router.refresh()
-      }
+      toast.success('Account created — one quick check left')
+      router.push(`/account/verify?email=${encodeURIComponent(email.toLowerCase())}`)
     } catch (err) {
       toast.error('Something went wrong. Please try again.')
       setLoading(false)
@@ -154,6 +148,8 @@ export function RegisterForm() {
           </>
         )}
       </Button>
+      <AuthDivider />
+      <GoogleButton enabled={googleEnabled} label="Continue with Google" />
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{' '}
         <Link

@@ -121,7 +121,7 @@ export function ProductInfo({ product, settings }: ProductInfoProps) {
   }
 
   const handleWhatsApp = () => {
-    const phone = settings?.whatsappNumber || '2348026133770'
+    const phone = settings?.whatsappNumber || '2348000000000'
     const msg = `Hello Wardrobecare, I'd like to order:\n\n*${product.name}*\nSize: ${selectedSize ?? 'N/A'}\nQuantity: ${quantity}\nPrice: ${formatNGN(price * quantity)}\nSKU: ${selectedVariant?.sku ?? product.sku}\n\nPlease confirm availability.`
     window.open(whatsappLink(phone, msg), '_blank')
   }
@@ -235,6 +235,14 @@ export function ProductInfo({ product, settings }: ProductInfoProps) {
               <p className="text-muted-foreground">Chest (inches): S — 36–38, M — 38–40, L — 40–42, XL — 42–44, XXL — 44–46</p>
               <p className="text-muted-foreground">Waist (inches): 30 — 30, 32 — 32, 34 — 34, 36 — 36, 38 — 38, 40 — 40</p>
               <p className="text-muted-foreground">Shoes (EU): True to size. If between sizes, size up.</p>
+              <p className="pt-2 border-t border-border/60">
+                <a
+                  href="/measurement-guide"
+                  className="inline-flex items-center gap-1.5 text-foreground underline underline-offset-4 hover:opacity-70 transition-opacity"
+                >
+                  Not sure how to measure yourself? See the full measurement guide
+                </a>
+              </p>
             </div>
           )}
         </div>
@@ -300,20 +308,43 @@ export function ProductInfo({ product, settings }: ProductInfoProps) {
         </button>
       </div>
 
+      {/* Stylist note — cross-sell to services */}
+      <div className="bg-secondary/40 border border-border/60 p-5">
+        <p className="text-sm leading-relaxed">
+          <span className="font-medium text-foreground">
+            Not sure of your size or what pairs well with this?
+          </span>{' '}
+          <Link
+            href="/services/style-wardrobe-consultation"
+            className="link-underline text-foreground"
+          >
+            Book a Wardrobe &amp; Style Consultation
+          </Link>{' '}
+          and we&apos;ll help you decide — or{' '}
+          <Link
+            href="/services/personal-shopping"
+            className="link-underline text-foreground"
+          >
+            add it to a Personal Shopping brief
+          </Link>
+          .
+        </p>
+      </div>
+
       {/* Reassurance */}
       <div className="pt-6 border-t border-border space-y-3 text-xs text-muted-foreground">
         <div className="flex items-start gap-3">
           <Truck className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
           <div>
             <p className="text-foreground">Nationwide Delivery</p>
-            <p>Lagos 1–2 days · Other states 2–5 days. Complimentary over ₦50,000.</p>
+            <p>Lagos from 1 hour to 24 hours · Other states 1–3 working days. Complimentary over ₦50,000.</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
           <RotateCcw className="h-4 w-4 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
           <div>
-            <p className="text-foreground">7-Day Returns</p>
-            <p>Unworn items in original packaging. Sale items are final.</p>
+            <p className="text-foreground">48-Hour Exchanges</p>
+            <p>Exchanges only — no cash refunds. Wrong size or item: 48 hours from delivery.</p>
           </div>
         </div>
         <div className="flex items-start gap-3">

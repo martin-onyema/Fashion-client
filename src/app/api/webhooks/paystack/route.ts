@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     const signature = req.headers.get('x-paystack-signature') ?? ''
 
     // 1. Verify signature
-    if (!verifyPaystackSignature(rawBody, signature)) {
+    if (!(await verifyPaystackSignature(rawBody, signature))) {
       console.warn('[paystack-webhook] invalid signature — ignoring')
       return NextResponse.json({ status: 'invalid signature' }, { status: 200 })
     }

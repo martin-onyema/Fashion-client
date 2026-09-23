@@ -1,0 +1,31 @@
+{
+  "code": 200,
+  "data": {
+    "description": "",
+    "external": {},
+    "html": "<html><head><meta name=\"color-scheme\" content=\"light dark\"><meta charset=\"utf-8\"></head><body><pre>{\"type\":\"error\",\"error\":{\"type\":\"not_found_error\",\"message\":\"Not found\"},\"request_id\":\"req_011CfDx2ToegVZ92ji1SUHaS\"}</pre><div class=\"json-formatter-container\"></div></body></html>",
+    "httpStatus": 404,
+    "httpStatusText": "",
+    "metadata": {
+      "color-scheme": "light dark"
+    },
+    "title": "",
+    "url": "https://claude.ai/api/public/artifacts/606e7cc8-3942-4df6-a7ee-e9f09d6b4e15",
+    "usage": {
+      "measuredTokens": 0,
+      "outputTokens": 0,
+      "scaledTokens": 85,
+      "tokens": 85
+    },
+    "warning": "Target URL returned error 404: Not Found"
+  },
+  "meta": {
+    "usage": {
+      "measuredTokens": 0,
+      "outputTokens": 0,
+      "scaledTokens": 85,
+      "tokens": 85
+    }
+  },
+  "status": 20000
+}

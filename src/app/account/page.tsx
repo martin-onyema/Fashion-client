@@ -166,7 +166,7 @@ export default async function AccountOverviewPage() {
           </section>
 
           {/* Quick links */}
-          <section className="grid sm:grid-cols-3 gap-4">
+          <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <QuickLink
               href="/account/wishlist"
               title="Your Wishlist"
@@ -178,6 +178,18 @@ export default async function AccountOverviewPage() {
               title="Addresses"
               description="Manage delivery details."
               icon={MapPin}
+            />
+            <QuickLink
+              href="/account/wallet"
+              title="My Wallet"
+              description="Credit from approved exchanges."
+              icon={WalletIcon}
+            />
+            <QuickLink
+              href="/account/profiles"
+              title="Profiles"
+              description="Shop for someone else."
+              icon={UsersIcon}
             />
             <QuickLink
               href="/account/profile"
@@ -243,7 +255,7 @@ function QuickLink({
   )
 }
 
-// Tiny inline icon to avoid extra imports
+// Tiny inline icons to avoid extra imports
 function AccountIcon({ className, strokeWidth = 1.5 }: { className?: string; strokeWidth?: number }) {
   return (
     <svg
@@ -257,6 +269,43 @@ function AccountIcon({ className, strokeWidth = 1.5 }: { className?: string; str
     >
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
+    </svg>
+  )
+}
+
+function WalletIcon({ className, strokeWidth = 1.5 }: { className?: string; strokeWidth?: number }) {
+  return (
+    <svg
+      className={className}
+      strokeWidth={strokeWidth}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+      <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+      <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+    </svg>
+  )
+}
+
+function UsersIcon({ className, strokeWidth = 1.5 }: { className?: string; strokeWidth?: number }) {
+  return (
+    <svg
+      className={className}
+      strokeWidth={strokeWidth}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   )
 }

@@ -46,7 +46,7 @@ export default function ServicesPage() {
             <div className="absolute inset-0 bg-gradient-to-b from-foreground/50 via-foreground/40 to-foreground/70" />
           </div>
 
-          <div className="mx-auto max-w-[1600px] px-6 lg:px-10 pt-40 md:pt-48 pb-32 md:pb-40 text-background">
+          <div className="relative z-10 mx-auto max-w-[1600px] px-6 lg:px-10 pt-40 md:pt-48 pb-32 md:pb-40 text-background">
             <p className="text-[11px] uppercase tracking-[0.25em] text-background/80 mb-6">
               Wardrobecare Services
             </p>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ShoppingBag, ArrowRight, MessageCircle, Lock, Loader2 } from 'lucide-react'
 import Link from 'next/link'
@@ -10,44 +10,33 @@ import { formatNGN, calculateDeliveryFee, NIGERIAN_STATES, whatsappLink } from '
 import { createOrder } from '@/actions/store'
 import { toast } from 'sonner'
 
-const DEFAULT_WHATSAPP = '2348026133770'
-
 export default function CheckoutPage() {
   const router = useRouter()
   const lines = useCartStore((s) => s.lines)
   const hydrated = useCartStore((s) => s.hydrated)
   const clear = useCartStore((s) => s.clear)
   const [submitting, setSubmitting] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<'PAYSTACK' | 'WHATSAPP' | 'BANK_TRANSFER'>('BANK_TRANSFER')
-  const [storeSettings, setStoreSettings] = useState<{ whatsappNumber?: string; paystackEnabled: boolean } | null>(null)
-  const [form, setForm] = useState({
-    customerName: '',
-    email: '',
-    phone: '',
-    whatsappNumber: '',
-    state: 'Lagos',
-    city: '',
-    address: '',
-    deliveryInstructions: '',
-    couponCode: '',
-  })
-
-  // Load store settings: WhatsApp number + whether Paystack is really configured.
-  const paystackLive = Boolean(storeSettings?.paystackEnabled)
-  useEffect(() => {
-    let cancelled = false
-    fetch('/api/settings')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((s) => {
-        if (cancelled || !s) return
-        setStoreSettings(s)
-        if (s.paystackEnabled) setPaymentMethod('PAYSTACK')
-      })
-      .catch(() => {})
-    return () => {
-      cancelled = true
+  const [paymentMethod, setPaymentMethod] = useState<'PAYSTACK' | 'WHATSAPP' | 'BANK_TRANSFER'>('PAYSTACK')
+  // Lazy init picks up a promo code saved from the cart page. Safe: the form
+  // only renders after cart hydration, so there's no SSR/hydration divergence.
+  const [form, setForm] = useState(() => {
+    let couponCode = ''
+    try {
+      couponCode = sessionStorage.getItem('wc_promo_code') ?? ''
+      if (couponCode) sessionStorage.removeItem('wc_promo_code')
+    } catch {}
+    return {
+      customerName: '',
+      email: '',
+      phone: '',
+      whatsappNumber: '',
+      state: 'Lagos',
+      city: '',
+      address: '',
+      deliveryInstructions: '',
+      couponCode,
     }
-  }, [])
+  })
 
   // Render directly from the store — the add() call now carries full display
   // data, so no async fetch is needed to show the order summary. The actual
@@ -84,7 +73,7 @@ export default function CheckoutPage() {
 
       if (paymentMethod === 'WHATSAPP') {
         // Compose WhatsApp message
-        const phone = storeSettings?.whatsappNumber || DEFAULT_WHATSAPP
+        const phone = '2348000000000' // will be replaced with admin settings on server side ideally
         const msg = `Hello Wardrobecare, I'd like to place order *${result.orderNumber}*:\n\n${lines.map((l) => `• ${l.name ?? 'Product'} (${l.size}) × ${l.quantity} — ${formatNGN((l.price ?? 0) * l.quantity)}`).join('\n')}\n\nSubtotal: ${formatNGN(subtotal)}\nDelivery: ${deliveryFee === 0 ? 'Complimentary' : formatNGN(deliveryFee)}\nTotal: ${formatNGN(total)}\n\nName: ${form.customerName}\nPhone: ${form.phone}\nAddress: ${form.address}, ${form.city}, ${form.state}`
         window.open(whatsappLink(phone, msg), '_blank')
         clear()
@@ -159,9 +148,30 @@ export default function CheckoutPage() {
       </header>
 
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-10 md:py-16">
-        <h1 className="font-display text-4xl md:text-5xl tracking-[-0.02em] mb-10">
+        <h1 className="font-display text-4xl md:text-5xl tracking-[-0.02em]">
           Checkout
         </h1>
+
+        {/* Steps track — Cart → Delivery & Payment → Confirmation */}
+        <ol className="grid grid-cols-3 gap-2 mt-8 mb-12" aria-label="Checkout progress">
+          {[
+            { label: 'Cart', state: 'done' as const },
+            { label: 'Delivery & Payment', state: 'active' as const },
+            { label: 'Confirmation', state: 'todo' as const },
+          ].map((s, i) => (
+            <li
+              key={s.label}
+              className={`pb-3 text-[10px] md:text-[11px] uppercase tracking-[0.16em] border-b-2 ${
+                s.state === 'todo'
+                  ? 'border-border text-muted-foreground/60'
+                  : 'border-foreground text-foreground'
+              } ${i > 0 ? 'ml-3' : ''}`}
+            >
+              <span className="tabular-nums mr-1.5">{i + 1}.</span>
+              {s.label}
+            </li>
+          ))}
+        </ol>
 
         <form onSubmit={handleSubmit} className="grid lg:grid-cols-[1fr_400px] gap-10 lg:gap-16">
           {/* Left — customer info */}
@@ -268,15 +278,13 @@ export default function CheckoutPage() {
                 03 · Payment Method
               </h2>
               <div className="space-y-3">
-                {paystackLive && (
-                  <PaymentOption
-                    value="PAYSTACK"
-                    selected={paymentMethod === 'PAYSTACK'}
-                    onSelect={setPaymentMethod}
-                    title="Pay Online (Paystack)"
-                    desc="Cards, bank transfer, USSD. Secured by Paystack."
-                  />
-                )}
+                <PaymentOption
+                  value="PAYSTACK"
+                  selected={paymentMethod === 'PAYSTACK'}
+                  onSelect={setPaymentMethod}
+                  title="Pay Online (Paystack)"
+                  desc="Cards, bank transfer, USSD. Secured by Paystack."
+                />
                 <PaymentOption
                   value="WHATSAPP"
                   selected={paymentMethod === 'WHATSAPP'}

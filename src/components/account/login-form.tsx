@@ -9,8 +9,10 @@ import { Loader2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { checkLoginGate } from '@/actions/store'
+import { GoogleButton, AuthDivider } from '@/components/account/google-button'
 
-export function LoginForm() {
+export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/account'
@@ -26,6 +28,22 @@ export function LoginForm() {
     }
     setLoading(true)
     try {
+      // Signup now ends with an email OTP step. If this account never
+      // finished it, route them to the verify page with a clear message
+      // instead of a generic "invalid email or password".
+      const gate = await checkLoginGate(email)
+      if (gate.needsVerification) {
+        try {
+          sessionStorage.setItem(
+            'wb_verify',
+            JSON.stringify({ email: email.toLowerCase(), password })
+          )
+        } catch {
+          /* verify falls back to sign-in handoff without the stash */
+        }
+        router.push(`/account/verify?email=${encodeURIComponent(email.toLowerCase())}`)
+        return
+      }
       const res = await signIn('credentials', {
         email,
         password,
@@ -120,6 +138,8 @@ export function LoginForm() {
           </>
         )}
       </Button>
+      <AuthDivider />
+      <GoogleButton enabled={googleEnabled} label="Continue with Google" callbackUrl={callbackUrl} />
       <p className="text-center text-sm text-muted-foreground">
         New to Wardrobecare?{' '}
         <Link

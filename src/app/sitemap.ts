@@ -1,22 +1,28 @@
 import { db } from '@/lib/db'
 import { SERVICES } from '@/lib/services-data'
-
-// The sitemap must never break a deploy or a request. If the database is
-// unreachable (e.g. during provisioning), we still return the static +
-// service pages and simply omit catalogue URLs until the DB is back.
-export const dynamic = 'force-dynamic'
+import { HUB_LIST } from '@/lib/category-hubs'
 
 export default async function sitemap() {
   const baseUrl = 'https://wardrobecare.com.ng'
 
   const staticPages = [
     '', '/shop', '/services', '/about', '/faq', '/shipping', '/returns', '/track-order',
+    '/privacy', '/terms', '/digital-closet', '/gift-card', '/measurement-guide',
+    '/delivery-charges',
     '/account/login', '/account/register',
   ].map((path) => ({
     url: `${baseUrl}${path}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: path === '' ? 1 : 0.7,
+  }))
+
+  // Category hub pages (Clothing / Footwear / Accessories / Fragrance & Grooming)
+  const hubPages = HUB_LIST.map((hub) => ({
+    url: `${baseUrl}/${hub.route}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
   }))
 
   // Service pages
@@ -35,23 +41,10 @@ export default async function sitemap() {
     })),
   ]
 
-  let products: { slug: string; updatedAt: Date }[] = []
-  let categories: { slug: string }[] = []
-
-  try {
-    ;[products, categories] = await Promise.all([
-      db.product.findMany({
-        where: { published: true },
-        select: { slug: true, updatedAt: true },
-      }),
-      db.category.findMany({
-        where: { parentId: null },
-        select: { slug: true },
-      }),
-    ])
-  } catch (error) {
-    console.error('[sitemap] Database unavailable — serving static routes only:', error)
-  }
+  const products = await db.product.findMany({
+    where: { published: true },
+    select: { slug: true, updatedAt: true },
+  })
 
   const productPages = products.map((p) => ({
     url: `${baseUrl}/product/${p.slug}`,
@@ -60,6 +53,11 @@ export default async function sitemap() {
     priority: 0.8,
   }))
 
+  const categories = await db.category.findMany({
+    where: { parentId: null },
+    select: { slug: true },
+  })
+
   const categoryPages = categories.map((c) => ({
     url: `${baseUrl}/shop?category=${c.slug}`,
     lastModified: new Date(),
@@ -67,5 +65,5 @@ export default async function sitemap() {
     priority: 0.6,
   }))
 
-  return [...staticPages, ...servicePages, ...productPages, ...categoryPages]
+  return [...staticPages, ...hubPages, ...servicePages, ...productPages, ...categoryPages]
 }

@@ -1,171 +1,217 @@
-import { Navbar } from '@/components/layout/navbar'
-import { Footer } from '@/components/layout/footer'
-import { getAdminSettings, getCategories } from '@/lib/queries'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { Navbar } from '@/components/layout/navbar'
+import { Footer } from '@/components/layout/footer'
+import { SERVICES } from '@/lib/services-data'
 
-export const metadata = {
-  title: 'About',
-  description: 'Wardrobecare Clothing is your #1 personal shopper for premium men\'s fashion in Nigeria.',
+export const metadata: Metadata = {
+  title: 'About — Wardrobecare Clothing',
+  description:
+    "A distinguished men's fashion and personal-shopping business, built in Lagos since 2003. Personal styling, wardrobe consultancy, and a curated retail edit.",
+  alternates: { canonical: '/about' },
+  openGraph: {
+    title: 'About — Wardrobecare Clothing',
+    description:
+      "A distinguished men's fashion and personal-shopping business, built in Lagos since 2003.",
+    type: 'website',
+  },
 }
 
-export default async function AboutPage() {
-  const [settings, categories] = await Promise.all([
-    getAdminSettings(),
-    getCategories(),
-  ])
+const STATS: { n: string; l: string }[] = [
+  { n: '2003', l: 'Founded' },
+  { n: String(SERVICES.length), l: 'Core Services' },
+  { n: 'Lagos', l: 'Based & Serving Nigeria' },
+]
 
-  const topLevelCats = categories.filter((c) => !c.parentId).slice(0, 6)
+const VALUES: { n: string; title: string; body: string }[] = [
+  {
+    n: '1',
+    title: 'Service First',
+    body: 'Styling and consultation come before the sale — not the other way around.',
+  },
+  {
+    n: '2',
+    title: 'Fit Over Everything',
+    body: 'The right fit outperforms the highest price tag, every time.',
+  },
+  {
+    n: '3',
+    title: 'Dress With Intention',
+    body: 'Every piece should earn its place in your wardrobe — nothing bought on impulse.',
+  },
+  {
+    n: '4',
+    title: 'Plain, Honest Guidance',
+    body: 'No jargon, no inflated claims — just clear advice you can actually use.',
+  },
+]
 
+export default function AboutPage() {
   return (
     <>
       <Navbar />
       <main className="bg-background min-h-screen">
-        {/* Hero */}
-        <section className="relative h-[60vh] min-h-[400px] bg-foreground overflow-hidden">
-          <Image
-            src="https://images.unsplash.com/photo-1516257984-b1b4d707412e?q=80&w=2000&auto=format&fit=crop"
-            alt="Wardrobecare editorial"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover opacity-80"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 to-transparent" />
-          <div className="absolute inset-0 flex items-end">
-            <div className="mx-auto max-w-[1600px] px-6 lg:px-10 pb-12 md:pb-16 w-full">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-background/70 mb-4">
-                About Wardrobecare
-              </p>
-              <h1 className="font-display text-background text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-[-0.02em]">
-                Wardrobecare
-              </h1>
-            </div>
-          </div>
-        </section>
-
-        {/* Brand statement */}
-        <section className="py-20 md:py-32">
-          <div className="mx-auto max-w-3xl px-6 lg:px-10">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-6 text-center">
-              Our Positioning
-            </p>
-            <p className="font-display text-2xl md:text-4xl leading-[1.3] tracking-[-0.01em] text-center">
-              {settings?.storeTagline ?? "Your #1 Personal Shopper for premium men's fashion."}
-            </p>
-            <div className="mt-12 space-y-6 text-sm md:text-base text-muted-foreground leading-relaxed">
-              <p>
-                Wardrobecare Clothing is a Nigerian premium men&apos;s fashion and personal-shopping business built around a single idea: that the modern man deserves a wardrobe curated with intention — not a pile of random pieces, but a thoughtful edit of clothing, footwear, accessories and grooming that works together.
-              </p>
-              <p>
-                We operate at the intersection of editorial taste and everyday practicality. Every piece in our catalogue is selected to serve a purpose in the wardrobe of a man who values how he shows up — at work, on weekends, at the occasion, and everywhere between.
-              </p>
-              <p>
-                Beyond the catalogue itself, we offer a personal-shopping experience. Whether you prefer the convenience of online checkout secured by Paystack or the human touch of ordering via WhatsApp, we exist to make premium menswear accessible, trustworthy, and quietly excellent.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* What we offer */}
-        <section className="bg-secondary/40 py-20 md:py-32">
+        {/* ─── Hero ─── */}
+        <section className="pt-40 md:pt-48 pb-16 md:pb-24 border-b border-border/60">
           <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-3">
-              What We Offer
+            <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-8">
+              About Wardrobecare
             </p>
-            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[1] tracking-[-0.02em] mb-12 md:mb-16 max-w-2xl">
-              The rooms of the wardrobe.
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {topLevelCats.map((c, i) => (
-                <Link
-                  key={c.id}
-                  href={`/shop?category=${c.slug}`}
-                  className="group border-t border-foreground pt-6"
-                >
-                  <p className="text-[10px] tabular-nums text-muted-foreground mb-2">0{i + 1}</p>
-                  <h3 className="font-display text-2xl md:text-3xl mb-2 group-hover:translate-x-1 transition-transform duration-500">
-                    {c.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {c.children.length} subcategories
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[1.05] tracking-[-0.02em] max-w-5xl text-balance">
+              A distinguished men&apos;s fashion and personal-shopping business, built in Lagos
+              since 2003.
+            </h1>
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mt-10">
+              Wardrobecare exists to take the guesswork out of dressing well — through personal
+              styling, wardrobe consultancy, and a curated retail edit, built around how you
+              actually live.
+            </p>
+          </div>
+        </section>
+
+        {/* ─── Stats row ─── */}
+        <section className="border-b border-border/60">
+          <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+              {STATS.map((s) => (
+                <div key={s.l} className="py-10 sm:px-10 first:sm:pl-0 last:sm:pr-0">
+                  <p className="font-display text-5xl md:text-6xl tracking-[-0.02em] tabular-nums">
+                    {s.n}
                   </p>
-                  <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em]">
-                    Shop {c.name}
-                    <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Link>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mt-3">
+                    {s.l}
+                  </p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Personal shopping */}
+        {/* ─── Our Story ─── */}
         <section className="py-20 md:py-32">
           <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-3">
-                  Personal Shopping
-                </p>
-                <h2 className="font-display text-4xl md:text-6xl leading-[1] tracking-[-0.02em] mb-6">
-                  Style, on your terms.
-                </h2>
-                <p className="text-base text-muted-foreground leading-relaxed mb-4">
-                  For many of our customers, shopping isn&apos;t a transaction — it&apos;s a conversation. That&apos;s why every product page on Wardrobecare carries an &ldquo;Order via WhatsApp&rdquo; button. Tap it, and you&apos;ll be connected directly with our team.
-                </p>
-                <p className="text-base text-muted-foreground leading-relaxed mb-8">
-                  We&apos;ll confirm availability, advise on fit, arrange delivery, and answer any question — large or small. It&apos;s the kind of service a personal shopper should provide, delivered with the convenience of modern commerce.
-                </p>
-                <a
-                  href={`https://wa.me/${settings?.whatsappNumber ?? '2348026133770'}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-foreground text-background px-8 py-4 text-[11px] uppercase tracking-[0.2em] hover:bg-foreground/90 transition-colors"
-                >
-                  Chat on WhatsApp
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </a>
-              </div>
-              <div className="relative aspect-[4/5] bg-muted overflow-hidden">
+              <div className="relative aspect-[4/5] bg-muted overflow-hidden order-2 lg:order-1">
                 <Image
-                  src="/about/styling-session.jpg"
-                  alt="Wardrobecare personal shopping"
+                  src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop"
+                  alt="A Wardrobecare styling session — curated menswear pieces laid out for a client"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
               </div>
+              <div className="order-1 lg:order-2">
+                <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-4">
+                  Our Story
+                </p>
+                <h2 className="font-display text-4xl md:text-5xl leading-[1] tracking-[-0.02em] mb-8">
+                  Dressing well, without the guesswork.
+                </h2>
+                <div className="space-y-5 text-sm md:text-base text-muted-foreground leading-relaxed">
+                  <p>
+                    Wardrobecare began in 2003 with a simple belief: that dressing well
+                    shouldn&apos;t require guesswork, and that every man deserves a wardrobe that
+                    actually works for his life — not just what happens to be on a rack.
+                  </p>
+                  <p>
+                    What started as personal styling has grown into a full consultancy — wardrobe
+                    consultations, personal shopping, home fittings, gifting, and a curated retail
+                    edit — all built around the same principle: service comes first, and the
+                    clothes follow from there.
+                  </p>
+                  <p>
+                    Today, Wardrobecare works with clients across Lagos and beyond, in person and
+                    through phone and video consultations, helping men build wardrobes with
+                    intention rather than impulse.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Philosophy */}
-        <section className="bg-foreground text-background py-20 md:py-32">
-          <div className="mx-auto max-w-3xl px-6 lg:px-10 text-center">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-background/60 mb-6">
-              Brand Philosophy
-            </p>
-            <p className="font-display text-2xl md:text-4xl lg:text-5xl leading-[1.3] tracking-[-0.01em]">
-              &ldquo;We don&apos;t sell clothes. We curate confidence — one considered piece at a time.&rdquo;
-            </p>
-            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-left">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-background/50 mb-1">Premium</p>
-                <p className="text-sm">Materials and construction that earn their place.</p>
+        {/* ─── What We Believe ─── */}
+        <section className="py-20 md:py-32 bg-secondary/40 border-y border-border/60">
+          <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
+            <div className="max-w-3xl mb-12 md:mb-16">
+              <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-4">
+                What We Believe
+              </p>
+              <h2 className="font-display text-4xl md:text-5xl leading-[1] tracking-[-0.02em]">
+                Four principles behind every brief.
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              {VALUES.map((v) => (
+                <div key={v.n} className="bg-background border border-border/60 p-8 flex flex-col">
+                  <span className="font-display text-4xl text-muted-foreground/40 mb-6 tabular-nums">
+                    {v.n}
+                  </span>
+                  <h3 className="font-display text-xl tracking-tight leading-tight">{v.title}</h3>
+                  <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{v.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── Founder ─── */}
+        <section className="py-20 md:py-32">
+          <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
+            <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+              <div className="lg:col-span-5">
+                <div className="relative aspect-[4/5] bg-muted overflow-hidden max-w-md">
+                  <Image
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1200&auto=format&fit=crop"
+                    alt="Olawunmi, founder and stylist at Wardrobecare"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-background/50 mb-1">Confidence</p>
-                <p className="text-sm">Clothing that helps you show up as your best self.</p>
+              <div className="lg:col-span-6 lg:col-start-7">
+                <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-4">
+                  Founder &amp; Stylist
+                </p>
+                <h2 className="font-display text-4xl md:text-5xl tracking-[-0.02em] mb-8">
+                  Olawunmi
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  Olawunmi founded Wardrobecare in 2003 and remains the vision and driving force
+                  behind the business, now based in Lagos. He works directly with clients through
+                  in-person sessions, phone calls, and video consultations. His approach blends
+                  hands-on styling experience with a practical, plain-English philosophy: dressing
+                  well should be accessible, not intimidating.
+                </p>
               </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-background/50 mb-1">Convenience</p>
-                <p className="text-sm">Online checkout or WhatsApp — your choice.</p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-background/50 mb-1">Modern</p>
-                <p className="text-sm">A wardrobe that fits today&apos;s man, not yesterday&apos;s.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── CTA ─── */}
+        <section className="bg-foreground text-background py-20 md:py-28">
+          <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
+              <h2 className="font-display text-4xl md:text-6xl leading-[1] tracking-[-0.02em] max-w-2xl text-balance">
+                Ready to build a wardrobe that works for you?
+              </h2>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/services"
+                  className="group inline-flex items-center justify-center gap-3 bg-background text-foreground px-8 py-4 text-[11px] uppercase tracking-[0.2em] hover:bg-background/90 transition-colors"
+                >
+                  Book a Consultation
+                  <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/shop"
+                  className="inline-flex items-center justify-center border border-background/50 text-background px-8 py-4 text-[11px] uppercase tracking-[0.2em] hover:border-background hover:bg-background/10 transition-colors"
+                >
+                  Explore the Shop
+                </Link>
               </div>
             </div>
           </div>

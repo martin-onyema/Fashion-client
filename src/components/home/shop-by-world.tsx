@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { HUBS } from '@/lib/category-hubs'
 
 const EASE = [0.16, 1, 0.3, 1] as const
 
@@ -100,7 +101,7 @@ export function ShopByWorld({ worlds }: { worlds: World[] }) {
               className="snap-start flex-shrink-0 w-[72vw] sm:w-[42vw] md:w-[31vw] lg:w-[23.4vw] max-w-[420px]"
             >
               <Link
-                href={`/shop?category=${w.slug}`}
+                href={HUBS[w.slug] ? `/${HUBS[w.slug].route}` : `/shop?category=${w.slug}`}
                 className="group block relative aspect-[3/4] overflow-hidden bg-muted"
               >
                 <Image

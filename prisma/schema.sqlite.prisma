@@ -36,6 +36,10 @@ model User {
   whatsappNumber String?
   role          Role      @default(CUSTOMER)
   image         String?
+  // Set when the email address is confirmed — automatically for Google
+  // sign-ups (Google verifies emails), manually via the signup OTP flow.
+  // NULL on a customer account means "still awaiting OTP verification".
+  emailVerified DateTime?
 
   // Staff / CRM fields
   jobTitle      String?
@@ -122,6 +126,22 @@ model PasswordReset {
   user User @relation("PasswordResetUser", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// One-time 6-digit code issued when a customer signs up with email +
+// password. The code is stored bcrypt-hashed; verification stamps
+// User.emailVerified. Attempts are capped — after too many wrong codes
+// the record is consumed and a fresh one must be requested.
+model SignupOtp {
+  id        String   @id @default(cuid())
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  consumed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
 }
 
 enum Role {
@@ -770,8 +790,9 @@ model AdminSettings {
   // WhatsApp
   whatsappNumber  String?
   whatsappEnabled Boolean  @default(true)
-  // Paystack (public key only — secret stays in env)
+  // Paystack (public key shown to client; secret write-only, never returned to client)
   paystackPublicKey String?
+  paystackSecretKey String?
   paystackEnabled Boolean  @default(true)
   // Store
   storeName       String   @default("Wardrobecare Clothing")
@@ -1218,3 +1239,41 @@ model ServiceEnquiry {
   @@index([serviceSlug])
   @@index([assignedToId])
 }
+
+// ============================================================
+// DIGITAL CLOSET — early-access waitlist
+// ============================================================
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  name      String
+  contact   String   @unique // email address or phone number
+  source    String   @default("digital-closet")
+  notified  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model GiftCardPurchase {
+  id             String   @id @default(cuid())
+  reference      String   @unique // GC-… gift card order reference
+  amount         Float // gift card value (naira)
+  deliveryFee    Float
+  total          Float
+  location       String // delivery zone name (DELIVERY_ZONES)
+  recipientName  String
+  recipientPhone String?
+  recipientEmail String?
+  channel        String   @default("WHATSAPP") // EMAIL | SMS | WHATSAPP
+  buyerName      String
+  buyerPhone     String
+  buyerEmail     String?
+  paymentMethod  String   @default("BANK_TRANSFER")
+  paymentStatus  String   @default("PENDING") // PENDING | CONFIRMED
+  notified       Boolean  @default(false)
+  userId         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

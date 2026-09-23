@@ -1,7 +1,13 @@
 /**
  * Paystack payment integration helper.
  * Secret key is NEVER exposed to the client. All verification happens server-side.
+ *
+ * Secret resolution order:
+ *   1. env PAYSTACK_SECRET_KEY (backwards compatibility)
+ *   2. AdminSettings.paystackSecretKey (set in Admin → Settings — self-serve)
+ * When neither is configured, a safe mock path keeps the checkout flow testable.
  */
+import { db } from '@/lib/db'
 
 export type PaystackInitResponse = {
   status: boolean
@@ -36,6 +42,46 @@ export type PaystackVerifyResponse = {
 }
 
 /**
+ * Resolve the Paystack secret key: env var first, then the value saved in
+ * Admin → Settings. Result is cached for 30s to avoid a DB hit per request.
+ * Returns null when Paystack is not configured (mock mode).
+ */
+let secretCache: { value: string | null; at: number } | null = null
+const SECRET_TTL_MS = 30_000
+
+export async function getPaystackSecret(): Promise<string | null> {
+  const envSecret = process.env.PAYSTACK_SECRET_KEY
+  if (envSecret && envSecret !== 'sk_test_x') return envSecret
+
+  if (secretCache && Date.now() - secretCache.at < SECRET_TTL_MS) {
+    return secretCache.value
+  }
+  let value: string | null = null
+  try {
+    const s = await db.adminSettings.findUnique({
+      where: { id: 'singleton' },
+      select: { paystackSecretKey: true },
+    })
+    const saved = s?.paystackSecretKey?.trim()
+    if (saved) value = saved
+  } catch {
+    // DB unavailable — fall through to mock mode
+  }
+  secretCache = { value, at: Date.now() }
+  return value
+}
+
+/** Invalidate the cached secret (call after admin saves settings). */
+export function invalidatePaystackSecretCache() {
+  secretCache = null
+}
+
+/** True when a real secret key is configured (env or admin settings). */
+export async function isPaystackConfigured(): Promise<boolean> {
+  return (await getPaystackSecret()) !== null
+}
+
+/**
  * Initialize a Paystack transaction. Returns the authorization URL the
  * customer should be redirected to.
  */
@@ -46,8 +92,8 @@ export async function initializePaystackTransaction(params: {
   callback_url: string
   metadata?: Record<string, any>
 }): Promise<PaystackInitResponse> {
-  const secret = process.env.PAYSTACK_SECRET_KEY
-  if (!secret || secret === 'sk_test_x') {
+  const secret = await getPaystackSecret()
+  if (!secret) {
     // Sandbox / not-configured path: return a mock URL pointing to /checkout/verify
     // so the dev experience is smooth. In production, set PAYSTACK_SECRET_KEY.
     const sep = params.callback_url.includes('?') ? '&' : '?'
@@ -87,8 +133,8 @@ export async function initializePaystackTransaction(params: {
 export async function verifyPaystackTransaction(
   reference: string,
 ): Promise<PaystackVerifyResponse | null> {
-  const secret = process.env.PAYSTACK_SECRET_KEY
-  if (!secret || secret === 'sk_test_x') {
+  const secret = await getPaystackSecret()
+  if (!secret) {
     // Sandbox path: trust the request only if it carries mock=1
     return {
       status: true,
@@ -164,8 +210,8 @@ export async function refundPaystackTransaction(params: {
   amount: number // in naira
   merchant_note?: string
 }): Promise<PaystackRefundResponse | null> {
-  const secret = process.env.PAYSTACK_SECRET_KEY
-  if (!secret || secret === 'sk_test_x') {
+  const secret = await getPaystackSecret()
+  if (!secret) {
     // Mock path — Pretend the refund succeeded
     return {
       status: true,
@@ -214,12 +260,12 @@ export async function refundPaystackTransaction(params: {
  */
 import crypto from 'node:crypto'
 
-export function verifyPaystackSignature(
+export async function verifyPaystackSignature(
   payload: string,
   signature: string,
-): boolean {
-  const secret = process.env.PAYSTACK_SECRET_KEY
-  if (!secret || secret === 'sk_test_x') {
+): Promise<boolean> {
+  const secret = await getPaystackSecret()
+  if (!secret) {
     // Mock path: accept any payload so dev webhook tests work
     return true
   }

@@ -32,6 +32,28 @@ any database access, and admin-dashboard edits go live instantly (no rebuilds).
 > production database — the catalogue is already loaded, and re-importing can
 > duplicate products.
 
+### One-time schema update — Digital Closet waitlist + gift card tables
+
+The `/digital-closet` page (added after the initial deploy) stores waitlist
+sign-ups in a new `WaitlistEntry` table, and the `/gift-card` checkout (added
+later) stores purchases in a new `GiftCardPurchase` table. Push both to
+production once, from the project folder:
+
+```bash
+npx prisma db push --schema=prisma/schema.prisma
+```
+
+It adds only the new tables — existing data is untouched. Until this runs, the
+rest of the site works normally; only the Digital Closet "Notify Me" form and
+the Gift Card checkout will error on submit.
+
+> **Newer note (Google sign-in + email OTP):** the same command also pushes two
+> additions the signup flow needs — an `emailVerified` column on the `User`
+> table and a `SignupOtp` table for the 6-digit verification codes. If you ran
+> the command after those shipped, both are already in place; if not, run it
+> once more. Until then, password sign-up/sign-in will error on submit (Google
+> sign-in is unaffected).
+
 ---
 
 ## 1. Deploy to Vercel (2 minutes)
@@ -107,6 +129,84 @@ Notes:
 
 ---
 
+## 3b. Turn on card payments (Paystack) — 2 minutes, no code
+
+1. Create a [paystack.com](https://paystack.com) account (free) and complete
+   business verification when you're ready to accept real money.
+2. Copy your API keys: dashboard → **Settings → API Keys** → the **Secret Key**
+   (`sk_test_…` for testing, `sk_live_…` for real payments) and the
+   **Public Key** (`pk_…`).
+3. In your site: **Admin → Settings → Payment** → paste the **public key**, paste
+   the **secret key**, switch **Enable Paystack** on → **Save**.
+4. Checkout now shows "Pay Online" (card, bank transfer, USSD). Payments verify
+   automatically and orders flip to **PAID** — stock updates too.
+5. In the Paystack dashboard → **Settings → Webhooks**, set the URL to:
+   `https://<your-domain>/api/webhooks/paystack`
+   (this guarantees payment confirmation even if the customer closes the tab).
+
+> Keys are stored in your database, never in the code. Swap `sk_test_…` for
+> `sk_live_…` whenever you're ready — no redeploy needed.
+
+---
+
+## 3c. Turn on Google sign-in + email OTP codes — 10 minutes, no code
+
+New accounts created with email + password must now verify their address with a
+**6-digit code** before they can sign in (the code expires in 10 minutes, wrong
+entries are capped at 5, resends wait 60 seconds). Customers who sign up with
+**Google** skip the code entirely — Google has already verified their address.
+
+Both features are already wired into the site. They switch on with two free
+environment variables; until then the signup page says exactly what's missing.
+
+### Email the OTP codes (Resend) — required for production
+
+Without this, the site runs in demo mode: the verification code is **shown on
+the screen** instead of being emailed. Fine for testing, not for real customers.
+
+**Your API key is already inside this download** — `.env.production` ships with
+a working send-only Resend key, and the build copies it into the standalone
+output automatically. Two things remain:
+
+1. **Verify your sending domain** (required before strangers can get mail):
+   [resend.com](https://resend.com) → **Domains** → add `wardrobecare.com.ng`
+   → add the DNS records Resend shows at your domain registrar → wait for the
+   green "Verified" tick.
+2. **Tell the site who emails come from** — in Vercel → your project →
+   **Settings → Environment Variables** → add:
+   - `RESEND_API_KEY` = the `re_…` key (already in `.env.production`; paste it
+     here too, Vercel does not read committed env files at runtime)
+   - `EMAIL_FROM` = `Wardrobecare <codes@wardrobecare.com.ng>` (only AFTER the
+     domain shows Verified — sending from an unverified domain fails)
+3. Redeploy. Signup codes now arrive by email.
+
+> Until the domain is verified, Resend only delivers to the account owner's
+> own address (`martinonyema90@gmail.com`) — perfect for testing the signup
+> flow with your own email, and the exact restriction that domain verification
+> lifts.
+
+### Google sign-in (Google Cloud Console)
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com) →
+   **APIs & Services → Credentials → Create credentials → OAuth client ID**.
+2. Application type: **Web application**.
+3. **Authorized redirect URIs** — add both:
+   - `https://wardrobecare.com.ng/api/auth/callback/google`
+   - `https://fashion-client-7npv.vercel.app/api/auth/callback/google`
+   (use your real domains; every address customers can reach you on needs one)
+4. Copy the **Client ID** and **Client secret**, then add them in Vercel as:
+   - `GOOGLE_CLIENT_ID`
+   - `GOOGLE_CLIENT_SECRET`
+5. Redeploy. "Continue with Google" appears on the sign-in and sign-up pages
+   and works immediately — existing email customers who use the same address
+   land in their original account (no duplicates).
+
+> Until these variables exist, clicking the Google button shows an honest
+> "not set up on this site yet" message instead of an error page — that's the
+> expected behaviour, not a bug.
+
+---
+
 ## 4. Local development (from the download)
 
 The SQLite database (`db/custom.db`) is **included**, and the Prisma client
@@ -148,5 +248,5 @@ Admin login: `admin@wardrobecare.com` / `wardrobecare2026` → `/admin/login`.
 | 500 on every page after deploy | Database unreachable. Check Vercel → Deployments → Runtime Logs; verify `DATABASE_URL` (dashboard overrides `.env.production`). |
 | Login loops / CSRF error | `NEXTAUTH_URL` doesn't match the browser address exactly — see §3. |
 | Images 404 / broken after a fresh deploy | Make sure the `public/` folder was included (the zip ships it complete; if deploying via git, don't delete `public/products`). |
-| "Pay Online" missing at checkout | Intentional — Paystack activates in the payments phase when keys are added in Admin → Settings. |
+| "Pay Online" missing at checkout | Paystack isn't fully configured yet — add BOTH keys (public + secret) in Admin → Settings → Payment and enable the toggle. |
 | Chatbot replies but shows no product cards | Product search needs the live DB; if the DB is unreachable the bot still answers with general help. Check the runtime logs. |

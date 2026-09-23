@@ -211,10 +211,17 @@ export function getHomepageContent() {
   )
 }
 
-export function getAdminSettings() {
-  return safe('getAdminSettings', null, () =>
+export async function getAdminSettings() {
+  const row = await safe('getAdminSettings', null, () =>
     db.adminSettings.findUnique({ where: { id: 'singleton' } }),
   )
+  if (!row) return row
+  // paystackSecretKey is write-only — never expose it to pages/components.
+  const { paystackSecretKey, ...safeSettings } = row as Record<string, any>
+  return {
+    ...safeSettings,
+    paystackSecretKeySet: Boolean(paystackSecretKey),
+  }
 }
 
 export function getActiveBanners() {
@@ -466,4 +473,132 @@ export async function getRevenueTrend(days = 30) {
     byDay.set(key, (byDay.get(key) ?? 0) + o.total)
   }
   return Array.from(byDay.entries()).map(([date, revenue]) => ({ date, revenue }))
+}
+
+// ---------------------------------------------------------------------------
+// Category hub pages (Clothing / Footwear / Accessories / Fragrance & Grooming)
+// ---------------------------------------------------------------------------
+
+export type HubProduct = {
+  id: string
+  name: string
+  slug: string
+  price: number
+  salePrice: number | null
+  image: string | null
+}
+
+export type HubSection = {
+  slug: string
+  name: string
+  description: string
+  count: number
+  products: HubProduct[]
+}
+
+export type HubGroupData = {
+  label: string
+  sections: HubSection[]
+}
+
+export type HubData = {
+  totalProducts: number
+  totalCategories: number
+  groups: HubGroupData[]
+}
+
+/**
+ * Fetch everything a category hub page needs: per-subcategory product rails
+ * (newest/featured first) plus published counts. Resolves subcategory lists
+ * from the hub config against the live Category tree — subs that no longer
+ * exist in the DB are skipped.
+ */
+export async function getCategoryHubData(
+  rootSlug: string,
+  subsByGroup: { label: string; subs: { slug: string; label: string; description: string }[] }[],
+  perSection = 8,
+): Promise<HubData | null> {
+  return safe<HubData | null>('getCategoryHubData', null, async () => {
+    // Resolve the subcategories by slug directly — a hub may span more than
+    // one root category (e.g. the Clothing hub also carries the separate
+    // Bottoms root, mirroring the mega menu's two groups).
+    const wantedSlugs = subsByGroup.flatMap((g) => g.subs.map((s) => s.slug))
+    const wanted = await db.category.findMany({
+      where: { slug: { in: wantedSlugs } },
+      orderBy: [{ order: 'asc' }, { name: 'asc' }],
+    })
+    if (!wanted.length) {
+      return { totalProducts: 0, totalCategories: 0, groups: [] }
+    }
+    const childBySlug = new Map(wanted.map((c) => [c.slug, c]))
+    const childIds = wantedSlugs
+      .map((s) => childBySlug.get(s)?.id)
+      .filter((id): id is string => Boolean(id))
+    if (!childIds.length) {
+      return { totalProducts: 0, totalCategories: 0, groups: [] }
+    }
+
+    // One grouped query for all published counts.
+    const counts = await db.product.groupBy({
+      by: ['categoryId'],
+      where: { published: true, categoryId: { in: childIds } },
+      _count: { _all: true },
+    })
+    const countByCategory = new Map(counts.map((c) => [c.categoryId, c._count._all]))
+
+    // Rails: the first `perSection` products per subcategory.
+    const rails = await Promise.all(
+      childIds.map((categoryId) =>
+        db.product.findMany({
+          where: { published: true, categoryId },
+          orderBy: [{ featured: 'desc' }, { createdAt: 'desc' }],
+          take: perSection,
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            price: true,
+            salePrice: true,
+            images: { orderBy: { position: 'asc' }, take: 1, select: { url: true } },
+          },
+        }),
+      ),
+    )
+    const productsByCategory = new Map<string, HubProduct[]>(
+      childIds.map((id, i) => [
+        id,
+        rails[i].map((p) => ({
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          price: p.price,
+          salePrice: p.salePrice ?? null,
+          image: p.images[0]?.url ?? null,
+        })),
+      ]),
+    )
+
+    const groups: HubGroupData[] = subsByGroup.map((g) => ({
+      label: g.label,
+      sections: g.subs
+        .map((s) => {
+          const child = childBySlug.get(s.slug)
+          if (!child) return null
+          return {
+            slug: s.slug,
+            name: s.label,
+            description: s.description,
+            count: countByCategory.get(child.id) ?? 0,
+            products: productsByCategory.get(child.id) ?? [],
+          }
+        })
+        .filter((s): s is HubSection => s !== null),
+    }))
+
+    return {
+      totalProducts: counts.reduce((n, c) => n + c._count._all, 0),
+      totalCategories: groups.reduce((n, g) => n + g.sections.length, 0),
+      groups,
+    }
+  })
 }

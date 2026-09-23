@@ -12,13 +12,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { X, ChevronRight } from 'lucide-react'
 import { SERVICES, SERVICE_GROUPS } from '@/lib/services-data'
+import { NAV_ITEMS } from '@/lib/nav-data'
 
 const MENU_LINKS = [
   { label: 'New Arrivals', href: '/shop?sort=newest', desc: 'The latest additions' },
-  { label: 'Clothing', href: '/shop?category=clothing', desc: 'Shirts, polos, tees, blazers, suits' },
-  { label: 'Footwear', href: '/shop?category=footwear', desc: 'Loafers, dress shoes, sneakers' },
-  { label: 'Accessories', href: '/shop?category=accessories', desc: 'Sunglasses, belts, ties, wallets' },
-  { label: 'Fragrance & Grooming', href: '/shop?category=fragrance-grooming', desc: 'Eau de parfum, grooming kits' },
+  {
+    label: 'Digital Closet',
+    href: '/digital-closet',
+    desc: 'Capsule wardrobe subscription — coming soon',
+  },
   { label: 'Essentials', href: '/shop?category=essentials', desc: 'Loungewear and daily essentials' },
 ]
 
@@ -108,6 +110,60 @@ export function MobileMenu() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+          {/* Shop sections — one expandable accordion per NAV_ITEMS mega item */}
+          {NAV_ITEMS.filter((item) => item.mega).map((item) => (
+            <Accordion key={item.label} type="single" collapsible className="border-b border-border/60">
+              <AccordionItem value={item.label} className="border-0">
+                <AccordionTrigger className="font-display text-xl tracking-wide py-5 hover:no-underline">
+                  {item.label}
+                </AccordionTrigger>
+                <AccordionContent className="pb-4">
+                  {/* Dedicated category hub (e.g. /clothing) — the curated
+                      landing that organises this menu's subcategories */}
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="block py-3 text-sm font-medium text-foreground hover:text-foreground/70 transition-colors border-b border-border/40"
+                  >
+                    Explore {item.label} →
+                  </Link>
+                  {item.mega!.map((group) => {
+                    const all = group.links.find((l) => l.emphasized) ?? group.links[0]
+                    return (
+                      <div key={group.label} className={item.mega!.length > 1 ? 'mt-5 first:mt-0' : ''}>
+                        <Link
+                          href={all.href}
+                          onClick={() => setOpen(false)}
+                          className="block py-3 text-sm text-foreground hover:text-foreground/70 transition-colors border-b border-border/40"
+                        >
+                          {all.label} →
+                        </Link>
+                        <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2 mt-3">
+                          {group.label.replace('Shop ', '')}
+                        </p>
+                        <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5">
+                          {group.links
+                            .filter((l) => !l.emphasized)
+                            .map((l) => (
+                              <li key={l.label}>
+                                <Link
+                                  href={l.href}
+                                  onClick={() => setOpen(false)}
+                                  className="text-sm text-foreground hover:text-foreground/70 transition-colors"
+                                >
+                                  {l.label}
+                                </Link>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )
+                  })}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          ))}
 
           {/* Standard shop links */}
           {MENU_LINKS.map((l) => (

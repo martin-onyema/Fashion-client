@@ -11,6 +11,8 @@ import {
   Heart,
   MapPin,
   User,
+  Users,
+  Wallet,
   LogOut,
   Menu,
 } from 'lucide-react'
@@ -24,6 +26,8 @@ const NAV_LINKS = [
   { label: 'Orders', href: '/account/orders', icon: Package },
   { label: 'Wishlist', href: '/account/wishlist', icon: Heart },
   { label: 'Addresses', href: '/account/addresses', icon: MapPin },
+  { label: 'My Wallet', href: '/account/wallet', icon: Wallet },
+  { label: 'Profiles', href: '/account/profiles', icon: Users },
   { label: 'Profile', href: '/account/profile', icon: User },
 ]
 

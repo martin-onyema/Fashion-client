@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Minus, Plus, ShoppingBag, ArrowRight, Trash2, Loader2 } from 'lucide-react'
@@ -15,6 +16,7 @@ export default function CartPage() {
   const setQuantity = useCartStore((s) => s.setQuantity)
   const remove = useCartStore((s) => s.remove)
   const clear = useCartStore((s) => s.clear)
+  const [promo, setPromo] = useState('')
 
   const subtotal = lines.reduce((sum, l) => sum + (l.price ?? 0) * l.quantity, 0)
   const deliveryFee = calculateDeliveryFee(subtotal)
@@ -246,9 +248,36 @@ export default function CartPage() {
                   </div>
                 </div>
 
+                <div className="mt-6 flex">
+                  <input
+                    value={promo}
+                    onChange={(e) => setPromo(e.target.value)}
+                    placeholder="Promo code"
+                    aria-label="Promo code"
+                    className="flex-1 min-w-0 h-11 px-3 text-sm bg-transparent border border-border border-r-0 focus:border-foreground outline-none transition-colors placeholder:text-muted-foreground/60"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const code = promo.trim()
+                      if (!code) {
+                        toast.error('Enter a promo code first')
+                        return
+                      }
+                      try {
+                        sessionStorage.setItem('wc_promo_code', code)
+                      } catch {}
+                      toast.success('Promo code saved — enter checkout to apply it')
+                    }}
+                    className="h-11 px-5 bg-foreground text-background text-[11px] uppercase tracking-[0.18em] hover:bg-foreground/90 transition-colors"
+                  >
+                    Apply
+                  </button>
+                </div>
+
                 <Link
                   href="/checkout"
-                  className="mt-6 w-full inline-flex items-center justify-center gap-2 bg-foreground text-background py-4 text-[11px] uppercase tracking-[0.2em] hover:bg-foreground/90 transition-colors"
+                  className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-foreground text-background py-4 text-[11px] uppercase tracking-[0.2em] hover:bg-foreground/90 transition-colors"
                 >
                   Proceed to Checkout
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -257,6 +286,20 @@ export default function CartPage() {
                 <p className="text-[10px] text-muted-foreground mt-3 text-center leading-relaxed">
                   Secure checkout powered by Paystack. Server-side payment verification ensures your order is only marked paid after confirmation.
                 </p>
+
+                {/* Stylist note — cross-sell to services */}
+                <div className="mt-4 border border-dashed border-foreground/40 p-4">
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-foreground mb-1">
+                    Buying for an event?
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Book Personal Shopping&apos;s{' '}
+                    <Link href="/services/home-fitting" className="link-underline text-foreground">
+                      In-Person Fitting
+                    </Link>{' '}
+                    and we&apos;ll make sure everything fits before it&apos;s delivered.
+                  </p>
+                </div>
               </div>
             </aside>
           </div>

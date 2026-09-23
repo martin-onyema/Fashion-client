@@ -15,7 +15,7 @@
  * route will all pick it up automatically.
  */
 
-export type ServiceCategory = 'Sourcing' | 'Diagnostic' | 'In-Home' | 'Gifting' | 'Cultural'
+export type ServiceCategory = 'Sourcing' | 'Diagnostic' | 'In-Home' | 'Gifting' | 'Cultural' | 'Tailoring'
 
 export type ServiceFaq = {
   q: string
@@ -63,6 +63,23 @@ export type Service = {
   featured: boolean
   /** Announced but not bookable yet — renders with a "Coming Soon" state. */
   comingSoon?: boolean
+  /** Optional itemised price table (e.g. per-alteration or box-tier pricing). */
+  pricingTable?: {
+    /** Small heading above the table, e.g. "Pricing & Packaging". */
+    title?: string
+    /** Small sub-line under the title. */
+    subtitle?: string
+    /** Each row — label left, amount right. */
+    rows: { label: string; amount: string }[]
+    /** Optional sub-heading between row groups. */
+    groupLabel?: string
+    /** Optional second row group (e.g. additional boxes). */
+    groupRows?: { label: string; amount: string }[]
+    /** Mandatory fee banner rendered under the table. */
+    feeBanner?: { title: string; body: string; amount: string }
+    /** Small print notes under the table. */
+    notes?: { lead: string; body: string }[]
+  }
 }
 
 export const SERVICES: Service[] = [
@@ -253,13 +270,13 @@ export const SERVICES: Service[] = [
     name: 'Outfit Gifting',
     tagline: 'Give someone a complete, thoughtfully styled outfit curated around their taste, size, and occasion.',
     description:
-      'A complete styled outfit, curated around the recipient\'s taste and size, delivered for a birthday, anniversary, wedding, or just because.',
+      'A fully styled outfit, curated for someone else, gift-wrapped and delivered — for the men in your life who dress well, or who you want to dress well.',
     image: '/services/outfit-gifting-m.jpg',
     imageAlt: 'A beautifully wrapped gift box containing a styled menswear outfit',
-    startingPrice: 80000,
-    priceLabel: 'From ₦80,000',
+    startingPrice: 40000,
+    priceLabel: 'From ₦40,000',
     priceUnit: 'Per gift',
-    priceNote: 'Styling + gift wrapping · item cost separate',
+    priceNote: 'Styling & gift wrap · outfit cost separate',
     featured: false,
     whoFor: [
       'You want to gift clothing but don\'t know their size or taste',
@@ -268,9 +285,9 @@ export const SERVICES: Service[] = [
       'You\'re gifting for a specific occasion — wedding, birthday, anniversary',
     ],
     whatsIncluded: [
-      { step: '01', title: 'Recipient Brief', body: 'You tell us about them — taste, size if known, occasion, budget.' },
-      { step: '02', title: 'Curate', body: 'We assemble a complete outfit (e.g. shirt + trousers + accessory) around the brief.' },
-      { step: '03', title: 'Present', body: 'Premium gift-wrapped and delivered with a handwritten note.' },
+      { step: '01', title: 'Tell Us About Him', body: 'His sizes if known, his style, the occasion, and your budget. A two-minute brief is enough.' },
+      { step: '02', title: 'We Style It', body: 'A complete outfit is curated around the brief, gift-wrapped with your handwritten note — preview approval available.' },
+      { step: '03', title: 'Delivered', body: 'Sent directly to him, or to you first if you would rather present it yourself. Date-specific delivery confirmed before you pay.' },
     ],
     testimonial: {
       quote:
@@ -278,13 +295,37 @@ export const SERVICES: Service[] = [
       author: 'Ngozi M.',
       role: 'Gifting client, Lagos',
     },
+    pricingTable: {
+      title: 'Pricing & Packaging',
+      rows: [
+        { label: 'Styling & gift wrap (includes first box — small or medium)', amount: '₦40,000' },
+        { label: 'First box upgraded to large', amount: '+₦10,000' },
+      ],
+      groupLabel: 'Additional Boxes (multiple outfits / categories)',
+      groupRows: [
+        { label: 'Small', amount: '₦10,000' },
+        { label: 'Medium', amount: '₦20,000' },
+        { label: 'Large', amount: '₦30,000' },
+      ],
+      notes: [
+        {
+          lead: 'Outfit cost is separate from the styling fee.',
+          body: 'Standard delivery is priced by location — see Shipping. Bulk orders (multiple boxes) or far locations needing a vehicle are assessed case by case and confirmed before checkout.',
+        },
+      ],
+    },
     faqs: [
+      { q: 'Can I buy an outfit as a gift for someone else?', a: 'Yes — we style a complete outfit, gift-wrap it, and deliver it, ready to give.' },
+      { q: 'What if I don\'t know their size?', a: 'We\'ll walk you through practical ways to figure that out before anything\'s bought.' },
+      { q: 'Can I include a personal message?', a: 'Yes — a note can be included with the delivery.' },
+      { q: 'Does packaging cost extra?', a: 'The styling fee includes packing and your first box, as long as it\'s small or medium. A large first box adds ₦10,000. If you\'re gifting more than one outfit, each additional box is priced by size — ₦10,000 small, ₦20,000 medium, ₦30,000 large.' },
+      { q: 'Can I gift more than one outfit at once?', a: 'Yes — each additional outfit that needs its own box is priced as an additional box (see the pricing table above). Delivery for larger multi-box orders is assessed separately rather than the standard per-location fee.' },
       { q: 'What if it doesn\'t fit?', a: 'All gifting outfits include one free size exchange within 7 days of delivery.' },
       { q: 'Can you deliver on a specific date?', a: 'Yes — specify the date in the brief and we\'ll confirm scheduling before you pay.' },
       { q: 'Can I see the outfit before it\'s delivered?', a: 'Yes. We can send a preview for your approval, or deliver as a complete surprise.' },
     ],
     finalCta: {
-      title: 'Give a wardrobe moment, not just a gift.',
+      title: 'Give a gift he\'ll actually wear.',
       body: 'A complete styled outfit, beautifully presented. Tell us who it\'s for and we\'ll handle the rest.',
       button: 'Plan a Gift',
     },
@@ -336,6 +377,79 @@ export const SERVICES: Service[] = [
       button: 'Join the Waitlist',
     },
   },
+
+  {
+    slug: 'amendments-alterations',
+    number: '07',
+    category: 'Tailoring',
+    name: 'Amendments & Alterations',
+    tagline: 'Tailoring fixes and adjustments for any garment — hems, slimming, sleeves, repairs, and more.',
+    description:
+      'Tailoring fixes and adjustments for any garment — not just pieces bought from Wardrobecare. Hems, slimming, sleeve shortening, repairs, and more, with pick-up and drop-off included.',
+    image: '/services/amendments-alterations.jpg',
+    imageAlt: 'A tailor at work adjusting the sleeve of a men\'s garment',
+    startingPrice: 5000,
+    priceLabel: 'From ₦5,000',
+    priceUnit: 'Per alteration',
+    priceNote: '+ ₦20,000 service & handling fee per order',
+    featured: false,
+    whoFor: [
+      'Something you own no longer fits quite right',
+      'A new piece needs a small adjustment before it\'s wearable',
+      'You want a quick repair, not a full re-tailor',
+      'The item didn\'t come from Wardrobecare — that\'s fine, we still take it',
+    ],
+    whatsIncluded: [
+      { step: '01', title: 'Tell Us What\'s Needed', body: 'Garment type and the alteration(s) required, photos optional.' },
+      { step: '02', title: 'Pick-up', body: 'We collect the item(s) at a time that works for you.' },
+      { step: '03', title: 'Drop-off', body: 'Altered items returned to you, ready to wear.' },
+    ],
+    pricingTable: {
+      title: 'Pricing',
+      subtitle: 'Per alteration — mix and match across multiple garments in one order.',
+      rows: [
+        { label: 'Trouser hem (shorten/lengthen)', amount: '₦5,000' },
+        { label: 'Waist adjustment (trouser)', amount: '₦7,000' },
+        { label: 'Sleeve shortening — shirt', amount: '₦5,000' },
+        { label: 'Sleeve shortening — blazer/jacket', amount: '₦10,000' },
+        { label: 'Take in / let out sides — blazer/jacket', amount: '₦15,000' },
+        { label: 'Take in / let out sides — shirt', amount: '₦6,000' },
+        { label: 'Take in / let out sides — t-shirt', amount: '₦5,000' },
+        { label: 'Take in / let out sides — jean/pant', amount: '₦6,000' },
+        { label: 'Tear / rib / gash repair', amount: '₦5,000' },
+        { label: 'Button replacement', amount: '₦5,000' },
+        { label: 'Zipper replacement', amount: '₦5,000' },
+      ],
+      feeBanner: {
+        title: 'Service & Handling Fee',
+        body: 'Mandatory on every order — covers pick-up/drop-off logistics, supervision, and expertise, regardless of item count.',
+        amount: '₦20,000',
+      },
+      notes: [
+        {
+          lead: 'Need something not listed here?',
+          body: 'Contact us for a custom quote — if the job can be done, we\'ll price it for you.',
+        },
+        {
+          lead: 'Outside our standard pick-up/drop-off area?',
+          body: 'Further locations are quoted case by case, confirmed before you book.',
+        },
+      ],
+    },
+    faqs: [
+      { q: 'What does this service cover?', a: 'Tailoring fixes and adjustments for any garment — hems, waist adjustments, slimming, sleeve shortening, repairs, and button or zipper replacement. It doesn\'t have to be something you bought from us.' },
+      { q: 'How is it priced?', a: 'Per alteration — each fix has its own price, and you can combine several on one order. On top of that, a Service & Handling fee applies to every order, covering pick-up, drop-off, supervision, and expertise.' },
+      { q: 'Is the Service & Handling fee optional?', a: 'No — it\'s mandatory on every Amendments & Alterations order, regardless of how many items you bring, since pick-up, drop-off, and oversight happen either way.' },
+      { q: 'How does pick-up and drop-off work?', a: 'We collect the item(s) from you, complete the work, and return them once finished — just tell us a pick-up time and address when you book.' },
+      { q: 'What if my alteration isn\'t on the price list?', a: 'Contact us for a custom quote. If the job can be done, we\'ll price it for you after seeing the garment and the work involved.' },
+      { q: 'What if I\'m outside your usual pick-up area?', a: 'That\'s handled case by case — let us know your location and we\'ll confirm whether it\'s covered and what it costs before you book.' },
+    ],
+    finalCta: {
+      title: 'Send us a photo — we\'ll quote it.',
+      body: 'Tell us the garment and the fix it needs. We\'ll quote the alteration, arrange pick-up, and return it ready to wear.',
+      button: 'Book an Alteration',
+    },
+  },
 ]
 
 // ---- Groupings shown on /services ----
@@ -356,6 +470,11 @@ export const SERVICE_GROUPS: ServiceGroup[] = [
     label: 'Consultations',
     description: 'Define, audit, and direct your style.',
     services: SERVICES.filter((s) => s.category === 'Diagnostic' || s.category === 'Cultural'),
+  },
+  {
+    label: 'Tailoring',
+    description: 'Fixes, adjustments, and repairs.',
+    services: SERVICES.filter((s) => s.category === 'Tailoring'),
   },
   {
     label: 'Standalone',

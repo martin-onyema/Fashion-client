@@ -5,7 +5,7 @@ import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { LoginForm } from '@/components/account/login-form'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { authOptions, googleEnabled } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -47,7 +47,7 @@ export default async function LoginPage() {
             <Suspense
               fallback={<div className="h-64 animate-pulse bg-secondary rounded-md" />}
             >
-              <LoginForm />
+              <LoginForm googleEnabled={googleEnabled} />
             </Suspense>
           </div>
 

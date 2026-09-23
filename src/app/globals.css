@@ -159,10 +159,16 @@
 .hide-scroll::-webkit-scrollbar { display: none; }
 .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Editorial hover underline */
-.link-underline {
-  position: relative;
-  display: inline-block;
+/* Editorial hover underline.
+   NOTE: must live in @layer components — an unlayered `display` here
+   outranked Tailwind's layered display utilities, forcing every
+   link-underline + inline-flex link-button back to inline-block and
+   wrapping its arrow onto a second line. */
+@layer components {
+  .link-underline {
+    position: relative;
+    display: inline-block;
+  }
 }
 .link-underline::after {
   content: '';
