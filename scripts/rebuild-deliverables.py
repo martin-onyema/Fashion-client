@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """
-Rebuild the Wardrobecare deliverable zips:
-  - wardrobecare-code.zip    deployable source (small, what Vercel needs)
-  - wardrobecare-website.zip full project backup (no node_modules/.next)
+Build ONE complete, self-contained Wardrobecare deliverable:
+  - wardrobecare-complete.zip  (everything the website needs, in a single file)
+
+Contents: full src/, both Prisma schemas, seeded demo db, public assets,
+all scripts, DEPLOY.md, env templates, package-lock.json, vercel.json.
+Excluded: node_modules/.next/.git and sandbox-only junk (restored by
+`npm install` / Vercel automatically).
 
 Self-validating: fails with non-zero exit if any duplicate entry, missing
 key file, or broken zip is detected.
@@ -24,35 +28,25 @@ NEXTAUTH_URL="http://localhost:3000"
 ADMIN_ACCESS_PATH="/wardrobe-hq-9xk2"
 '''
 
-# ---------- CODE ZIP ----------
-CODE_INCLUDE_FILES = [
-    ".env.example",
-    ".env.production",
-    "DEPLOY.md",
-    "README.md",
-    "package.json",
-    "package-lock.json",
-    "bun.lock",
-    "next.config.ts",
-    "next-env.d.ts",
-    "tsconfig.json",
-    "tailwind.config.ts",
-    "postcss.config.mjs",
-    "components.json",
-    "eslint.config.mjs",
-    "db/custom.db",
-    "scripts/prepare-standalone.mjs",
-]
-CODE_INCLUDE_DIRS = ["src", "prisma", "public"]
-CODE_EXCLUDE_PARTS = {"node_modules", ".next", "__pycache__"}
-
-# ---------- FULL ZIP (backup) ----------
-FULL_EXCLUDE_DIRS = {
+EXCLUDE_DIRS = {
     "node_modules", ".next", ".git", "download", "skills", "mini-services",
-    "examples", "upload", "verify", "video-frames", ".zscripts",
+    "examples", "upload", "verify", "video-frames", ".zscripts", "tests",
     "__pycache__", ".claude", ".playwright-mcp",
 }
-FULL_EXTRA_FILES = [".env.example", ".env.production", "DEPLOY.md"]
+EXCLUDE_FILES = {"worklog.md", "dev.log", "build.log", ".DS_Store", "Caddyfile"}
+EXCLUDE_SUFFIXES = {".pyc", ".log", ".tmp"}
+FORCE_FILES = [".env.example", ".env.production", "DEPLOY.md"]
+
+KEY_FILES = [
+    "package.json", "package-lock.json", "vercel.json", "DEPLOY.md",
+    ".env.production", ".env.example", ".gitignore",
+    "db/custom.db", "scripts/prepare-standalone.mjs", "scripts/seed.ts",
+    "src/middleware.ts", "src/lib/auth.ts", "src/lib/rate-limit.ts",
+    "src/lib/email.ts", "src/lib/auth-fallback-secret.ts",
+    "src/app/admin/login/page.tsx", "src/app/account/login/page.tsx",
+    "prisma/schema.prisma", "prisma/schema.sqlite.prisma",
+    "next.config.ts", "tsconfig.json",
+]
 
 
 def norm(name: str) -> str:
@@ -79,36 +73,19 @@ def build_zip(zip_path: Path, include_fn, env_override: bool) -> list:
     return list(written.keys())
 
 
-def code_files():
-    for name in CODE_INCLUDE_FILES:
-        p = ROOT / name
-        if p.is_file():
-            yield p, name
-    for d in CODE_INCLUDE_DIRS:
-        base = ROOT / d
-        for dirpath, dirnames, filenames in os.walk(base):
-            dirnames[:] = [x for x in dirnames if x not in CODE_EXCLUDE_PARTS]
-            for f in filenames:
-                fp = Path(dirpath) / f
-                if fp.suffix in {".log", ".pyc"}:
-                    continue
-                yield fp, str(fp.relative_to(ROOT))
-
-
-def full_files():
+def complete_files():
     for dirpath, dirnames, filenames in os.walk(ROOT):
         rel = Path(dirpath).relative_to(ROOT)
-        dirnames[:] = [x for x in dirnames if x not in FULL_EXCLUDE_DIRS
+        dirnames[:] = [x for x in dirnames if x not in EXCLUDE_DIRS
                        and not x.startswith("wardrobecare-")]
         for f in filenames:
             fp = Path(dirpath) / f
-            relname = str(fp.relative_to(ROOT))
             if f == ".env":
-                continue  # overridden with portable version
-            if f in {"dev.log", ".DS_Store"} or fp.suffix in {".pyc", ".log"}:
+                continue  # overridden with portable version below
+            if f in EXCLUDE_FILES or fp.suffix in EXCLUDE_SUFFIXES:
                 continue
-            yield fp, relname
-    for name in FULL_EXTRA_FILES:
+            yield fp, str(fp.relative_to(ROOT))
+    for name in FORCE_FILES:
         p = ROOT / name
         if p.is_file():
             yield p, name
@@ -122,52 +99,57 @@ def validate(zip_path: Path, names: list, key_files: list):
     assert len(actual) == len(names), f"entry mismatch {len(actual)} vs {len(names)}"
     for k in key_files:
         assert k in actual, f"MISSING key file: {k}"
+    # ghost-file guard: these stale files must NEVER ship again
+    for ghost in ["src/components/account/verify-form.tsx",
+                  "src/app/account/verify/page.tsx",
+                  "src/app/digital-closet/notify-form.tsx",
+                  "src/app/gift-card/checkout/gift-card-wizard.tsx",
+                  "src/components/shop/category-hub.tsx"]:
+        assert ghost not in actual, f"GHOST FILE PRESENT: {ghost}"
     size = zip_path.stat().st_size
     md5 = hashlib.md5(zip_path.read_bytes()).hexdigest()
     return size, md5
 
 
 def main():
-    code_key = ["package.json", "DEPLOY.md", ".env.production", ".env.example",
-                "db/custom.db", "scripts/prepare-standalone.mjs",
-                "src/middleware.ts", "src/lib/auth.ts", "src/lib/rate-limit.ts",
-                "src/app/admin/login/page.tsx", "prisma/schema.prisma",
-                "prisma/schema.sqlite.prisma", "next.config.ts"]
-    full_key = code_key + ["DEPLOY.md"]
-
-    code_zip = OUT / "wardrobecare-code.zip"
-    code_names = build_zip(code_zip, code_files, env_override=True)
-    s1, m1 = validate(code_zip, code_names, code_key)
-    print(f"CODE  : {code_zip.name}  {len(code_names)} entries  {s1:,} B  md5 {m1}")
-
-    full_zip = OUT / "wardrobecare-website.zip"
-    full_names = build_zip(full_zip, full_files, env_override=True)
-    s2, m2 = validate(full_zip, full_names, full_key)
-    print(f"FULL  : {full_zip.name}  {len(full_names)} entries  {s2:,} B  md5 {m2}")
+    complete_zip = OUT / "wardrobecare-complete.zip"
+    names = build_zip(complete_zip, complete_files, env_override=True)
+    size, md5 = validate(complete_zip, names, KEY_FILES)
+    print(f"COMPLETE: {complete_zip.name}  {len(names)} entries  {size:,} B  md5 {md5}")
 
     # rewrite README
-    (OUT / "README.md").write_text(f"""# Wardrobecare — Download Package
+    (OUT / "README.md").write_text(f"""# Wardrobecare — Complete Package (single file)
 
-## wardrobecare-code.zip  ({len(code_names)} files, {s1:,} bytes, md5 {m1})
-Deployable source. Unzip → `vercel` deploy. Includes:
-- full `src/` (storefront + hidden admin console + security middleware)
-- both Prisma schemas (SQLite dev / Postgres production)
-- `db/custom.db` pre-seeded demo database
-- `DEPLOY.md` — complete step-by-step deployment + security guide
-- `.env.production` / `.env.example` reference templates
+**wardrobecare-complete.zip** — {len(names)} files, {size:,} bytes, md5 {md5}
 
-## wardrobecare-website.zip  ({len(full_names)} files, {s2:,} bytes, md5 {m2})
-Complete project backup (everything except node_modules/.next/junk).
-Same core files plus all scripts, docs and assets.
+Everything in one zip: full source (storefront + hidden admin + security
+middleware + email system), both Prisma schemas, pre-seeded demo database,
+all scripts, DEPLOY.md, env templates, vercel.json.
 
-## After unzipping
-1. Read `DEPLOY.md` — it walks you through Vercel, env vars, domain,
-   Paystack and how to reach the hidden admin console.
-2. Admin access: `https://<your-domain>/wardrobe-hq-9xk2`
-   (default `admin@wardrobecare.com` / `wardrobecare2026` — change it!)
+node_modules is intentionally NOT included — run `npm install` (or just
+deploy to Vercel, which installs everything automatically).
+
+## ⚠️ THE ONE RULE WHEN DEPLOYING
+
+Extract into an **EMPTY folder** (or a **brand-new GitHub repo**).
+Never copy these files on top of an older copy — leftover old files are
+exactly what broke the Vercel build ("verify-form.tsx", "gift-card",
+"digital-closet" must not exist anywhere in the deploy source).
+
+## Deploy to Vercel (fast path)
+1. Unzip into an empty folder.
+2. `npm i -g vercel` then `vercel --prod` inside that folder
+   (or push the folder contents to a fresh GitHub repo and import it).
+3. Add the environment variables from DEPLOY.md section 2
+   (DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL, ADMIN_ACCESS_PATH, ...).
+
+## Admin console
+`https://<your-domain>/wardrobe-hq-9xk2`
+default `admin@wardrobecare.com` / `wardrobecare2026` — change it after
+first login (Admin → Staff).
 """)
 
-    print("OK: both zips validated (no duplicates, all key files present)")
+    print("OK: complete zip validated (no duplicates, all key files present, no ghosts)")
 
 
 if __name__ == "__main__":

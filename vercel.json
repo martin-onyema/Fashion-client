@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "npm run vercel-build",
+  "installCommand": "npm install",
+  "devCommand": "next dev",
+  "git": {
+    "deploymentEnabled": true
+  },
+  "regions": ["cdg1"],
+  "env": {
+    "NEXT_PUBLIC_SITE_NAME": "Wardrobecare Clothing"
+  }
+}
