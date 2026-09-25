@@ -28,10 +28,14 @@ NEXTAUTH_URL="http://localhost:3000"
 ADMIN_ACCESS_PATH="/wardrobe-hq-9xk2"
 '''
 
-EXCLUDE_DIRS = {
-    "node_modules", ".next", ".git", "download", "skills", "mini-services",
-    "examples", "upload", "verify", "video-frames", ".zscripts", "tests",
-    "__pycache__", ".claude", ".playwright-mcp",
+EXCLUDE_ANYWHERE = {
+    "node_modules", ".next", ".git", "skills", "mini-services",
+    "__pycache__", ".zscripts", ".claude", ".playwright-mcp",
+}
+# only excluded when directly under the project root (e.g. the verify/
+# screenshots folder) — must NOT hit src/app/account/verify etc.
+ROOT_ONLY_EXCLUDES = {
+    "download", "examples", "upload", "verify", "video-frames", "tests",
 }
 EXCLUDE_FILES = {"worklog.md", "dev.log", "build.log", ".DS_Store", "Caddyfile"}
 EXCLUDE_SUFFIXES = {".pyc", ".log", ".tmp"}
@@ -76,7 +80,10 @@ def build_zip(zip_path: Path, include_fn, env_override: bool) -> list:
 def complete_files():
     for dirpath, dirnames, filenames in os.walk(ROOT):
         rel = Path(dirpath).relative_to(ROOT)
-        dirnames[:] = [x for x in dirnames if x not in EXCLUDE_DIRS
+        at_root = str(rel) == "."
+        dirnames[:] = [x for x in dirnames
+                       if x not in EXCLUDE_ANYWHERE
+                       and not (at_root and x in ROOT_ONLY_EXCLUDES)
                        and not x.startswith("wardrobecare-")]
         for f in filenames:
             fp = Path(dirpath) / f
@@ -99,13 +106,18 @@ def validate(zip_path: Path, names: list, key_files: list):
     assert len(actual) == len(names), f"entry mismatch {len(actual)} vs {len(names)}"
     for k in key_files:
         assert k in actual, f"MISSING key file: {k}"
-    # ghost-file guard: these stale files must NEVER ship again
-    for ghost in ["src/components/account/verify-form.tsx",
-                  "src/app/account/verify/page.tsx",
-                  "src/app/digital-closet/notify-form.tsx",
-                  "src/app/gift-card/checkout/gift-card-wizard.tsx",
-                  "src/components/shop/category-hub.tsx"]:
-        assert ghost not in actual, f"GHOST FILE PRESENT: {ghost}"
+    # stub guard: every known ghost path from the user's old repo MUST be
+    # present as a clean, self-contained replacement so that even a dirty
+    # copy-over deploy compiles
+    for stub in ["src/components/account/verify-form.tsx",
+                 "src/app/account/verify/page.tsx",
+                 "src/app/digital-closet/notify-form.tsx",
+                 "src/app/digital-closet/page.tsx",
+                 "src/app/gift-card/checkout/gift-card-wizard.tsx",
+                 "src/app/gift-card/checkout/page.tsx",
+                 "src/app/gift-card/page.tsx",
+                 "src/components/shop/category-hub.tsx"]:
+        assert stub in actual, f"MISSING stub replacement: {stub}"
     size = zip_path.stat().st_size
     md5 = hashlib.md5(zip_path.read_bytes()).hexdigest()
     return size, md5

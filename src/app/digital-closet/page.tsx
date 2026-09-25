@@ -1,22 +1,20 @@
-import type { Metadata } from 'next'
-import { Navbar } from '@/components/layout/navbar'
-import { Footer } from '@/components/layout/footer'
-import { DigitalClosetContent } from './digital-closet-content'
-
-export const metadata: Metadata = {
-  title: 'Digital Closet & Capsule Wardrobe',
-  description:
-    'Coming soon — the Wardrobecare Digital Closet. Hold and organize what you own, get capsule combinations from your real pieces, and find the gaps. One annual subscription, tied to your Wardrobe & Style Consultation or started fresh.',
-}
+import NotifyForm from "./notify-form";
 
 export default function DigitalClosetPage() {
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen">
-        <DigitalClosetContent />
-      </main>
-      <Footer />
-    </>
-  )
+    <main className="mx-auto max-w-3xl px-6 py-24 text-center">
+      <p className="text-xs uppercase tracking-[0.3em] text-neutral-500">
+        Wardrobecare
+      </p>
+      <h1 className="mt-4 text-3xl font-semibold">Digital Closet</h1>
+      <p className="mt-3 text-sm text-neutral-600">
+        Catalogue what you own, get wear suggestions and care reminders.
+        We are putting the finishing touches on it — leave your email and
+        we will tell you the moment it is ready.
+      </p>
+      <div className="mt-10 flex justify-center">
+        <NotifyForm />
+      </div>
+    </main>
+  );
 }
