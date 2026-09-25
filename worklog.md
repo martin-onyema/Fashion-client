@@ -90,3 +90,39 @@ Work Log:
 
 Stage Summary:
 - Site hardened (stealth admin, rate limits, headers, no exposed creds) and fully verified E2E; admin access = /wardrobe-hq-9xk2 with default creds, password change via Staff page; deliverables rebuilt + mirrored on gofile
+
+---
+Task ID: 47
+Agent: main
+Task: "build the emails" — wire Resend transactional email into the store
+
+Work Log:
+- NEW src/lib/email.ts: zero-dependency Resend REST client (fetch + 5s AbortController timeout), graceful degradation (no key → skip + log, store never breaks), branded templates in the site's monochrome identity (#121110/#f7f6f3/#e9e7e1): order confirmation, payment receipt, tracking update, refund confirmation, admin new-order alert
+- WIRED 5 hook points: createOrder (confirmation + admin alert, parallel), Paystack webhook handleChargeSuccess (receipt, dedup-safe via verified-guard), verifyPayment fallback path (same guard), adminUpdateOrderTracking (shipping email ONLY on new/changed tracking number), adminRefundOrder (refund confirmation)
+- Reply-to + admin alert target from AdminSettings.supportEmail, fallback ADMIN_NOTIFY_EMAIL env
+- RESTORED package.json scripts lost in env restore (cross-platform build: prisma generate && next build && node scripts/prepare-standalone.mjs; start: node .next/standalone/server.js) — old bun/tee/cp version was back
+- TESTED scripts/test-email-templates.ts via jiti: 8/8 pass — all sends skip safely without key, all 5 templates render (previews saved to download/email-previews/*.html via fetch interception)
+- tsc: zero errors in new modules (remaining errors pre-existing, ignoreBuildErrors); all storefront pages compile 200
+- DEPLOY.md: added ADMIN_NOTIFY_EMAIL row + new §5b transactional email table
+- Zips rebuilt + validated: CODE 238 entries 580,808 B md5 c32de2b8f5ba3a1afa90117abb20e11a (https://gofile.io/d/7AmNfiGn); FULL 268 entries 736,711 B md5 21330ff27f0c9061668bfb737fdd7314 (https://gofile.io/d/UmBFkVAg)
+
+Stage Summary:
+- Email system live in code: 5 transactional emails wired at the exact business moments, key-paste in Vercel is the only activation step; deliverables rebuilt and mirrored
+
+---
+Task ID: 48
+Agent: main
+Task: "is the website fully working now like full stack and ready for deploy" — full E2E verification
+
+Work Log:
+- BROWSER E2E (agent-browser, real clicks/forms against dev server):
+  1. SIGNUP: /account/register -> filled form -> auto-login -> /account; user in DB (CUSTOMER, active, bcrypt hash)
+  2. SIGN-IN: cookies cleared -> /account/login -> credentials -> /account
+  3. PURCHASE (WhatsApp): /shop -> product -> add to bag -> checkout -> order WC-88QXBYW2 in DB (WHATSAPP/PENDING/N18000) -> WhatsApp redirect with full order message
+  4. PURCHASE (Paystack mock): second order WC-8AS3DZDV -> mock pay page -> verifyPayment mock path -> DB shows PAID/SUCCESS
+  5. EMAILS fired at both real moments: order confirmation + receipt (skipped gracefully, no key) + admin alert skip logged
+  6. ADMIN: secret path /wardrobe-hq-9xk2 login -> dashboard stats -> order visible in /admin/orders
+- Paystack mock-mode behavior confirmed (no-key sandbox path); PRODUCTION WARNING noted: without real PAYSTACK_SECRET_KEY in prod, orders mark PAID without real payment — user must add keys before launch
+
+Stage Summary:
+- Full-stack loop verified live end-to-end: signup, sign-in, database persistence, both purchase paths, admin visibility, email pipeline hooks; deploy blockers are only user-side env vars + domain + Paystack keys
