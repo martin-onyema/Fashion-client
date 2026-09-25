@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { db } from '@/lib/db'
 import { formatNGN, whatsappLink } from '@/lib/format'
-import { GiftCardCompact } from '@/components/gift-card/gc-compact'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,7 +17,7 @@ export default async function SuccessPage({ searchParams }: { searchParams: Sear
     db.adminSettings.findUnique({ where: { id: 'singleton' } }),
   ])
 
-  const whatsappNumber = settings?.whatsappNumber || '2348026133770'
+  const whatsappNumber = settings?.whatsappNumber || '2348000000000'
   const hasBankDetails = settings?.bankName && settings?.bankAccountName && settings?.bankAccountNumber
 
   // Build a WhatsApp proof-of-payment message for bank transfer orders
@@ -121,11 +120,6 @@ export default async function SuccessPage({ searchParams }: { searchParams: Sear
             </div>
           </div>
         )}
-
-        {/* Gift card upsell (artifact gc-compact — order-confirmation placement) */}
-        <div className="mb-6">
-          <GiftCardCompact />
-        </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link

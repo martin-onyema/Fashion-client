@@ -1,31 +1,22 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState } from 'react'
-import { Instagram, ArrowRight, MessageCircle, Mail, Phone } from 'lucide-react'
+import { Instagram, ArrowRight } from 'lucide-react'
 import { subscribeToNewsletter } from '@/actions/store'
 import { usePathname } from 'next/navigation'
 import { SERVICES } from '@/lib/services-data'
-import { GiftCardCompact } from '@/components/gift-card/gc-compact'
-
-// Store contact details
-const CONTACT = {
-  whatsappDisplay: '0802 613 3770',
-  whatsappHref: 'https://wa.me/2348026133770',
-  phoneHref: 'tel:+2348026133770',
-  email: 'wardrobecare@gmail.com',
-}
 
 const FOOTER_LINKS = [
   {
     title: 'Shop',
     links: [
       { label: 'New Arrivals', href: '/shop?sort=newest' },
-      { label: 'Clothing', href: '/clothing' },
-      { label: 'Footwear', href: '/footwear' },
-      { label: 'Accessories', href: '/accessories' },
-      { label: 'Fragrance & Grooming', href: '/fragrance-grooming' },
+      { label: 'Clothing', href: '/shop?category=clothing' },
+      { label: 'Bottoms', href: '/shop?category=bottoms' },
+      { label: 'Footwear', href: '/shop?category=footwear' },
+      { label: 'Accessories', href: '/shop?category=accessories' },
+      { label: 'Fragrance & Grooming', href: '/shop?category=fragrance-grooming' },
     ],
   },
   {
@@ -35,8 +26,6 @@ const FOOTER_LINKS = [
       { label: 'FAQs', href: '/faq' },
       { label: 'Shipping', href: '/shipping' },
       { label: 'Returns', href: '/returns' },
-      { label: 'Measurement Guide', href: '/measurement-guide' },
-      { label: 'Gift Cards', href: '/gift-card' },
       { label: 'Order Tracking', href: '/track-order' },
     ],
   },
@@ -73,20 +62,16 @@ export function Footer() {
 
   return (
     <footer className="mt-auto bg-[#121110] text-[#f7f6f3]">
-      {/* Gift card strip (artifact gc-compact — footer placement) */}
-      <GiftCardCompact tone="dark" />
       <div className="container-editorial py-16 lg:py-20">
         {/* Top — brand + newsletter */}
         <div className="grid lg:grid-cols-12 gap-12 pb-14 border-b border-white/12">
           <div className="lg:col-span-6">
-            <Link href="/" className="inline-flex items-center" aria-label="Wardrobecare Clothing">
-              <Image
-                src="/logo-white.png"
-                alt="Wardrobecare Clothing"
-                width={112}
-                height={40}
-                className="h-9 md:h-10 w-auto"
-              />
+            <Link
+              href="/"
+              className="font-display text-2xl md:text-[1.7rem] leading-none tracking-[0.01em]"
+              style={{ fontWeight: 500 }}
+            >
+              Wardrobecare
             </Link>
             <p className="mt-5 text-sm text-white/60 leading-relaxed max-w-sm">
               Your personal shopper and stylist for distinguished men&apos;s fashion. Services
@@ -101,33 +86,6 @@ export function Footer() {
               <Instagram className="h-4 w-4" strokeWidth={1.5} />
               <span className="link-underline">@wardrobecareng</span>
             </a>
-
-            {/* Contact block — WhatsApp / phone / email */}
-            <div className="mt-8 space-y-3">
-              <a
-                href={CONTACT.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors group"
-              >
-                <MessageCircle className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-                <span className="link-underline">WhatsApp {CONTACT.whatsappDisplay}</span>
-              </a>
-              <a
-                href={CONTACT.phoneHref}
-                className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors"
-              >
-                <Phone className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-                <span className="link-underline">{CONTACT.whatsappDisplay}</span>
-              </a>
-              <a
-                href={`mailto:${CONTACT.email}`}
-                className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors"
-              >
-                <Mail className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-                <span className="link-underline">{CONTACT.email}</span>
-              </a>
-            </div>
           </div>
 
           <div className="lg:col-span-6 flex flex-col justify-end">
@@ -174,14 +132,6 @@ export function Footer() {
                   All Services
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/digital-closet"
-                  className="text-sm text-white/80 hover:text-white link-underline"
-                >
-                  Digital Closet — Coming soon
-                </Link>
-              </li>
               {SERVICES.slice(0, 5).map((s) => (
                 <li key={s.slug}>
                   <Link
@@ -189,7 +139,6 @@ export function Footer() {
                     className="text-sm text-white/80 hover:text-white link-underline"
                   >
                     {s.name}
-                    {s.comingSoon ? ' — Coming soon' : ''}
                   </Link>
                 </li>
               ))}

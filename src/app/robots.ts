@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin', '/account', '/api', '/checkout', '/gift-card/checkout', '/services/personal-shopping/book', '/services/personal-shopping/confirmed'],
+      disallow: ['/admin', '/account', '/api', '/checkout'],
     },
     sitemap: 'https://wardrobecare.com.ng/sitemap.xml',
   }

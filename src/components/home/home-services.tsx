@@ -77,7 +77,7 @@ export function HomeServices() {
                 {/* Price + action */}
                 <div className="flex items-center gap-4 md:gap-6 justify-self-end">
                   <span className="hidden sm:inline-flex items-center border border-white/25 text-[10px] uppercase tracking-[0.14em] text-[#f7f6f3]/80 px-3 py-1.5 whitespace-nowrap">
-                    {service.comingSoon ? 'Coming Soon' : service.priceLabel}
+                    {service.priceLabel}
                   </span>
                   <span className="hidden lg:flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-[#f7f6f3]/60 group-hover:text-[#f7f6f3] transition-colors whitespace-nowrap">
                     Explore
@@ -93,7 +93,7 @@ export function HomeServices() {
                   {service.tagline}
                 </p>
                 <span className="col-start-2 col-span-2 sm:hidden mt-3 inline-flex self-start items-center border border-white/25 text-[10px] uppercase tracking-[0.14em] text-[#f7f6f3]/80 px-3 py-1.5 w-fit">
-                  {service.comingSoon ? 'Coming Soon' : service.priceLabel}
+                  {service.priceLabel}
                 </span>
               </Link>
             </motion.div>
@@ -165,7 +165,7 @@ export function HomeServices() {
               human stylist check when you need one.
             </p>
             <Link
-              href="/services/style-wardrobe-consultation"
+              href="/services/style-consultation"
               className="mt-8 md:mt-auto pt-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-[#f7f6f3]/80 group-hover:text-[#f7f6f3] transition-colors w-fit"
             >
               <span className="link-underline">Learn More</span>

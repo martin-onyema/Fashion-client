@@ -78,7 +78,7 @@ function QuickViewContent({ productId, onClose }: { productId: string; onClose: 
   const handleWhatsApp = async () => {
     if (!product) return
     const settings = await fetch('/api/settings').then((r) => r.json())
-    const phone = settings?.whatsappNumber || '2348026133770'
+    const phone = settings?.whatsappNumber || '2348000000000'
     const msg = `Hello Wardrobecare, I'd like to order:\n\n*${product.name}*\nSize: ${selectedSize ?? 'N/A'}\nQuantity: ${quantity}\nPrice: ${formatNGN(price * quantity)}\n\nPlease confirm availability.`
     window.open(whatsappLink(phone, msg), '_blank')
   }

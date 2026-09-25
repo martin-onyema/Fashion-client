@@ -52,5 +52,3 @@ prompt
 server.log
 # Skills directory
 /skills/
-# Allow production env template in deploy zip
-!.env.production

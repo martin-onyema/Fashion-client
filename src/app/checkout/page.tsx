@@ -17,25 +17,16 @@ export default function CheckoutPage() {
   const clear = useCartStore((s) => s.clear)
   const [submitting, setSubmitting] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<'PAYSTACK' | 'WHATSAPP' | 'BANK_TRANSFER'>('PAYSTACK')
-  // Lazy init picks up a promo code saved from the cart page. Safe: the form
-  // only renders after cart hydration, so there's no SSR/hydration divergence.
-  const [form, setForm] = useState(() => {
-    let couponCode = ''
-    try {
-      couponCode = sessionStorage.getItem('wc_promo_code') ?? ''
-      if (couponCode) sessionStorage.removeItem('wc_promo_code')
-    } catch {}
-    return {
-      customerName: '',
-      email: '',
-      phone: '',
-      whatsappNumber: '',
-      state: 'Lagos',
-      city: '',
-      address: '',
-      deliveryInstructions: '',
-      couponCode,
-    }
+  const [form, setForm] = useState({
+    customerName: '',
+    email: '',
+    phone: '',
+    whatsappNumber: '',
+    state: 'Lagos',
+    city: '',
+    address: '',
+    deliveryInstructions: '',
+    couponCode: '',
   })
 
   // Render directly from the store — the add() call now carries full display
@@ -148,30 +139,9 @@ export default function CheckoutPage() {
       </header>
 
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-10 md:py-16">
-        <h1 className="font-display text-4xl md:text-5xl tracking-[-0.02em]">
+        <h1 className="font-display text-4xl md:text-5xl tracking-[-0.02em] mb-10">
           Checkout
         </h1>
-
-        {/* Steps track — Cart → Delivery & Payment → Confirmation */}
-        <ol className="grid grid-cols-3 gap-2 mt-8 mb-12" aria-label="Checkout progress">
-          {[
-            { label: 'Cart', state: 'done' as const },
-            { label: 'Delivery & Payment', state: 'active' as const },
-            { label: 'Confirmation', state: 'todo' as const },
-          ].map((s, i) => (
-            <li
-              key={s.label}
-              className={`pb-3 text-[10px] md:text-[11px] uppercase tracking-[0.16em] border-b-2 ${
-                s.state === 'todo'
-                  ? 'border-border text-muted-foreground/60'
-                  : 'border-foreground text-foreground'
-              } ${i > 0 ? 'ml-3' : ''}`}
-            >
-              <span className="tabular-nums mr-1.5">{i + 1}.</span>
-              {s.label}
-            </li>
-          ))}
-        </ol>
 
         <form onSubmit={handleSubmit} className="grid lg:grid-cols-[1fr_400px] gap-10 lg:gap-16">
           {/* Left — customer info */}

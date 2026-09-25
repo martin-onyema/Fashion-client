@@ -30,11 +30,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
     getCategories(),
   ])
 
-  // Root categories plus their children, so subcategory slugs (e.g. chinos)
-  // resolve to a proper page title.
-  const activeCat = categories
-    .flatMap((c) => [c, ...c.children])
-    .find((c) => c.slug === category)
+  const activeCat = categories.find((c) => c.slug === category)
   const title = activeCat?.name ?? (search ? `Results for "${search}"` : 'All Products')
 
   return (

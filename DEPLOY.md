@@ -1,255 +1,183 @@
-# Deploying Wardrobecare Clothing
+# Wardrobecare Clothing — Deployment Guide
 
-This project is a **Next.js 16 (App Router) + Prisma** storefront with a full admin
-dashboard. **Everything is pre-configured for deployment** — your production database
-is live and fully loaded, and the environment variables are already bundled in the
-project (`.env.production`). Unzip → deploy → done.
+Complete instructions for taking this project live on Vercel with a Supabase
+Postgres database, Resend email, Paystack payments and a hidden admin console.
 
-| Schema | Provider | Used for |
+---
+
+## 1. Deploy to Vercel
+
+**Option A — Vercel CLI (recommended, keeps dotfiles intact):**
+
+```bash
+npm i -g vercel
+cd <unzipped project folder>
+vercel login
+vercel --prod
+```
+
+**Option B — GitHub web upload:** create a repo, drag-and-drop the files,
+then import the repo at vercel.com/new.
+⚠️ GitHub's web uploader silently DROPS dotfiles (`.env.example`,
+`.env.production`). Use the CLI, `git push`, or re-add them manually.
+
+During import, Vercel auto-detects Next.js. Build command and start command
+come from `package.json` (the build runs `prisma generate` first, so the
+Postgres client is always generated on any machine).
+
+---
+
+## 2. Environment variables (paste in Vercel)
+
+Vercel Dashboard → your project → Settings → Environment Variables.
+Add ALL of these (Production + Preview):
+
+| Variable | Value | Where to get it |
 |---|---|---|
-| `prisma/schema.prisma` | **PostgreSQL** | Production (Supabase — already connected & loaded) |
-| `prisma/schema.sqlite.prisma` | SQLite | Local development (bundled `db/custom.db`) |
+| `DATABASE_URL` | `postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres?pgbouncer=true` | Supabase → Project Settings → Database → **Connection pooling** |
+| `NEXTAUTH_SECRET` | 32-byte random string | terminal: `openssl rand -base64 32` |
+| `NEXTAUTH_URL` | `https://wardrobecare.com.ng` (while domain not connected: your `https://<project>.vercel.app`) | your own URL |
+| `ADMIN_ACCESS_PATH` | `/wardrobe-hq-9xk2` (or any private path you prefer) | you choose it |
+| `RESEND_API_KEY` | `re_...` | resend.com → API Keys (already created) |
+| `EMAIL_FROM` | `Wardrobecare <codes@wardrobecare.com.ng>` | fixed — domain already verified |
+| `PAYSTACK_PUBLIC_KEY` | `pk_live_...` (or `pk_test_...` first) | paystack.com → Settings → API Keys |
+| `PAYSTACK_SECRET_KEY` | `sk_live_...` (or `sk_test_...` first) | paystack.com → Settings → API Keys |
 
-The whole site is **server-rendered on demand** (`dynamic = "force-dynamic"` in the
-root layout). `next build` **never touches the database** — deploys succeed without
-any database access, and admin-dashboard edits go live instantly (no rebuilds).
+Optional:
+| `ADMIN_NOTIFY_EMAIL` | `owner@wardrobecare.com.ng` | you choose — fallback alert address for new-order notifications when the store's Support Email setting is empty |
+
+Optional (Google sign-in, when ready):
+`GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` from
+console.cloud.google.com → Credentials → OAuth client (redirect URI:
+`https://<your-site>/api/auth/callback/google`).
 
 ---
 
-## ✅ Already done for you (nothing to repeat)
+## 3. Connect the domain
 
-| Item | Status |
-|---|---|
-| Production database (Supabase, Ireland) | ✅ Live — schema pushed |
-| Product catalogue | ✅ 532 products / 902 variants / 868 images imported |
-| Categories, FAQs, store settings, homepage content | ✅ Seeded |
-| Admin account | ✅ `admin@wardrobecare.com` / `wardrobecare2026` |
-| Environment variables | ✅ Bundled in `.env.production` (loaded automatically) |
-| Product photos | ✅ Included in the deployment (`public/products/`, 1,374 files) |
-| Image config fix (`next.config.ts`) | ✅ Included — images render on Vercel |
+Vercel → Settings → Domains → add `wardrobecare.com.ng` and
+`www.wardrobecare.com.ng`. At your registrar, point DNS to the records Vercel
+shows (A `76.76.21.21` or CNAME `cname.vercel-dns.com`). HTTPS is automatic.
 
-> ⚠️ **Do NOT re-run** `scripts/import-wc.ts` or `scripts/seed.ts` against the
-> production database — the catalogue is already loaded, and re-importing can
-> duplicate products.
+**After the domain connects:** make sure `NEXTAUTH_URL` matches the URL you
+actually browse, then redeploy. A `NEXTAUTH_URL`/browser-URL mismatch
+silently breaks every login (this is the #1 cause of "can't sign in").
 
-### One-time schema update — Digital Closet waitlist + gift card tables
+---
 
-The `/digital-closet` page (added after the initial deploy) stores waitlist
-sign-ups in a new `WaitlistEntry` table, and the `/gift-card` checkout (added
-later) stores purchases in a new `GiftCardPurchase` table. Push both to
-production once, from the project folder:
+## 4. Admin console access (SECURE)
 
-```bash
-npx prisma db push --schema=prisma/schema.prisma
+The admin console is **hidden**:
+
+- Every `/admin/*` URL returns **404 Not Found** to anyone who is not signed
+  in as staff — scanners and visitors see nothing, not even a login form.
+- You reach it ONLY through your secret path:
+
+  ```
+  https://wardrobecare.com.ng/wardrobe-hq-9xk2
+  ```
+
+- After signing in, the console loads at the normal `/admin` URLs.
+- To change the secret path: edit `ADMIN_ACCESS_PATH` in Vercel → redeploy.
+
+**Default credentials:**
+
+```
+URL:      https://<your-domain>/wardrobe-hq-9xk2
+Email:    admin@wardrobecare.com
+Password: wardrobecare2026
 ```
 
-It adds only the new tables — existing data is untouched. Until this runs, the
-rest of the site works normally; only the Digital Closet "Notify Me" form and
-the Gift Card checkout will error on submit.
-
-> **Newer note (Google sign-in + email OTP):** the same command also pushes two
-> additions the signup flow needs — an `emailVerified` column on the `User`
-> table and a `SignupOtp` table for the 6-digit verification codes. If you ran
-> the command after those shipped, both are already in place; if not, run it
-> once more. Until then, password sign-up/sign-in will error on submit (Google
-> sign-in is unaffected).
+**CHANGE THE PASSWORD IMMEDIATELY AFTER FIRST LOGIN:**
+Admin console → Staff → open the admin user → set a new password
+(minimum 8 characters). Never reuse the demo password in production.
+Credentials are never displayed anywhere in the app.
 
 ---
 
-## 1. Deploy to Vercel (2 minutes)
+## 5. Security features (built in)
 
-### Option A — Vercel CLI (fastest)
+- **Stealth admin route** — `src/middleware.ts` 404s all `/admin/*` for
+  non-staff; the secret path internally rewrites to the admin routes without
+  ever exposing them in the browser address bar.
+- **Brute-force lockout** — logins allow 8 attempts per email per 10 minutes,
+  then a 15-minute lockout. The response is identical to a wrong password, so
+  attackers learn nothing. Registrations are capped at 5 per hour per IP.
+- **Security headers** — `X-Frame-Options`, `nosniff`, `Referrer-Policy`,
+  `Permissions-Policy`, HSTS (2 years) and `Cross-Origin-Opener-Policy` are
+  sent on every response (`next.config.ts`).
+- **Session security** — signed, encrypted NextAuth JWT sessions; staff role
+  is re-verified against the database on every admin page load
+  (`requireAdmin()`), and deactivated accounts cannot sign in.
+- **Payment integrity** — Paystack webhooks are verified with HMAC-SHA512
+  signatures before any order state changes.
+- **Input validation** — every form/server action validates input with Zod;
+  passwords are bcrypt-hashed (never stored in plain text).
 
-1. Install Node.js 18+ ([nodejs.org](https://nodejs.org), LTS installer) if you
-   don't have it, then open a terminal **inside the unzipped project folder**:
-   - Windows: open the folder → click the address bar → type `cmd` → Enter
-   - Mac: Terminal → type `cd ` → drag the folder in → Enter
-2. Run:
+## 5b. Transactional emails (Resend — activated by the 2 variables in §2)
 
-   ```bash
-   npx vercel login          # sign in with your Vercel account (free)
-   npx vercel --prod         # deploy — accept the defaults it suggests
-   ```
+Once `RESEND_API_KEY` + `EMAIL_FROM` are set in Vercel, the store
+automatically sends (no further setup — emails come from your verified
+domain `codes@wardrobecare.com.ng`):
 
-   First run asks a few questions (project name, framework) — **press Enter to
-   accept the detected defaults**. The build runs `prisma generate && next build`
-   automatically (the `vercel-build` script) and needs no database access.
+| Email | When it fires | To |
+|---|---|---|
+| Order confirmation | order placed (WhatsApp or Paystack) | customer |
+| Payment receipt | Paystack confirms payment (webhook or verification) | customer |
+| Shipping/tracking update | staff adds or changes a tracking number | customer |
+| Refund confirmation | refund processed in admin | customer |
+| New-order alert | every new order | store owner |
 
-3. When it finishes it prints your live URL — e.g.
-   `https://fashion-client-7npv.vercel.app`. Open it: products, images and the AI
-   chatbot are live, straight from your Supabase database.
-
-### Option B — GitHub
-
-1. Create a **private** repository on GitHub and upload the unzipped project
-   (`git init && git add -A && git commit -m "Wardrobecare" && git push`). The
-   pre-configured `.env.production` ships with the repo (gitignore already allows it).
-2. On [vercel.com](https://vercel.com) → **Add New → Project** → import the repo →
-   **Deploy**. No env vars to type, no settings to change.
-
-> Prefer not to include `.env.production` in git? Delete it and instead paste the
-> four variables from §2 into Vercel → Settings → Environment Variables — both
-> routes produce the same result.
-
----
-
-## 2. Environment variables (pre-configured)
-
-These already live in **`.env.production`** and are loaded automatically during
-build and runtime. You only need them if you prefer dashboard setup, or if you
-change something later:
-
-| Variable | Value (pre-set) |
-|---|---|
-| `DATABASE_URL` | `postgresql://postgres.uvnuhhazklixymhtcshq:mm4you,,A..@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true&prepared_statements=false` |
-| `DIRECT_URL` | `postgresql://postgres.uvnuhhazklixymhtcshq:mm4you,,A..@aws-1-eu-west-1.pooler.supabase.com:5432/postgres` |
-| `NEXTAUTH_SECRET` | `hhzNdctvn9smxilpARymKf9I9QDcSx6rm22VJ5m2BUY=` |
-| `NEXTAUTH_URL` | `https://fashion-client-7npv.vercel.app` |
-| `RESEND_API_KEY` | `re_KBLC1fbu_FTzGZerDxLuGZuHus9jY47M7` (send-only key, tested live) |
-| `EMAIL_FROM` | `Wardrobecare <codes@wardrobecare.com.ng>` (domain verified) |
-
-Notes:
-- `DATABASE_URL` uses Supabase's **transaction pooler** (port 6543 + PgBouncer) —
-  required on Vercel's serverless runtime. `DIRECT_URL` (session pooler, 5432) is
-  used by Prisma CLI for schema operations.
-- **Keep these values private** — anyone with them can read your database.
-  If you ever need to rotate: change the Supabase password in Project Settings →
-  Database, then update both URLs here (and redeploy).
-- Vercel-dashboard variables (if any) **override** `.env.production`.
-- **Deploying on Vercel?** Vercel does not read committed env files at runtime —
-  paste the six variables above into **Settings → Environment Variables** once
-  and redeploy. Self-hosting the standalone build needs no dashboard at all.
-
----
-
-## 3. Custom domain (e.g. wardrobecare.com.ng)
-
-1. Vercel → your project → **Settings → Domains** → add the domain.
-2. Point DNS as Vercel instructs (A record `76.76.21.21` or CNAME).
-3. Edit `.env.production`: set `NEXTAUTH_URL=https://wardrobecare.com.ng`
-4. Redeploy (`npx vercel --prod`). Done.
-
-> Login breaks if `NEXTAUTH_URL` doesn't exactly match the address in the browser
-> bar (scheme + host), so this step matters when you switch domains.
-
----
-
-## 3b. Turn on card payments (Paystack) — 2 minutes, no code
-
-1. Create a [paystack.com](https://paystack.com) account (free) and complete
-   business verification when you're ready to accept real money.
-2. Copy your API keys: dashboard → **Settings → API Keys** → the **Secret Key**
-   (`sk_test_…` for testing, `sk_live_…` for real payments) and the
-   **Public Key** (`pk_…`).
-3. In your site: **Admin → Settings → Payment** → paste the **public key**, paste
-   the **secret key**, switch **Enable Paystack** on → **Save**.
-4. Checkout now shows "Pay Online" (card, bank transfer, USSD). Payments verify
-   automatically and orders flip to **PAID** — stock updates too.
-5. In the Paystack dashboard → **Settings → Webhooks**, set the URL to:
-   `https://<your-domain>/api/webhooks/paystack`
-   (this guarantees payment confirmation even if the customer closes the tab).
-
-> Keys are stored in your database, never in the code. Swap `sk_test_…` for
-> `sk_live_…` whenever you're ready — no redeploy needed.
-
----
-
-## 3c. Turn on Google sign-in + email OTP codes — 10 minutes, no code
-
-New accounts created with email + password must now verify their address with a
-**6-digit code** before they can sign in (the code expires in 10 minutes, wrong
-entries are capped at 5, resends wait 60 seconds). Customers who sign up with
-**Google** skip the code entirely — Google has already verified their address.
-
-Both features are already wired into the site. They switch on with two free
-environment variables; until then the signup page says exactly what's missing.
-
-### Email the OTP codes (Resend) — ✅ DONE, nothing left to buy or verify
-
-This part is finished: the API key is inside `.env.production`, the build
-copies it into the standalone output, **and `wardrobecare.com.ng` is now a
-verified sending domain**. Both were tested live — branded test emails from
-`Wardrobecare <codes@wardrobecare.com.ng>` were accepted by Resend for
-delivery to non-owner addresses, which is the exact restriction that used to
-block strangers from receiving codes. Any customer email address now gets its
-signup code.
-
-The only reason codes would not arrive on a **Vercel** deployment: Vercel does
-not read committed env files at runtime, so paste the two variables into the
-dashboard once:
-
-1. Vercel → your project → **Settings → Environment Variables** → add:
-   - `RESEND_API_KEY` = the `re_…` key (already in `.env.production`)
-   - `EMAIL_FROM` = `Wardrobecare <codes@wardrobecare.com.ng>` (already in
-     `.env.production` too — paste both)
-2. Redeploy. Signup codes arrive by email to every customer.
-   (Self-hosting via the standalone build / Docker? Skip step 1 entirely —
-   `.env.production` is copied in by the build and loaded automatically.)
-
-### Google sign-in (Google Cloud Console)
-
-1. Go to [console.cloud.google.com](https://console.cloud.google.com) →
-   **APIs & Services → Credentials → Create credentials → OAuth client ID**.
-2. Application type: **Web application**.
-3. **Authorized redirect URIs** — add both:
-   - `https://wardrobecare.com.ng/api/auth/callback/google`
-   - `https://fashion-client-7npv.vercel.app/api/auth/callback/google`
-   (use your real domains; every address customers can reach you on needs one)
-4. Copy the **Client ID** and **Client secret**, then add them in Vercel as:
-   - `GOOGLE_CLIENT_ID`
-   - `GOOGLE_CLIENT_SECRET`
-5. Redeploy. "Continue with Google" appears on the sign-in and sign-up pages
-   and works immediately — existing email customers who use the same address
-   land in their original account (no duplicates).
-
-> Until these variables exist, clicking the Google button shows an honest
-> "not set up on this site yet" message instead of an error page — that's the
-> expected behaviour, not a bug.
-
----
-
-## 4. Local development (from the download)
-
-The SQLite database (`db/custom.db`) is **included**, and the Prisma client
-generates automatically:
-
-```bash
-npm install        # or: bun install
-npm run dev        # http://localhost:3000
-```
-
-`.env` (bundled) keeps local development on SQLite — production values in
-`.env.production` do not affect `npm run dev`.
-
-Admin login: `admin@wardrobecare.com` / `wardrobecare2026` → `/admin/login`.
-
----
-
-## 5. Post-deploy checklist
-
-- [ ] Open `https://<your-domain>` — homepage renders with product photos.
-- [ ] Product page → photos, sizes and prices all render.
-- [ ] `/admin/login` → sign in → dashboard shows real stats.
-- [ ] Ask the AI chatbot (bottom-right): *"show me office shirts under 50000"* —
-      it should reply with real product cards from the catalogue.
-- [ ] Place a **bank-transfer test order** end-to-end (checkout shows Sparkle
-      Bank / Wardrobecare Nigeria Enterprises / 1000447933) and confirm it appears
-      in Admin → Orders (mark it cancelled afterwards to keep data clean).
-- [ ] WhatsApp links open `wa.me/2348026133770` (footer, services, product pages).
-- [ ] `/sitemap.xml` returns product + category URLs.
+Emails are fully optional: without the key the store runs normally and
+simply skips sending (nothing breaks, nothing blocks checkout). If the
+Support Email is set in Admin → Settings, customer emails get a working
+reply-to and the owner receives the new-order alerts there.
 
 ---
 
 ## 6. Troubleshooting
 
-| Symptom | Cause / fix |
-|---|---|
-| Build error: *"Error validating datasource `db`: the URL must start with the protocol `postgresql://`"* while prerendering `/sitemap.xml` | `DATABASE_URL` was empty/missing **at build time**. Fixed in this codebase — `/sitemap.xml` and every other page tolerate a missing DB during builds. Two checks: (1) if building **locally**, build from the unzipped folder that contains `.env.production` (run `npm install` first so Prisma generates the right client); (2) if building **on Vercel**, the env file is not read at runtime — paste `DATABASE_URL`, `DIRECT_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `RESEND_API_KEY`, `EMAIL_FROM` into Vercel → Settings → Environment Variables (§2), then redeploy. |
-| Env vars seem missing on Vercel although `.env.production` is in the project | Uploading the folder to GitHub through the **web drag-and-drop silently drops dotfiles** (`.env.production`, `.env`, `.gitignore`…). Push with git from a terminal instead — or simply set the variables in the Vercel dashboard (§2), which is the recommended way anyway. |
-| Windows: *"'cp' is not recognized"* / *"NODE_ENV is not recognized"* during build or start | Fixed in this codebase — build/start now use a Node script (`scripts/prepare-standalone.mjs`) and plain `node`, which work on every OS. Pull the latest zip. |
-| *"prepared statement s0 already exists"* at runtime | Non-pooled connection in use. `DATABASE_URL` must be the **transaction pooler** URL (port 6543, `?pgbouncer=true&prepared_statements=false`). |
-| 500 on every page after deploy | Database unreachable. Check Vercel → Deployments → Runtime Logs; verify `DATABASE_URL` (dashboard overrides `.env.production`). |
-| Login loops / CSRF error | `NEXTAUTH_URL` doesn't match the browser address exactly — see §3. |
-| Images 404 / broken after a fresh deploy | Make sure the `public/` folder was included (the zip ships it complete; if deploying via git, don't delete `public/products`). |
-| "Pay Online" missing at checkout | Paystack isn't fully configured yet — add BOTH keys (public + secret) in Admin → Settings → Payment and enable the toggle. |
-| Chatbot replies but shows no product cards | Product search needs the live DB; if the DB is unreachable the bot still answers with general help. Check the runtime logs. |
+**Build fails with `URL must start with the protocol postgresql://`**
+Already fixed in this codebase: DB-touching pages (`sitemap`, gift-card
+checkout, service pages) are dynamic and tolerate a missing `DATABASE_URL`
+at build time, and the build command runs `prisma generate` first. If you
+still see it, confirm `DATABASE_URL` is set for *Production* in Vercel.
+
+**Can't sign in anywhere (admin or customer)**
+`NEXTAUTH_URL` doesn't match the URL in your browser's address bar.
+Fix the variable (or browse the matching URL) and redeploy. Also avoid
+incognito windows that block cookies.
+
+**Admin returns 404 for me**
+You opened `/admin` directly. Use your secret path
+(`/wardrobe-hq-9xk2`) to sign in first — after that `/admin` works.
+
+**Locked out by rate limiting**
+15 minutes. It resets automatically — another reason to set a password
+you remember before deploying.
+
+**Windows unzip dropped `.env.production`**
+Some Windows unzip tools hide dotfiles; the file is inside the zip. Use
+`7-Zip` or `Explorer → View → Show → Hidden items` to see it. It is a
+reference template only — Vercel env vars come from the dashboard.
+
+**Emails not sending**
+Check `RESEND_API_KEY` + `EMAIL_FROM` are set in Vercel, and that the
+`EMAIL_FROM` address uses the verified domain
+(`codes@wardrobecare.com.ng` — verified).
+
+---
+
+## 7. Post-launch checklist
+
+- [ ] All 8 environment variables set in Vercel (§2)
+- [ ] First deploy succeeded (`vercel --prod` or GitHub import)
+- [ ] Domain connected + HTTPS active (§3)
+- [ ] `NEXTAUTH_URL` = the URL you actually browse
+- [ ] Paystack switched to live keys; webhook URL
+      `https://<your-domain>/api/webhooks/paystack` added in Paystack dashboard
+- [ ] Admin password changed from the demo default (§4)
+- [ ] Smoke test: browse store → add to cart → checkout → order appears in admin
+- [ ] Smoke test: customer sign-up + sign-in
+- [ ] Optional: Google OAuth keys added
+- [ ] Optional: back up `DATABASE_URL` credentials in a password manager

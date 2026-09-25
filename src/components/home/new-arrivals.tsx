@@ -14,7 +14,7 @@ type Product = {
   price: number
   salePrice?: number | null
   images: { url: string; altText?: string | null }[]
-  variants?: { id?: string; size: string | null; price?: number | null; stock: number }[]
+  variants?: { size: string; stock: number }[]
   category?: { name: string } | null
 }
 

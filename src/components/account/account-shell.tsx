@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { signOut } from 'next-auth/react'
@@ -11,8 +10,6 @@ import {
   Heart,
   MapPin,
   User,
-  Users,
-  Wallet,
   LogOut,
   Menu,
 } from 'lucide-react'
@@ -26,8 +23,6 @@ const NAV_LINKS = [
   { label: 'Orders', href: '/account/orders', icon: Package },
   { label: 'Wishlist', href: '/account/wishlist', icon: Heart },
   { label: 'Addresses', href: '/account/addresses', icon: MapPin },
-  { label: 'My Wallet', href: '/account/wallet', icon: Wallet },
-  { label: 'Profiles', href: '/account/profiles', icon: Users },
   { label: 'Profile', href: '/account/profile', icon: User },
 ]
 
@@ -67,7 +62,7 @@ function NavLinks({ pathname, onNavigate }: { pathname: string | null; onNavigat
 function Brand() {
   return (
     <Link href="/account" className="flex flex-col gap-0.5 px-6 py-6 border-b border-border">
-      <Image src="/logo-black.png" alt="Wardrobecare Clothing" width={67} height={24} className="h-6 w-auto" />
+      <span className="font-display text-xl leading-none">Wardrobecare</span>
       <span className="label-uppercase text-muted-foreground">My Account</span>
     </Link>
   )

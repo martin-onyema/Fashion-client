@@ -2,23 +2,13 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
 import { Heart, Eye, ShoppingBag } from 'lucide-react'
 import { useWishlistStore } from '@/lib/stores/wishlist-store'
 import { useCartStore } from '@/lib/stores/cart-store'
 import { useUIStore } from '@/lib/stores/ui-store'
-import { formatNGN, effectivePrice, sortSizes } from '@/lib/format'
+import { formatNGN, effectivePrice } from '@/lib/format'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-
-const MAX_VISIBLE_SIZES = 5
-
-type CardVariant = {
-  id?: string
-  size: string | null
-  price?: number | null
-  stock: number
-}
 
 type ProductCardProps = {
   product: {
@@ -28,7 +18,7 @@ type ProductCardProps = {
     price: number
     salePrice?: number | null
     images: { url: string; altText?: string | null }[]
-    variants?: CardVariant[]
+    variants?: { size: string; stock: number }[]
     category?: { name: string } | null
   }
   className?: string
@@ -42,41 +32,12 @@ export function ProductCard({ product, className, priority, showQuickAdd = true 
   const setQuickView = useUIStore((s) => s.setQuickView)
   const setCartOpen = useUIStore((s) => s.setCartOpen)
 
-  const [activeSize, setActiveSize] = useState<string | null>(null)
-  const [showAllSizes, setShowAllSizes] = useState(false)
-
-  const basePrice = effectivePrice(product.price, product.salePrice)
+  const price = effectivePrice(product.price, product.salePrice)
   const inWishlist = hasWishlist(product.id)
   const image = product.images[0]?.url
   const hoverImage = product.images[1]?.url
-
-  // Size chips — only for products that actually have size variants.
-  const sizeOptions = sortSizes((product.variants ?? []).map((v) => v.size))
-    .map((size) => {
-      const variants = (product.variants ?? []).filter((v) => v.size === size)
-      const inStock = variants.some((v) => v.stock > 0)
-      const priced = variants.find((v) => v.price != null && v.price > 0)
-      return { size, inStock, price: priced?.price ?? null, variant: variants.find((v) => v.stock > 0) ?? variants[0] }
-    })
-  const hasSizes = sizeOptions.length > 0
-  const visibleSizes = showAllSizes ? sizeOptions : sizeOptions.slice(0, MAX_VISIBLE_SIZES)
-  const hiddenSizeCount = sizeOptions.length - MAX_VISIBLE_SIZES
-
-  const selected = sizeOptions.find((s) => s.size === activeSize && s.inStock)
-  const displayPrice = selected?.price ?? basePrice
+  const sizes = product.variants?.map((v) => v.size) ?? []
   const inStock = !product.variants?.length || product.variants.some((v) => v.stock > 0)
-
-  const handleSizeClick = (e: React.MouseEvent, size: string) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const option = sizeOptions.find((s) => s.size === size)
-    if (!option) return
-    if (!option.inStock) {
-      toast.error(`Size ${size} is sold out`)
-      return
-    }
-    setActiveSize((cur) => (cur === size ? null : size))
-  }
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -85,19 +46,19 @@ export function ProductCard({ product, className, priority, showQuickAdd = true 
       toast.error('Out of stock')
       return
     }
-    const chosen = selected ?? sizeOptions.find((s) => s.inStock)
+    const firstInStock = product.variants?.find((v) => v.stock > 0)
     addToCart({
       productId: product.id,
-      variantId: chosen?.variant?.id,
-      size: chosen?.size ?? undefined,
+      variantId: undefined,
+      size: firstInStock?.size,
       quantity: 1,
       name: product.name,
       slug: product.slug,
-      price: chosen?.price ?? basePrice,
+      price,
       originalPrice: product.salePrice && product.salePrice < product.price ? product.price : undefined,
       image,
     })
-    toast.success(chosen?.size ? `Added to bag · Size ${chosen.size}` : 'Added to bag')
+    toast.success('Added to bag')
     setCartOpen(true)
   }
 
@@ -108,7 +69,7 @@ export function ProductCard({ product, className, priority, showQuickAdd = true 
       productId: product.id,
       name: product.name,
       slug: product.slug,
-      price: basePrice,
+      price,
       image,
     })
     toast.success(inWishlist ? 'Removed from wishlist' : 'Added to wishlist')
@@ -199,48 +160,17 @@ export function ProductCard({ product, className, priority, showQuickAdd = true 
             {product.name}
           </h3>
           <div className="flex items-baseline gap-2 mt-1.5">
-            <span className="text-sm tabular-nums">{formatNGN(displayPrice)}</span>
-            {selected?.price != null && selected.price !== basePrice && (
+            <span className="text-sm tabular-nums">{formatNGN(price)}</span>
+            {product.salePrice && product.salePrice < product.price && (
               <span className="text-xs text-muted-foreground line-through tabular-nums">
-                {formatNGN(basePrice)}
+                {formatNGN(product.price)}
               </span>
             )}
           </div>
-
-          {/* Size chips — see prices per size before opening the product */}
-          {hasSizes && (
-            <div className="flex flex-wrap gap-1 mt-2">
-              {visibleSizes.map((s) => (
-                <button
-                  key={s.size}
-                  onClick={(e) => handleSizeClick(e, s.size)}
-                  aria-pressed={activeSize === s.size}
-                  aria-label={`Size ${s.size}${s.inStock ? ` — ${formatNGN(s.price ?? basePrice)}` : ' — sold out'}`}
-                  className={cn(
-                    'text-[10px] leading-none px-1.5 py-1 border transition-colors tabular-nums',
-                    s.inStock
-                      ? 'border-border text-foreground/80 hover:border-foreground hover:text-foreground cursor-pointer'
-                      : 'border-border/60 text-muted-foreground/50 line-through cursor-not-allowed',
-                    activeSize === s.size && s.inStock && 'border-foreground bg-foreground text-background hover:text-background',
-                  )}
-                >
-                  {s.size}
-                </button>
-              ))}
-              {hiddenSizeCount > 0 && !showAllSizes && (
-                <button
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setShowAllSizes(true)
-                  }}
-                  aria-label={`Show ${hiddenSizeCount} more sizes`}
-                  className="text-[10px] leading-none px-1.5 py-1 border border-transparent text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  +{hiddenSizeCount}
-                </button>
-              )}
-            </div>
+          {sizes.length > 0 && (
+            <p className="text-[10px] text-muted-foreground mt-1">
+              {sizes.length} sizes
+            </p>
           )}
         </div>
       </Link>

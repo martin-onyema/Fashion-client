@@ -160,10 +160,9 @@ export function ServiceEnquiryForm({ serviceSlug, compact = false }: Props) {
           className="flex h-11 w-full rounded-sm border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <option value="">Select a service…</option>
-          {SERVICES.filter((s) => !s.comingSoon || s.slug === serviceSlug).map((s) => (
+          {SERVICES.map((s) => (
             <option key={s.slug} value={s.slug}>
               {s.number} — {s.name}
-              {s.comingSoon ? ' (Coming soon)' : ''}
             </option>
           ))}
         </select>

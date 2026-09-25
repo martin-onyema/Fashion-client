@@ -26,6 +26,11 @@ import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { verifyPaystackSignature } from '@/lib/paystack/server'
 import { auditLog } from '@/lib/audit'
+import {
+  sendPaymentReceipt,
+  type EmailOrder,
+  type EmailOrderItem,
+} from '@/lib/email'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -37,7 +42,7 @@ export async function POST(req: Request) {
     const signature = req.headers.get('x-paystack-signature') ?? ''
 
     // 1. Verify signature
-    if (!(await verifyPaystackSignature(rawBody, signature))) {
+    if (!verifyPaystackSignature(rawBody, signature)) {
       console.warn('[paystack-webhook] invalid signature — ignoring')
       return NextResponse.json({ status: 'invalid signature' }, { status: 200 })
     }
@@ -181,6 +186,21 @@ async function handleChargeSuccess(data: any) {
     body: `Payment confirmed via webhook. Amount: ₦${paidAmountNaira.toFixed(0)}`,
     link: `/admin/orders/${payment.orderId}`,
   })
+
+  // ── Payment receipt email to the customer ──
+  // Safe to send here without extra dedup: duplicate charge.success events
+  // return early above (payment.verified check), so this runs exactly once.
+  try {
+    const receiptSettings = await db.adminSettings.findUnique({ where: { id: 'singleton' } })
+    await sendPaymentReceipt(
+      payment.order as unknown as EmailOrder,
+      payment.order.items as unknown as EmailOrderItem[],
+      { reference, paidAt: new Date() },
+      receiptSettings?.supportEmail ?? undefined,
+    )
+  } catch (e: any) {
+    console.error('[email] webhook receipt error:', e?.message)
+  }
 }
 
 /**

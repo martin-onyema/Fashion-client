@@ -822,20 +822,13 @@ async function main() {
     update: {},
     create: {
       id: 'singleton',
-      whatsappNumber: '2348026133770',
+      whatsappNumber: '2348000000000',
       whatsappEnabled: true,
-      supportEmail: 'wardrobecare@gmail.com',
-      supportPhone: '08026133770',
       instagramUrl: 'https://www.instagram.com/wardrobecareng/',
       storeName: 'Wardrobecare Clothing',
       storeTagline: "Your #1 Personal Shopper for premium men's fashion.",
       defaultDeliveryFee: 2500,
       freeDeliveryThreshold: 50000,
-      bankName: 'Sparkle Bank',
-      bankAccountName: 'Wardrobecare Nigeria Enterprises',
-      bankAccountNumber: '1000447933',
-      bankTransferInstructions:
-        'Please make payment within 24 hours to confirm your order. Send your payment receipt and order number to us via WhatsApp (08026133770) for fast confirmation.',
     },
   })
 

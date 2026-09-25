@@ -3,7 +3,7 @@ import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { RegisterForm } from '@/components/account/register-form'
 import { getServerSession } from 'next-auth'
-import { authOptions, googleEnabled } from '@/lib/auth'
+import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default async function RegisterPage() {
 
           {/* Form card */}
           <div className="bg-card border border-border rounded-lg p-6 md:p-8 shadow-sm">
-            <RegisterForm googleEnabled={googleEnabled} />
+            <RegisterForm />
           </div>
 
           <p className="text-center text-[11px] text-muted-foreground mt-8">

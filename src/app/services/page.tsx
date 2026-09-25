@@ -10,7 +10,7 @@ import { ArrowRight } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Services — Personal Shopping, Style Consultations & Premium Sourcing',
   description:
-    'Six ways to work with Wardrobecare — from one-off style consultations to fully sourced, in-home styling. Personal shopping, wardrobe audits, home fittings, premium sourcing, and traditional wear styling in Lagos and nationwide.',
+    'Seven ways to work with Wardrobecare — from one-off style consultations to fully sourced, in-home styling. Personal shopping, wardrobe audits, home fittings, premium sourcing, and traditional wear styling in Lagos and nationwide.',
   alternates: { canonical: '/services' },
   openGraph: {
     title: 'Wardrobecare Services — A more personal way to dress well.',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/services/hero.jpg',
+        url: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop',
         alt: 'A curated rail of premium menswear pieces',
       },
     ],
@@ -32,11 +32,11 @@ export default function ServicesPage() {
       <Navbar />
       <main className="bg-background min-h-screen">
         {/* ─── Hero ─── */}
-        <section className="relative bg-foreground">
+        <section className="relative">
           {/* Background image */}
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 -z-10">
             <Image
-              src="/services/hero.jpg"
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop"
               alt="Premium menswear editorial image"
               fill
               priority
@@ -46,7 +46,7 @@ export default function ServicesPage() {
             <div className="absolute inset-0 bg-gradient-to-b from-foreground/50 via-foreground/40 to-foreground/70" />
           </div>
 
-          <div className="relative z-10 mx-auto max-w-[1600px] px-6 lg:px-10 pt-40 md:pt-48 pb-32 md:pb-40 text-background">
+          <div className="mx-auto max-w-[1600px] px-6 lg:px-10 pt-40 md:pt-48 pb-32 md:pb-40 text-background">
             <p className="text-[11px] uppercase tracking-[0.25em] text-background/80 mb-6">
               Wardrobecare Services
             </p>
@@ -82,7 +82,7 @@ export default function ServicesPage() {
             <div className="grid lg:grid-cols-12 gap-10 md:gap-16">
               <div className="lg:col-span-5">
                 <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground mb-6">
-                  Six Ways to Work With Us
+                  Seven Ways to Work With Us
                 </p>
                 <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1] tracking-[-0.02em]">
                   From one-off consultations to fully sourced, in-home styling.
@@ -105,7 +105,7 @@ export default function ServicesPage() {
           </div>
         </section>
 
-        {/* ─── All 6 Services ─── */}
+        {/* ─── All 7 Services ─── */}
         <section id="services" className="py-20 md:py-32 bg-secondary/40">
           <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
             {/* Group 1: Sourcing */}
@@ -153,21 +153,14 @@ export default function ServicesPage() {
                           {service.tagline}
                         </p>
                         <div className="mt-5 flex items-baseline justify-between border-t border-border/60 pt-4">
-                          {service.comingSoon ? (
-                            <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                              <span className="size-1.5 rounded-full bg-muted-foreground/60" />
-                              Coming Soon
+                          <div>
+                            <span className="text-xs uppercase tracking-[0.18em] text-foreground">
+                              {service.priceLabel}
                             </span>
-                          ) : (
-                            <div>
-                              <span className="text-xs uppercase tracking-[0.18em] text-foreground">
-                                {service.priceLabel}
-                              </span>
-                              <span className="text-xs text-muted-foreground ml-2">
-                                · {service.priceUnit}
-                              </span>
-                            </div>
-                          )}
+                            <span className="text-xs text-muted-foreground ml-2">
+                              · {service.priceUnit}
+                            </span>
+                          </div>
                           <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>

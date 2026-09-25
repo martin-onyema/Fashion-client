@@ -2,13 +2,21 @@
 
 import { db } from '@/lib/db'
 import { generateOrderNumber, calculateDeliveryFee } from '@/lib/format'
-import { initializePaystackTransaction, verifyPaystackTransaction, isPaystackConfigured, invalidatePaystackSecretCache } from '@/lib/paystack/server'
+import { initializePaystackTransaction, verifyPaystackTransaction } from '@/lib/paystack/server'
 import { getSession } from '@/lib/session'
 import { requireStaffWithPermission } from '@/lib/permissions'
 import { auditLog, diffChangedFields, describeChanges } from '@/lib/audit'
-import { issueSignupOtp, verifySignupOtpCode } from '@/lib/otp'
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
+import { headers } from 'next/headers'
+import { rateLimit, clientIpFromHeaders } from '@/lib/rate-limit'
+import {
+  sendOrderConfirmation,
+  sendPaymentReceipt,
+  notifyAdminNewOrder,
+  type EmailOrder,
+  type EmailOrderItem,
+} from '@/lib/email'
 
 // ============================================================
 // CART — server-side line persistence (used after server verification)
@@ -84,41 +92,6 @@ export async function subscribeToNewsletter(formData: FormData) {
     return { ok: true }
   } catch (e) {
     return { ok: false, error: 'Could not subscribe. Try again.' }
-  }
-}
-
-// ============================================================
-// DIGITAL CLOSET — early-access waitlist
-// ============================================================
-
-const waitlistSchema = z.object({
-  name: z.string().min(2),
-  // Accepts a phone number or an email address — whatever the customer prefers.
-  contact: z.string().min(7).max(120),
-})
-
-export async function joinWaitlist(formData: FormData) {
-  const parsed = waitlistSchema.safeParse({
-    name: formData.get('name'),
-    contact: formData.get('contact'),
-  })
-  if (!parsed.success) {
-    return { ok: false, error: 'Please enter your name and a phone number or email.' }
-  }
-  try {
-    const contact = parsed.data.contact.trim()
-    await db.waitlistEntry.upsert({
-      where: { contact },
-      update: { name: parsed.data.name.trim() },
-      create: {
-        name: parsed.data.name.trim(),
-        contact,
-        source: 'digital-closet',
-      },
-    })
-    return { ok: true }
-  } catch (e) {
-    return { ok: false, error: 'Could not join the waitlist. Try again.' }
   }
 }
 
@@ -286,6 +259,22 @@ export async function createOrder(formData: FormData | Record<string, any>): Pro
     include: { items: true },
   })
 
+  // ── Transactional emails: customer confirmation + owner alert ──
+  // sendEmail never throws and skips instantly when RESEND_API_KEY is not
+  // configured, so checkout cannot be slowed or broken by email.
+  try {
+    await Promise.all([
+      sendOrderConfirmation(
+        order as unknown as EmailOrder,
+        order.items as unknown as EmailOrderItem[],
+        settings?.supportEmail ?? undefined,
+      ),
+      notifyAdminNewOrder(order as unknown as EmailOrder, order.items as unknown as EmailOrderItem[], settings?.supportEmail),
+    ])
+  } catch (e: any) {
+    console.error('[email] order confirmation flow error:', e?.message)
+  }
+
   // For WhatsApp orders, return the order number so the client can compose a
   // WhatsApp message. No payment initialization needed.
   if (data.paymentMethod === 'WHATSAPP') {
@@ -354,7 +343,7 @@ export async function verifyPayment(reference: string): Promise<VerifyResult> {
     return { ok: false, error: 'Payment verification failed.' }
   }
 
-  const isMock = !(await isPaystackConfigured())
+  const isMock = process.env.PAYSTACK_SECRET_KEY === 'sk_test_x' || !process.env.PAYSTACK_SECRET_KEY
   const paidAmount = verifyResp.data.amount / 100 // kobo → naira
 
   // Verify amount matches (skip for mock)
@@ -410,6 +399,20 @@ export async function verifyPayment(reference: string): Promise<VerifyResult> {
       }
     }
   })
+
+  // ── Payment receipt email (guarded: only reached when payment was not
+  // previously verified, so duplicate verifications never double-send) ──
+  try {
+    const receiptSettings = await db.adminSettings.findUnique({ where: { id: 'singleton' } })
+    await sendPaymentReceipt(
+      payment.order as unknown as EmailOrder,
+      payment.order.items as unknown as EmailOrderItem[],
+      { reference, paidAt: new Date() },
+      receiptSettings?.supportEmail ?? undefined,
+    )
+  } catch (e: any) {
+    console.error('[email] receipt flow error:', e?.message)
+  }
 
   return { ok: true, orderNumber: payment.order.orderNumber, status: 'PAID', total: payment.order.total }
 }
@@ -733,26 +736,19 @@ export async function adminUpdateOrderStatus(orderId: string, status: any, note?
 export async function adminUpdateSettings(input: Record<string, any>) {
   const user = await requireStaffWithPermission('settings.manage')
   try {
-    // paystackSecretKey is write-only: empty string means "keep existing".
-    if (typeof input.paystackSecretKey === 'string') {
-      const trimmed = input.paystackSecretKey.trim()
-      if (!trimmed) delete input.paystackSecretKey
-      else input.paystackSecretKey = trimmed
-    }
     const before = await db.adminSettings.findUnique({ where: { id: 'singleton' } })
     await db.adminSettings.upsert({
       where: { id: 'singleton' },
       update: input,
       create: { id: 'singleton', ...input },
     })
-    if ('paystackSecretKey' in input) invalidatePaystackSecretCache()
     await auditLog({
       actorId: user.id,
       action: 'settings.update',
       entityType: 'AdminSettings',
       entityId: 'singleton',
-      before: before ? { ...before, paystackSecretKey: before.paystackSecretKey ? '***' : null } : null,
-      after: 'paystackSecretKey' in input ? { ...input, paystackSecretKey: '***' } : input,
+      before,
+      after: input,
       description: 'Updated store settings',
     })
     revalidatePath('/admin/settings')
@@ -799,107 +795,37 @@ const registerSchema = z.object({
 })
 
 export async function registerUser(formData: FormData) {
+  // Abuse throttle: max 5 registrations per hour per IP (1h lockout after).
+  const rl = rateLimit(`register:${clientIpFromHeaders(await headers())}`, {
+    limit: 5,
+    windowMs: 60 * 60 * 1000,
+    blockMs: 60 * 60 * 1000,
+  })
+  if (!rl.ok) {
+    return { ok: false, error: 'Too many sign-up attempts. Please try again later.' }
+  }
+
   const parsed = registerSchema.safeParse(Object.fromEntries(formData.entries()))
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? 'Invalid input' }
   }
   const { name, email, password, phone } = parsed.data
-  const normalized = email.toLowerCase()
   const bcrypt = await import('bcryptjs')
-  const passwordHash = await bcrypt.hash(password, 10)
-
-  const existing = await db.user.findUnique({ where: { email: normalized } })
+  const existing = await db.user.findUnique({ where: { email: email.toLowerCase() } })
   if (existing) {
-    // Staff accounts are never touchable through public signup.
-    if (existing.role !== 'CUSTOMER') {
-      return { ok: false, error: 'An account with this email already exists.' }
-    }
-    // Verified accounts simply exist — point the person at sign-in.
-    if (existing.emailVerified) {
-      return {
-        ok: false,
-        error: 'An account with this email already exists. Please sign in instead.',
-      }
-    }
-    // An unverified customer is an abandoned signup (they never finished
-    // the OTP step). Refresh their details and issue a fresh code rather
-    // than dead-ending them.
-    await db.user.update({
-      where: { id: existing.id },
-      data: { name, phone: phone || null, passwordHash },
-    })
-  } else {
-    await db.user.create({
-      data: {
-        name,
-        email: normalized,
-        passwordHash,
-        phone,
-        role: 'CUSTOMER',
-        // emailVerified stays null until the OTP step below is completed.
-      },
-    })
+    return { ok: false, error: 'An account with this email already exists.' }
   }
-
-  // Issue the 6-digit email verification code. When no mail provider is
-  // configured (local / staging) the code comes back as devCode so the
-  // flow still completes; production emails it instead.
-  const issued = await issueSignupOtp(normalized)
-  if (!issued.ok) {
-    return { ok: false, error: issued.error }
-  }
-  return { ok: true, needsVerification: true, devCode: issued.devCode ?? null }
-}
-
-/**
- * Second half of signup: check the 6-digit code and mark the account
- * verified. The client signs the user in itself right after this returns
- * ok (it still holds the password from the register form).
- */
-export async function verifySignupOtp(email: string, code: string) {
-  const result = await verifySignupOtpCode(email, code)
-  if (!result.ok) {
-    return {
-      ok: false,
-      error: result.error,
-      tooManyAttempts: 'tooManyAttempts' in result ? result.tooManyAttempts : false,
-      expired: 'expired' in result ? result.expired : false,
-    }
-  }
-  return { ok: true }
-}
-
-/**
- * Resend a fresh verification code. Same cooldown rules as the initial
- * issue, enforced server-side in issueSignupOtp.
- */
-export async function resendSignupOtp(email: string) {
-  const issued = await issueSignupOtp(email)
-  if (!issued.ok) {
-    return {
-      ok: false,
-      error: issued.error,
-      cooldownSeconds: 'cooldownSeconds' in issued ? issued.cooldownSeconds : undefined,
-    }
-  }
-  return { ok: true, devCode: issued.devCode ?? null }
-}
-
-/**
- * Login-form pre-check: does this email belong to a customer who still
- * owes email verification? The credentials provider blocks them at the
- * API level too — this check lets the form route them to the verify page
- * with a clear message instead of a generic "invalid email or password".
- */
-export async function checkLoginGate(email: string) {
-  const user = await db.user.findUnique({
-    where: { email: email.trim().toLowerCase() },
-    select: { role: true, emailVerified: true },
+  const passwordHash = await bcrypt.hash(password, 10)
+  await db.user.create({
+    data: {
+      name,
+      email: email.toLowerCase(),
+      passwordHash,
+      phone,
+      role: 'CUSTOMER',
+    },
   })
-  if (user && user.role === 'CUSTOMER' && !user.emailVerified) {
-    return { needsVerification: true }
-  }
-  return { needsVerification: false }
+  return { ok: true }
 }
 
 // ============================================================
@@ -1045,93 +971,5 @@ export async function submitServiceEnquiry(formData: FormData) {
     return { ok: true, enquiryNumber: created.enquiryNumber }
   } catch (e: any) {
     return { ok: false, error: e?.message ?? 'Could not submit enquiry. Please try again.' }
-  }
-}
-
-// ============================================================
-// GIFT CARDS — purchase submission (bank transfer, confirmed on WhatsApp)
-// ============================================================
-
-const giftCardSchema = z.object({
-  amount: z
-    .number({ invalid_type_error: 'Enter a gift card amount.' })
-    .int('Enter a whole naira amount.')
-    .min(100000, 'Minimum gift card value is ₦100,000.'),
-  location: z.string().min(1, 'Select a delivery location.'),
-  recipientName: z.string().min(2, 'Enter the recipient’s full name.'),
-  recipientPhone: z.string().optional().or(z.literal('')),
-  recipientEmail: z
-    .string()
-    .email('Enter a valid recipient email.')
-    .optional()
-    .or(z.literal('')),
-  channel: z.enum(['EMAIL', 'SMS', 'WHATSAPP']).default('WHATSAPP'),
-  buyerName: z.string().min(2, 'Enter your full name.'),
-  buyerPhone: z.string().min(7, 'Enter a valid phone number.'),
-  buyerEmail: z
-    .string()
-    .email('Enter a valid email.')
-    .optional()
-    .or(z.literal('')),
-})
-
-export type GiftCardPurchaseResult =
-  | { ok: true; reference: string; amount: number; deliveryFee: number; total: number }
-  | { ok: false; error: string }
-
-export async function purchaseGiftCard(input: Record<string, unknown>): Promise<GiftCardPurchaseResult> {
-  const parsed = giftCardSchema.safeParse(input)
-  if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? 'Please check the form and try again.' }
-  }
-  const d = parsed.data
-
-  // The recipient needs at least one reachable contact for the chosen channel.
-  if (d.channel === 'EMAIL' && !d.recipientEmail) {
-    return { ok: false, error: 'Enter the recipient’s email — the card will be sent there.' }
-  }
-  if ((d.channel === 'SMS' || d.channel === 'WHATSAPP') && !d.recipientPhone) {
-    return { ok: false, error: 'Enter the recipient’s phone number — the card will be sent there.' }
-  }
-
-  // Delivery fee is a server-side lookup from the zone table — never trust the client.
-  const { getDeliveryFee } = await import('@/lib/delivery-zones')
-  const deliveryFee = getDeliveryFee(d.location)
-  if (deliveryFee == null) {
-    return { ok: false, error: 'That delivery location isn’t on our list. Please pick one from the dropdown.' }
-  }
-  const total = d.amount + deliveryFee
-
-  // Reference: GC-YYYY-NNNN
-  const year = new Date().getFullYear()
-  const count = await db.giftCardPurchase.count()
-  const reference = `GC-${year}-${String(count + 1).padStart(4, '0')}`
-
-  const session = await getSession()
-
-  try {
-    await db.giftCardPurchase.create({
-      data: {
-        reference,
-        amount: d.amount,
-        deliveryFee,
-        total,
-        location: d.location,
-        recipientName: d.recipientName,
-        recipientPhone: d.recipientPhone || null,
-        recipientEmail: d.recipientEmail || null,
-        channel: d.channel,
-        buyerName: d.buyerName,
-        buyerPhone: d.buyerPhone,
-        buyerEmail: d.buyerEmail || null,
-        paymentMethod: 'BANK_TRANSFER',
-        paymentStatus: 'PENDING',
-        userId: session?.user?.id || null,
-      },
-    })
-    revalidatePath('/admin')
-    return { ok: true, reference, amount: d.amount, deliveryFee, total }
-  } catch (e: any) {
-    return { ok: false, error: e?.message ?? 'Could not place the gift card order. Please try again.' }
   }
 }

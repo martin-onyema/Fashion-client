@@ -10,21 +10,21 @@ async function main() {
   await db.adminSettings.upsert({
     where: { id: 'singleton' },
     update: {
-      bankName: 'Sparkle Bank',
-      bankAccountName: 'Wardrobecare Nigeria Enterprises',
-      bankAccountNumber: '1000447933',
-      bankSortCode: '',
+      bankName: 'Guaranty Trust Bank (GTBank)',
+      bankAccountName: 'Wardrobecare Clothing',
+      bankAccountNumber: '0123456789',
+      bankSortCode: '058152052',
       bankTransferInstructions:
-        'Please make payment within 24 hours to confirm your order. Send your payment receipt and order number to us via WhatsApp (08026133770) for fast confirmation.',
+        'Please make payment within 24 hours to confirm your order. Send your payment receipt and order number to us via WhatsApp for fast confirmation.',
     },
     create: {
       id: 'singleton',
-      bankName: 'Sparkle Bank',
-      bankAccountName: 'Wardrobecare Nigeria Enterprises',
-      bankAccountNumber: '1000447933',
-      bankSortCode: '',
+      bankName: 'Guaranty Trust Bank (GTBank)',
+      bankAccountName: 'Wardrobecare Clothing',
+      bankAccountNumber: '0123456789',
+      bankSortCode: '058152052',
       bankTransferInstructions:
-        'Please make payment within 24 hours to confirm your order. Send your payment receipt and order number to us via WhatsApp (08026133770) for fast confirmation.',
+        'Please make payment within 24 hours to confirm your order. Send your payment receipt and order number to us via WhatsApp for fast confirmation.',
     },
   })
 

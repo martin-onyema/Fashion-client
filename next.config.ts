@@ -1,33 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Standalone output for production deploys (Docker / VPS / Function Compute).
-  // The "build" script in package.json copies static assets into .next/standalone.
-  output: "standalone",
+  // Vercel doesn't need "standalone" output. Set this to "standalone" only
+  // when deploying to Docker / Aliyun Function Compute.
+  // output: "standalone",
   typescript: {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
-  // Hide the floating Next.js dev "N" badge in dev/preview — the preview
-  // should look like the production storefront (errors still overlay).
-  devIndicators: false,
   allowedDevOrigins: [
     "preview-*.space-z.ai",
     "*.space-z.ai",
   ],
-  async redirects() {
-    return [
-      // The two consultations merged into one service (style-wardrobe-consultation)
-      { source: '/services/style-consultation', destination: '/services/style-wardrobe-consultation', permanent: true },
-      { source: '/services/wardrobe-consultation', destination: '/services/style-wardrobe-consultation', permanent: true },
-    ]
-  },
   images: {
-    // Serve images directly from the CDN without the /_next/image optimizer.
-    // Why: Vercel returns HTTP 402 OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED once
-    // the plan's image-optimization quota is hit (1,384 product photos exhaust it
-    // quickly). The raw files are small (~30-50 KB JPGs) and load fine unoptimized.
-    unoptimized: true,
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },
@@ -38,6 +23,37 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.supabase.co" },
     ],
     formats: ["image/avif", "image/webp"],
+  },
+  // Security headers applied to every response.
+  // (A strict CSP is intentionally omitted: Next.js injects inline scripts
+  // and NextAuth posts cross-origin form data, so a hand-rolled CSP risks
+  // bricking the storefront. Revisit with nonce-based CSP later.)
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          // Blocks clickjacking — site can only be framed by itself.
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          // Prevents MIME-sniffing attacks.
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          // Only sends the origin on cross-origin navigations.
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // Disables powerful browser features we don't use.
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+          },
+          // Forces HTTPS for 2 years once deployed on HTTPS (Vercel).
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          // Isolates the site from cross-origin timing/Spectre-style reads.
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+        ],
+      },
+    ];
   },
 };
 

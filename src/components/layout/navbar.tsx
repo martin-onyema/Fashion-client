@@ -1,9 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Search, Heart, User, ShoppingBag, Menu, ChevronDown } from 'lucide-react'
 import { useUIStore } from '@/lib/stores/ui-store'
 import { useCartStore } from '@/lib/stores/cart-store'
@@ -11,13 +10,21 @@ import { useWishlistStore } from '@/lib/stores/wishlist-store'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
 import { SERVICE_GROUPS } from '@/lib/services-data'
-import { NAV_ITEMS, type NavItem } from '@/lib/nav-data'
+
+const NAV_LINKS = [
+  { label: 'New Arrivals', href: '/shop?sort=newest' },
+  { label: 'Clothing', href: '/shop?category=clothing' },
+  { label: 'Bottoms', href: '/shop?category=bottoms' },
+  { label: 'Footwear', href: '/shop?category=footwear' },
+  { label: 'Accessories', href: '/shop?category=accessories' },
+  { label: 'Fragrance & Grooming', href: '/shop?category=fragrance-grooming' },
+]
 
 export function Navbar() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
-  const [openMenu, setOpenMenu] = useState<string | null>(null)
-  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [servicesOpen, setServicesOpen] = useState(false)
+  const [servicesHoverTimer, setServicesHoverTimer] = useState<NodeJS.Timeout | null>(null)
   const setSearchOpen = useUIStore((s) => s.setSearchOpen)
   const setCartOpen = useUIStore((s) => s.setCartOpen)
   const setWishlistOpen = useUIStore((s) => s.setWishlistOpen)
@@ -33,20 +40,21 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Close any open dropdown on route change
+  // Close services dropdown on route change
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setOpenMenu(null)
+    setServicesOpen(false)
   }, [pathname])
 
   // Hover handlers with small delay so the panel doesn't flicker.
-  const onMenuEnter = (key: string) => {
-    if (hoverTimer.current) clearTimeout(hoverTimer.current)
-    setOpenMenu(key)
+  const onServicesEnter = () => {
+    if (servicesHoverTimer) clearTimeout(servicesHoverTimer)
+    setServicesOpen(true)
   }
-  const onMenuLeave = () => {
-    if (hoverTimer.current) clearTimeout(hoverTimer.current)
-    hoverTimer.current = setTimeout(() => setOpenMenu(null), 150)
+  const onServicesLeave = () => {
+    if (servicesHoverTimer) clearTimeout(servicesHoverTimer)
+    const t = setTimeout(() => setServicesOpen(false), 150)
+    setServicesHoverTimer(t)
   }
 
   // Hide navbar on admin pages
@@ -93,40 +101,35 @@ export function Navbar() {
               scrolled ? 'h-14' : 'h-16 md:h-[72px]',
             )}
           >
-            {/* Mobile / tablet — menu trigger (desktop nav only fits from xl up) */}
+            {/* Mobile — menu trigger */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="xl:hidden p-2 -ml-2 text-foreground"
+              className="lg:hidden p-2 -ml-2 text-foreground"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" strokeWidth={1.5} />
             </button>
 
-            {/* Logo — wordmark image, left */}
-            <Link href="/" className="flex-shrink-0 flex items-center" aria-label="Wardrobecare Clothing">
-              <Image
-                src="/logo-black.png"
-                alt="Wardrobecare Clothing"
-                width={112}
-                height={40}
-                priority
-                className="h-9 md:h-10 w-auto"
-              />
+            {/* Logo — serif wordmark, left */}
+            <Link
+              href="/"
+              className="flex-shrink-0 font-display text-[1.35rem] md:text-2xl leading-none tracking-[0.01em]"
+              style={{ fontWeight: 500 }}
+            >
+              Wardrobecare
             </Link>
 
-            {/* Desktop nav — Services first, retail after (xl+: below that the
-                row cannot fit every link plus the action icons, so those
-                widths use the mobile menu instead) */}
-            <nav className="hidden xl:flex items-center gap-1">
+            {/* Desktop nav — Services first, retail after */}
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5">
               {/* Services — filled pill, primary destination */}
               <div
                 className="relative"
-                onMouseEnter={() => onMenuEnter('services')}
-                onMouseLeave={onMenuLeave}
+                onMouseEnter={onServicesEnter}
+                onMouseLeave={onServicesLeave}
               >
                 <Link
                   href="/services"
-                  aria-expanded={openMenu === 'services'}
+                  aria-expanded={servicesOpen}
                   className={cn(
                     'flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] px-4 py-2 rounded-full transition-all duration-300',
                     'bg-foreground text-background hover:bg-foreground/85',
@@ -137,14 +140,14 @@ export function Navbar() {
                   <ChevronDown
                     className={cn(
                       'h-3 w-3 transition-transform duration-200',
-                      openMenu === 'services' && 'rotate-180',
+                      servicesOpen && 'rotate-180',
                     )}
                     strokeWidth={2}
                   />
                 </Link>
 
                 {/* Mega dropdown panel */}
-                {openMenu === 'services' && (
+                {servicesOpen && (
                   <div className="absolute top-full left-0 pt-3 z-50">
                     <div className="w-[640px] bg-background border border-foreground/12 shadow-[0_24px_60px_-24px_rgba(18,17,16,0.25)]">
                       <div className="p-7">
@@ -160,7 +163,7 @@ export function Navbar() {
                                     <Link
                                       href={`/services/${s.slug}`}
                                       className="group block"
-                                      onClick={() => setOpenMenu(null)}
+                                      onClick={() => setServicesOpen(false)}
                                     >
                                       <div className="flex items-baseline gap-2">
                                         <span className="text-[10px] text-foreground/40 tabular-nums">
@@ -171,7 +174,7 @@ export function Navbar() {
                                         </span>
                                       </div>
                                       <p className="text-[11px] text-foreground/50 mt-0.5 pl-6">
-                                        {s.comingSoon ? 'Coming soon' : s.priceLabel}
+                                        {s.priceLabel}
                                       </p>
                                     </Link>
                                   </li>
@@ -180,27 +183,6 @@ export function Navbar() {
                             </div>
                           ))}
                         </div>
-                        {/* Digital Closet — featured subscription row */}
-                        <Link
-                          href="/digital-closet"
-                          onClick={() => setOpenMenu(null)}
-                          className="group mt-6 flex items-center justify-between gap-6 border border-foreground/12 bg-foreground/[0.03] px-4 py-3.5 transition-colors hover:bg-foreground/[0.06]"
-                        >
-                          <div>
-                            <p className="mb-1 text-[9px] uppercase tracking-[0.2em] text-foreground/50">
-                              Coming Soon
-                            </p>
-                            <p className="text-sm font-medium text-foreground">
-                              Digital Closet &amp; Capsule Wardrobe
-                            </p>
-                            <p className="mt-0.5 text-[11px] text-foreground/55">
-                              Hold what you own — get capsule combinations from it.
-                            </p>
-                          </div>
-                          <span className="whitespace-nowrap text-[11px] uppercase tracking-[0.18em] text-foreground link-underline">
-                            Preview →
-                          </span>
-                        </Link>
                         <div className="mt-7 pt-4 border-t border-foreground/10 flex items-center justify-between">
                           <p className="text-xs text-foreground/60">
                             Not sure which service you need?
@@ -208,7 +190,7 @@ export function Navbar() {
                           <Link
                             href="/services#book"
                             className="text-[11px] uppercase tracking-[0.18em] text-foreground link-underline"
-                            onClick={() => setOpenMenu(null)}
+                            onClick={() => setServicesOpen(false)}
                           >
                             Book a Consultation →
                           </Link>
@@ -219,27 +201,15 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* Shop links — items with `mega` groups get a dropdown panel */}
-              {NAV_ITEMS.map((item) =>
-                item.mega ? (
-                  <MegaNavItem
-                    key={item.label}
-                    item={item}
-                    open={openMenu === item.label}
-                    onEnter={() => onMenuEnter(item.label)}
-                    onLeave={onMenuLeave}
-                    onNavigate={() => setOpenMenu(null)}
-                  />
-                ) : (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    className="px-2.5 xl:px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-foreground/70 hover:text-foreground transition-colors whitespace-nowrap"
-                  >
-                    {item.label}
-                  </Link>
-                ),
-              )}
+              {NAV_LINKS.map((l) => (
+                <Link
+                  key={l.label}
+                  href={l.href}
+                  className="px-3 xl:px-3.5 py-2 text-[11px] uppercase tracking-[0.16em] text-foreground/70 hover:text-foreground transition-colors whitespace-nowrap"
+                >
+                  {l.label}
+                </Link>
+              ))}
             </nav>
 
             {/* Actions */}
@@ -289,100 +259,5 @@ export function Navbar() {
       {/* Spacer to offset fixed header (announcement 36px + bar 64/72px) */}
       <div className="h-[100px] md:h-[108px]" aria-hidden />
     </>
-  )
-}
-
-/**
- * Nav item with a Services-style mega dropdown.
- * Rendered automatically for any NAV_ITEMS entry that defines `mega` groups.
- */
-function MegaNavItem({
-  item,
-  open,
-  onEnter,
-  onLeave,
-  onNavigate,
-}: {
-  item: NavItem
-  open: boolean
-  onEnter: () => void
-  onLeave: () => void
-  onNavigate: () => void
-}) {
-  return (
-    <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
-      <Link
-        href={item.href}
-        aria-expanded={open}
-        className={cn(
-          'flex items-center gap-1 px-2.5 xl:px-3 py-2 text-[11px] uppercase tracking-[0.16em] whitespace-nowrap transition-colors',
-          open ? 'text-foreground' : 'text-foreground/70 hover:text-foreground',
-        )}
-      >
-        {item.label}
-        <ChevronDown
-          className={cn('h-3 w-3 transition-transform duration-200', open && 'rotate-180')}
-          strokeWidth={2}
-        />
-      </Link>
-
-      {open && (
-        <div
-          className={cn(
-            'absolute top-full pt-3 z-50',
-            item.panelAlign === 'right' ? 'right-0' : 'left-0',
-          )}
-        >
-          <div
-            className={cn(
-              'bg-background border border-foreground/12 shadow-[0_24px_60px_-24px_rgba(18,17,16,0.25)]',
-              item.mega!.length > 1 ? 'w-[560px]' : 'w-[300px]',
-            )}
-          >
-            <div className="p-7">
-              <div className={cn(item.mega!.length > 1 && 'grid grid-cols-2 gap-7')}>
-                {item.mega!.map((group) => (
-                  <div key={group.label}>
-                    <p className="eyebrow text-foreground/50 mb-4 pb-2.5 border-b border-foreground/10">
-                      {group.label}
-                    </p>
-                    <ul className="space-y-3.5">
-                      {group.links.map((link) => (
-                        <li key={link.label}>
-                          <Link
-                            href={link.href}
-                            onClick={onNavigate}
-                            className={cn(
-                              'group block text-sm leading-snug transition-colors',
-                              link.emphasized
-                                ? 'text-foreground font-medium'
-                                : 'text-foreground/75 hover:text-foreground',
-                            )}
-                          >
-                            {link.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-              {item.megaFooter && (
-                <div className="mt-7 pt-4 border-t border-foreground/10 flex items-center justify-between">
-                  <p className="text-xs text-foreground/60">{item.megaFooter.text}</p>
-                  <Link
-                    href={item.megaFooter.href}
-                    onClick={onNavigate}
-                    className="text-[11px] uppercase tracking-[0.18em] text-foreground link-underline"
-                  >
-                    {item.megaFooter.cta} →
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
   )
 }

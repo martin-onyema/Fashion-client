@@ -2,25 +2,6 @@ import { db } from '@/lib/db'
 import { Prisma } from '@prisma/client'
 
 // ============================================================
-// RESILIENCE HELPER
-// ----------------------------------------------------------
-// Storefront queries degrade gracefully: if the database is
-// briefly unreachable (cold start, provisioning, network
-// blip) the page still renders with fallback data instead of
-// returning a hard 500. Admin analytics stay strict so real
-// faults surface loudly in the dashboard.
-// ============================================================
-
-async function safe<T>(label: string, fallback: T, run: () => Promise<T>): Promise<T> {
-  try {
-    return await run()
-  } catch (error) {
-    console.error(`[queries] ${label} failed — serving fallback:`, error)
-    return fallback
-  }
-}
-
-// ============================================================
 // CATALOGUE QUERIES
 // ============================================================
 
@@ -32,14 +13,12 @@ export type ProductWithRelations = Prisma.ProductGetPayload<{
   }
 }>
 
-export function getCategories() {
-  return safe('getCategories', [], () =>
-    db.category.findMany({
-      where: { parentId: null },
-      orderBy: { order: 'asc' },
-      include: { children: { orderBy: { name: 'asc' } } },
-    }),
-  )
+export async function getCategories() {
+  return db.category.findMany({
+    where: { parentId: null },
+    orderBy: { order: 'asc' },
+    include: { children: { orderBy: { name: 'asc' } } },
+  })
 }
 
 export async function getAllCategories() {
@@ -49,13 +28,11 @@ export async function getAllCategories() {
   })
 }
 
-export function getCategoryBySlug(slug: string) {
-  return safe('getCategoryBySlug', null, () =>
-    db.category.findUnique({
-      where: { slug },
-      include: { parent: true, children: true },
-    }),
-  )
+export async function getCategoryBySlug(slug: string) {
+  return db.category.findUnique({
+    where: { slug },
+    include: { parent: true, children: true },
+  })
 }
 
 export async function getProducts(params: {
@@ -125,128 +102,105 @@ export async function getProducts(params: {
           ? { price: 'desc' }
           : { featured: 'desc' }
 
-  return safe('getProducts', [], () =>
-    db.product.findMany({
-      where,
-      orderBy,
-      take: limit,
-      include: {
-        images: { orderBy: { position: 'asc' } },
-        variants: true,
-        category: { include: { parent: true } },
-      },
-    }),
-  )
+  return db.product.findMany({
+    where,
+    orderBy,
+    take: limit,
+    include: {
+      images: { orderBy: { position: 'asc' } },
+      variants: true,
+      category: { include: { parent: true } },
+    },
+  })
 }
 
-export function getProductBySlug(slug: string) {
-  return safe('getProductBySlug', null, () =>
-    db.product.findUnique({
-      where: { slug },
-      include: {
-        images: { orderBy: { position: 'asc' } },
-        variants: true,
-        category: { include: { parent: true } },
-        reviews: { where: { published: true }, orderBy: { createdAt: 'desc' } },
-      },
-    }),
-  )
+export async function getProductBySlug(slug: string) {
+  return db.product.findUnique({
+    where: { slug },
+    include: {
+      images: { orderBy: { position: 'asc' } },
+      variants: true,
+      category: { include: { parent: true } },
+      reviews: { where: { published: true }, orderBy: { createdAt: 'desc' } },
+    },
+  })
 }
 
-export function getFeaturedProducts(limit = 8) {
-  return safe('getFeaturedProducts', [], () =>
-    db.product.findMany({
-      where: { featured: true, published: true },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      include: {
-        images: { orderBy: { position: 'asc' }, take: 2 },
-        variants: true,
-        category: true,
-      },
-    }),
-  )
+export async function getFeaturedProducts(limit = 8) {
+  return db.product.findMany({
+    where: { featured: true, published: true },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    include: {
+      images: { orderBy: { position: 'asc' }, take: 2 },
+      variants: true,
+      category: true,
+    },
+  })
 }
 
-export function getNewArrivals(limit = 12) {
-  return safe('getNewArrivals', [], () =>
-    db.product.findMany({
-      where: { published: true },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      include: {
-        images: { orderBy: { position: 'asc' }, take: 2 },
-        variants: true,
-        category: true,
-      },
-    }),
-  )
+export async function getNewArrivals(limit = 12) {
+  return db.product.findMany({
+    where: { published: true },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    include: {
+      images: { orderBy: { position: 'asc' }, take: 2 },
+      variants: true,
+      category: true,
+    },
+  })
 }
 
-export function getRelatedProducts(productId: string, categoryId: string, limit = 4) {
-  return safe('getRelatedProducts', [], () =>
-    db.product.findMany({
-      where: {
-        categoryId,
-        published: true,
-        id: { not: productId },
-      },
-      take: limit,
-      include: {
-        images: { orderBy: { position: 'asc' }, take: 1 },
-        variants: true,
-        category: true,
-      },
-    }),
-  )
+export async function getRelatedProducts(productId: string, categoryId: string, limit = 4) {
+  return db.product.findMany({
+    where: {
+      categoryId,
+      published: true,
+      id: { not: productId },
+    },
+    take: limit,
+    include: {
+      images: { orderBy: { position: 'asc' }, take: 1 },
+      variants: true,
+      category: true,
+    },
+  })
 }
 
 // ============================================================
 // HOMEPAGE / CMS CONTENT
 // ============================================================
 
-export function getHomepageContent() {
-  return safe('getHomepageContent', null, () =>
-    db.homepageContent.findUnique({ where: { id: 'singleton' } }),
-  )
+export async function getHomepageContent() {
+  const c = await db.homepageContent.findUnique({ where: { id: 'singleton' } })
+  return c
 }
 
 export async function getAdminSettings() {
-  const row = await safe('getAdminSettings', null, () =>
-    db.adminSettings.findUnique({ where: { id: 'singleton' } }),
-  )
-  if (!row) return row
-  // paystackSecretKey is write-only — never expose it to pages/components.
-  const { paystackSecretKey, ...safeSettings } = row as Record<string, any>
-  return {
-    ...safeSettings,
-    paystackSecretKeySet: Boolean(paystackSecretKey),
-  }
+  const s = await db.adminSettings.findUnique({ where: { id: 'singleton' } })
+  return s
 }
 
-export function getActiveBanners() {
+export async function getActiveBanners() {
   const now = new Date()
-  return safe('getActiveBanners', [], () =>
-    db.promotionalBanner.findMany({
-      where: {
-        active: true,
-        AND: [
-          { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
-          { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
-        ],
-      },
-      orderBy: { order: 'asc' },
-    }),
-  )
+  return db.promotionalBanner.findMany({
+    where: {
+      active: true,
+      AND: [
+        { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
+        { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+      ],
+    },
+    orderBy: { order: 'asc' },
+  })
 }
 
-export function getFAQs(category?: string) {
-  return safe('getFAQs', [], () =>
-    db.fAQ.findMany({
-      where: { published: true, ...(category ? { category } : {}) },
-      orderBy: [{ order: 'asc' }, { createdAt: 'asc' }],
-    }),
-  )
+export async function getFAQs(category?: string) {
+  return db.fAQ.findMany({
+    where: { published: true, ...(category ? { category } : {}) },
+    orderBy: [{ order: 'asc' }, { createdAt: 'asc' }],
+  })
 }
 
 // ============================================================
@@ -255,19 +209,13 @@ export function getFAQs(category?: string) {
 
 export async function getCartWithProducts(lines: { productId: string; variantId?: string | null; size?: string | null; quantity: number }[]) {
   if (!lines.length) return []
-  let products
-  try {
-    products = await db.product.findMany({
-      where: { id: { in: lines.map((l) => l.productId) } },
-      include: {
-        images: { orderBy: { position: 'asc' }, take: 1 },
-        variants: true,
-      },
-    })
-  } catch (error) {
-    console.error('[queries] getCartWithProducts failed — serving empty cart:', error)
-    return []
-  }
+  const products = await db.product.findMany({
+    where: { id: { in: lines.map((l) => l.productId) } },
+    include: {
+      images: { orderBy: { position: 'asc' }, take: 1 },
+      variants: true,
+    },
+  })
   return lines.map((line) => {
     const p = products.find((p) => p.id === line.productId)
     if (!p) return null
@@ -473,132 +421,4 @@ export async function getRevenueTrend(days = 30) {
     byDay.set(key, (byDay.get(key) ?? 0) + o.total)
   }
   return Array.from(byDay.entries()).map(([date, revenue]) => ({ date, revenue }))
-}
-
-// ---------------------------------------------------------------------------
-// Category hub pages (Clothing / Footwear / Accessories / Fragrance & Grooming)
-// ---------------------------------------------------------------------------
-
-export type HubProduct = {
-  id: string
-  name: string
-  slug: string
-  price: number
-  salePrice: number | null
-  image: string | null
-}
-
-export type HubSection = {
-  slug: string
-  name: string
-  description: string
-  count: number
-  products: HubProduct[]
-}
-
-export type HubGroupData = {
-  label: string
-  sections: HubSection[]
-}
-
-export type HubData = {
-  totalProducts: number
-  totalCategories: number
-  groups: HubGroupData[]
-}
-
-/**
- * Fetch everything a category hub page needs: per-subcategory product rails
- * (newest/featured first) plus published counts. Resolves subcategory lists
- * from the hub config against the live Category tree — subs that no longer
- * exist in the DB are skipped.
- */
-export async function getCategoryHubData(
-  rootSlug: string,
-  subsByGroup: { label: string; subs: { slug: string; label: string; description: string }[] }[],
-  perSection = 8,
-): Promise<HubData | null> {
-  return safe<HubData | null>('getCategoryHubData', null, async () => {
-    // Resolve the subcategories by slug directly — a hub may span more than
-    // one root category (e.g. the Clothing hub also carries the separate
-    // Bottoms root, mirroring the mega menu's two groups).
-    const wantedSlugs = subsByGroup.flatMap((g) => g.subs.map((s) => s.slug))
-    const wanted = await db.category.findMany({
-      where: { slug: { in: wantedSlugs } },
-      orderBy: [{ order: 'asc' }, { name: 'asc' }],
-    })
-    if (!wanted.length) {
-      return { totalProducts: 0, totalCategories: 0, groups: [] }
-    }
-    const childBySlug = new Map(wanted.map((c) => [c.slug, c]))
-    const childIds = wantedSlugs
-      .map((s) => childBySlug.get(s)?.id)
-      .filter((id): id is string => Boolean(id))
-    if (!childIds.length) {
-      return { totalProducts: 0, totalCategories: 0, groups: [] }
-    }
-
-    // One grouped query for all published counts.
-    const counts = await db.product.groupBy({
-      by: ['categoryId'],
-      where: { published: true, categoryId: { in: childIds } },
-      _count: { _all: true },
-    })
-    const countByCategory = new Map(counts.map((c) => [c.categoryId, c._count._all]))
-
-    // Rails: the first `perSection` products per subcategory.
-    const rails = await Promise.all(
-      childIds.map((categoryId) =>
-        db.product.findMany({
-          where: { published: true, categoryId },
-          orderBy: [{ featured: 'desc' }, { createdAt: 'desc' }],
-          take: perSection,
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            price: true,
-            salePrice: true,
-            images: { orderBy: { position: 'asc' }, take: 1, select: { url: true } },
-          },
-        }),
-      ),
-    )
-    const productsByCategory = new Map<string, HubProduct[]>(
-      childIds.map((id, i) => [
-        id,
-        rails[i].map((p) => ({
-          id: p.id,
-          name: p.name,
-          slug: p.slug,
-          price: p.price,
-          salePrice: p.salePrice ?? null,
-          image: p.images[0]?.url ?? null,
-        })),
-      ]),
-    )
-
-    const groups: HubGroupData[] = subsByGroup.map((g) => ({
-      label: g.label,
-      sections: g.subs
-        .map((s) => {
-          const child = childBySlug.get(s.slug)
-          if (!child) return null
-          return {
-            slug: s.slug,
-            name: s.label,
-            description: s.description,
-            count: countByCategory.get(child.id) ?? 0,
-            products: productsByCategory.get(child.id) ?? [],
-          }
-        })
-        .filter((s): s is HubSection => s !== null),
-    }))
-
-    return {
-      totalProducts: counts.reduce((n, c) => n + c._count._all, 0),
-      totalCategories: groups.reduce((n, g) => n + g.sections.length, 0),
-      groups,
-    }
-  })
 }

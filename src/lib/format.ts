@@ -108,32 +108,3 @@ export function calculateDeliveryFee(
   if (subtotal >= freeThreshold) return 0
   return defaultFee
 }
-
-/**
- * Sort size labels in natural order: letter sizes (XXS→5XL) first, then
- * numeric sizes ascending (handles values like "36", "36 (Length 41\")"),
- * then anything else alphabetically. Deduplicates and drops empties.
- */
-const LETTER_SIZE_ORDER = [
-  'XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '3XL', '4XL', '5XL',
-]
-
-export function sortSizes(sizes: (string | null | undefined)[]): string[] {
-  const unique = Array.from(new Set(sizes.map((s) => (s ?? '').trim()).filter(Boolean)))
-  const letterRank = (s: string) => {
-    const upper = s.toUpperCase()
-    const idx = LETTER_SIZE_ORDER.indexOf(upper)
-    return idx === -1 ? LETTER_SIZE_ORDER.length + 99 : idx
-  }
-  return unique.sort((a, b) => {
-    const la = /^\d/.test(a) ? 1 : 0
-    const lb = /^\d/.test(b) ? 1 : 0
-    if (la !== lb) return la - lb // letter sizes first
-    if (la === 0) return letterRank(a) - letterRank(b)
-    // numeric — compare by leading number, then string
-    const na = parseFloat(a) || 0
-    const nb = parseFloat(b) || 0
-    if (na !== nb) return na - nb
-    return a.localeCompare(b)
-  })
-}

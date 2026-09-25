@@ -14,7 +14,7 @@ export function AdminLoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/admin'
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('admin@wardrobecare.com')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -106,6 +106,9 @@ export function AdminLoginForm() {
           </>
         )}
       </Button>
+      {/* Credentials are intentionally NOT displayed here — this page is
+          reachable only via the secret admin path and hidden behind the
+          middleware stealth gate. Never print credentials in the UI. */}
       <div className="text-center">
         <Link
           href="/"

@@ -13,6 +13,12 @@
  */
 import { db } from '@/lib/db'
 import { requireStaffWithPermission, requireStaff, requireSuperAdmin } from '@/lib/permissions'
+import {
+  sendTrackingUpdate,
+  sendRefundConfirmation,
+  type EmailOrder,
+  type EmailOrderItem,
+} from '@/lib/email'
 import { auditLog, diffChangedFields, describeChanges } from '@/lib/audit'
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
@@ -1632,7 +1638,7 @@ export async function adminUpdateOrderTracking(
   try {
     const before = await db.order.findUnique({
       where: { id: orderId },
-      select: { orderNumber: true, trackingNumber: true, carrier: true, internalNotes: true },
+      select: { orderNumber: true, trackingNumber: true, carrier: true, internalNotes: true, email: true, customerName: true },
     })
     if (!before) return { ok: false, error: 'Order not found' }
     await db.order.update({
@@ -1653,6 +1659,32 @@ export async function adminUpdateOrderTracking(
       after: tracking,
       description: `Updated tracking on order ${before.orderNumber}`,
     })
+
+    // ── Shipping email: only when a NEW tracking number was set or changed
+    // (editing an internal note must not email the customer) ──
+    if (tracking.trackingNumber && tracking.trackingNumber !== before.trackingNumber) {
+      try {
+        const fullOrder = await db.order.findUnique({
+          where: { id: orderId },
+          include: { items: true },
+        })
+        if (fullOrder) {
+          const settings = await db.adminSettings.findUnique({ where: { id: 'singleton' } })
+          await sendTrackingUpdate(
+            fullOrder as unknown as EmailOrder,
+            {
+              trackingNumber: tracking.trackingNumber,
+              trackingUrl: tracking.trackingUrl,
+              carrier: tracking.carrier,
+            },
+            settings?.supportEmail ?? undefined,
+          )
+        }
+      } catch (e: any) {
+        console.error('[email] tracking update error:', e?.message)
+      }
+    }
+
     revalidatePath('/admin/orders')
     revalidatePath(`/admin/orders/${orderId}`)
     return { ok: true }
@@ -1831,6 +1863,18 @@ export async function adminRefundOrder(input: Record<string, any>) {
       body: `₦${data.amount} (${isFull ? 'full' : 'partial'}) — reason: ${data.reason}`,
       link: `/admin/orders/${order.id}`,
     })
+
+    // ── Refund confirmation email to the customer ──
+    try {
+      const settings = await db.adminSettings.findUnique({ where: { id: 'singleton' } })
+      await sendRefundConfirmation(
+        order as unknown as EmailOrder,
+        { amount: data.amount, reason: data.reason, full: isFull },
+        settings?.supportEmail ?? undefined,
+      )
+    } catch (e: any) {
+      console.error('[email] refund confirmation error:', e?.message)
+    }
 
     revalidatePath('/admin/orders')
     revalidatePath(`/admin/orders/${order.id}`)
