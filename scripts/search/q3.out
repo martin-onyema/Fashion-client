@@ -1,0 +1,15 @@
+🚀 Initializing Z-AI SDK...
+🔎 Searching images: "black man street style chinos outfit full body"
+Failed to make image search request: 356 |                 headers,
+357 |                 body: JSON.stringify(body),
+358 |             });
+359 |             if (!response.ok) {
+360 |                 const errorBody = await response.text();
+361 |                 throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+                                ^
+error: API request failed with status 429: {"error":"Too many requests, please try again later"}
+      at createImageSearch (/home/z/.bun/install/global/node_modules/z-ai-web-dev-sdk/dist/index.js:361:27)
+      at async handleImageSearch (/home/z/.bun/install/global/node_modules/z-ai-web-dev-sdk/dist/cli.js:823:49)
+      at async main (/home/z/.bun/install/global/node_modules/z-ai-web-dev-sdk/dist/cli.js:1083:23)
+
+❌ Error: API request failed with status 429: {"error":"Too many requests, please try again later"}

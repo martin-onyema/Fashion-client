@@ -1,0 +1,11 @@
+🚀 Initializing Z-AI SDK...
+🔎 Searching images: "black man in tailored suit fashion"
+❌ Image search failed: Network error: 400 Client Error: Bad Request for url: https://reader.psmoe.com/glm/s/serp/images
+{
+  "success": false,
+  "query": "black man in tailored suit fashion",
+  "count": 0,
+  "ranked": false,
+  "results": [],
+  "error": "Network error: 400 Client Error: Bad Request for url: https://reader.psmoe.com/glm/s/serp/images"
+}

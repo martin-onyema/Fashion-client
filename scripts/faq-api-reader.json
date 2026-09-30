@@ -1,0 +1,34 @@
+🚀 Initializing Z-AI SDK...
+🚀 Invoking function: page_reader...
+{
+  "code": 200,
+  "data": {
+    "description": "",
+    "external": {},
+    "html": "<html><head><meta name=\"color-scheme\" content=\"light dark\"><meta charset=\"utf-8\"></head><body><pre>{\"type\":\"error\",\"error\":{\"type\":\"not_found_error\",\"message\":\"Not found\"},\"request_id\":\"req_011CfDuWpwKqQJtU6NVdwzJ9\"}</pre><div class=\"json-formatter-container\"></div></body></html>",
+    "httpStatus": 404,
+    "httpStatusText": "",
+    "metadata": {
+      "color-scheme": "light dark"
+    },
+    "title": "",
+    "url": "https://claude.ai/api/public/artifacts/606e7cc8-3942-4df6-a7ee-e9f09d6b4e15",
+    "usage": {
+      "measuredTokens": 0,
+      "outputTokens": 0,
+      "scaledTokens": 87,
+      "tokens": 87
+    },
+    "warning": "Target URL returned error 404: Not Found"
+  },
+  "meta": {
+    "usage": {
+      "measuredTokens": 0,
+      "outputTokens": 0,
+      "scaledTokens": 87,
+      "tokens": 87
+    }
+  },
+  "status": 20000
+}
+🎉 Function invocation completed!

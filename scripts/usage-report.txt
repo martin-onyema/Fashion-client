@@ -1,0 +1,501 @@
+[Category rid=8] {'id': 'cmther5fc0008nvkuxbiuwuat', 'name': 'T-Shirts', 'slug': 't-shirts'}
+    -> photo-1521572163474-6864f9cf17ab
+[Category rid=9] {'id': 'cmther5fe000anvku517asxbk', 'name': 'Polo Shirts', 'slug': 'polo-shirts'}
+    -> photo-1586790170083-2f9ceadc732d
+[Category rid=10] {'id': 'cmther5ff000cnvku1d7kgbvl', 'name': 'Casual Shirts', 'slug': 'casual-shirts'}
+    -> photo-1583743814966-8936f5b7be1a
+[Category rid=11] {'id': 'cmther5fh000envkutnl7qgmv', 'name': 'Formal / Office Shirts', 'slug': 'formal-shirts'}
+    -> photo-1602810318383-e386cc2a3ccf
+[Category rid=12] {'id': 'cmther5fk000gnvkuv3gv20ld', 'name': 'Blazers', 'slug': 'blazers'}
+    -> photo-1507679799987-c73779587ccf
+[Category rid=13] {'id': 'cmther5fm000invkui0q52k7z', 'name': 'Suits', 'slug': 'suits'}
+    -> photo-1594938298603-c8148c4dae35
+[Category rid=14] {'id': 'cmther5fo000knvkus63j4qe1', 'name': 'Jackets', 'slug': 'jackets'}
+    -> photo-1591047139829-d91aecb6caea
+[Category rid=15] {'id': 'cmther5fp000mnvku7egqxt0a', 'name': 'Hoodies & Sweatshirts', 'slug': 'hoodies-sweatshirts'}
+    -> photo-1556821840-3a63f95609a7
+[Category rid=16] {'id': 'cmther5fr000onvku6nezwlyw', 'name': 'Innerwear', 'slug': 'innerwear'}
+    -> photo-1581655353564-df123a1eb820
+[Category rid=17] {'id': 'cmther5fr000qnvkup5qc2inf', 'name': 'Chinos', 'slug': 'chinos'}
+    -> photo-1473966968600-fa801b869a1a
+[Category rid=18] {'id': 'cmther5fs000snvkuw1ymhrru', 'name': 'Trousers', 'slug': 'trousers'}
+    -> photo-1624206112918-f2f7f2c5b3e7
+[Category rid=19] {'id': 'cmther5ft000unvku317j7qte', 'name': 'Jeans', 'slug': 'jeans'}
+    -> photo-1542272604-787c3835535d
+[Category rid=20] {'id': 'cmther5fv000wnvkujn1w3zoh', 'name': 'Shorts', 'slug': 'shorts'}
+    -> photo-1591195854234-9c5b4eaaab7c
+[Category rid=21] {'id': 'cmther5fx000ynvku98v2za48', 'name': 'Joggers', 'slug': 'joggers'}
+    -> photo-1552902865-b72c031ac5ea
+[Category rid=22] {'id': 'cmther5fz0010nvkua2ydwjg1', 'name': 'Casual Shoes', 'slug': 'casual-shoes'}
+    -> photo-1542291026-7eec264c27ff
+[Category rid=23] {'id': 'cmther5g10012nvkuuh95rf0n', 'name': 'Dress Shoes', 'slug': 'dress-shoes'}
+    -> photo-1533867617858-e7b97e060509
+[Category rid=24] {'id': 'cmther5g20014nvkueg7ktyro', 'name': 'Exotic Shoes', 'slug': 'exotic-shoes'}
+    -> photo-1614253429340-98120bd6d753
+[Category rid=25] {'id': 'cmther5g30016nvkuko1rxup8', 'name': 'Loafers', 'slug': 'loafers'}
+    -> photo-1614252369475-531eba835eb1
+[Category rid=26] {'id': 'cmther5g40018nvku8wwao085', 'name': 'Sunglasses', 'slug': 'sunglasses'}
+    -> photo-1572635196237-14b3f281503f
+[Category rid=27] {'id': 'cmther5g7001anvkucrbm5cux', 'name': 'Belts', 'slug': 'belts'}
+    -> photo-1624222247344-550fb60583dc
+[Category rid=28] {'id': 'cmther5g8001cnvku02ce596v', 'name': 'Caps & Hats', 'slug': 'caps-hats'}
+    -> photo-1588850561407-ed78c282e89b
+[Category rid=29] {'id': 'cmther5ga001envkur2ris2uz', 'name': 'Pocket Squares', 'slug': 'pocket-squares'}
+    -> photo-1605518216938-7c31b7b14ad0
+[Category rid=30] {'id': 'cmther5gc001gnvkue93160tl', 'name': 'Ties', 'slug': 'ties'}
+    -> photo-1584917865442-de89df76afd3
+[Category rid=31] {'id': 'cmther5gd001invkuivjbo3up', 'name': 'Socks', 'slug': 'socks'}
+    -> photo-1564859228273-274232fdb516
+[Category rid=32] {'id': 'cmther5ge001knvkubi27ppvl', 'name': 'Wallets & Purses', 'slug': 'wallets-purses'}
+    -> photo-1627123424574-724758594e93
+[Category rid=33] {'id': 'cmther5gf001mnvkuu4dv6ajh', 'name': "Men's Fragrance", 'slug': 'mens-fragrance'}
+    -> photo-1541643600914-78b084683601
+[Category rid=34] {'id': 'cmther5gh001onvkuz28ljgz1', 'name': "Women's Fragrance", 'slug': 'womens-fragrance'}
+    -> photo-1592945403244-b3fbafd7f539
+[Category rid=35] {'id': 'cmther5gi001qnvkulgicix42', 'name': "Men's Grooming", 'slug': 'mens-grooming'}
+    -> photo-1503951914875-452162b0f3f1
+[Category rid=36] {'id': 'cmther5gj001snvku0pikbkbx', 'name': 'Pyjamas', 'slug': 'pyjamas'}
+    -> photo-1576566588028-4147f3842f27
+[ProductImage rid=1] {'id': 'cmther5j8001wnvku6szflf0i'}
+    -> photo-1602810318383-e386cc2a3ccf  PRODUCT: Classic Long-Sleeve Dress Shirt — White
+[ProductImage rid=2] {'id': 'cmther5j8001xnvkurtsar2we'}
+    -> photo-1583743814966-8936f5b7be1a  PRODUCT: Classic Long-Sleeve Dress Shirt — White
+[ProductImage rid=3] {'id': 'cmther5j8001ynvkudfrs4bd7'}
+    -> photo-1596755094514-f87e34085b2c  PRODUCT: Classic Long-Sleeve Dress Shirt — White
+[ProductImage rid=4] {'id': 'cmther5jd0026nvku8w0b4p3e'}
+    -> photo-1596755094514-f87e34085b2c  PRODUCT: Oxford Casual Shirt — Sky Blue
+[ProductImage rid=5] {'id': 'cmther5jd0027nvkudg2jrmed'}
+    -> photo-1583743814966-8936f5b7be1a  PRODUCT: Oxford Casual Shirt — Sky Blue
+[ProductImage rid=6] {'id': 'cmther5jg002fnvkulpcbdyu2'}
+    -> photo-1620012253295-c15cc3e65df4  PRODUCT: Linen Open-Collar Shirt — Sand
+[ProductImage rid=7] {'id': 'cmther5jg002gnvkue48agtgn'}
+    -> photo-1583743814966-8936f5b7be1a  PRODUCT: Linen Open-Collar Shirt — Sand
+[ProductImage rid=8] {'id': 'cmther5ji002onvku74yxxvw3'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Black
+[ProductImage rid=9] {'id': 'cmther5ji002pnvkucil0hkn2'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Black
+[ProductImage rid=10] {'id': 'cmther5jo002xnvkumy85ywn8'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Navy
+[ProductImage rid=11] {'id': 'cmther5jo002ynvkucvz2z8nq'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Navy
+[ProductImage rid=12] {'id': 'cmther5js0036nvku202mrj3e'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — White
+[ProductImage rid=13] {'id': 'cmther5js0037nvkuwnp1e35r'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — White
+[ProductImage rid=14] {'id': 'cmther5jv003fnvku6az8sosk'}
+    -> photo-1521572163474-6864f9cf17ab  PRODUCT: Heavyweight Cotton Tee — Off-White
+[ProductImage rid=15] {'id': 'cmther5jv003gnvku7keq6uve'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Heavyweight Cotton Tee — Off-White
+[ProductImage rid=16] {'id': 'cmther5jz003onvku2crzieaw'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Heavyweight Cotton Tee — Black
+[ProductImage rid=17] {'id': 'cmther5jz003pnvku5468u66z'}
+    -> photo-1521572163474-6864f9cf17ab  PRODUCT: Heavyweight Cotton Tee — Black
+[ProductImage rid=18] {'id': 'cmther5k1003xnvkurjlxn0i2'}
+    -> photo-1507679799987-c73779587ccf  PRODUCT: Tailored Wool-Blend Blazer — Navy
+[ProductImage rid=19] {'id': 'cmther5k1003ynvku1ovpvxbb'}
+    -> photo-1593032465175-481ac7f401a0  PRODUCT: Tailored Wool-Blend Blazer — Navy
+[ProductImage rid=20] {'id': 'cmther5k40046nvku7i251h5z'}
+    -> photo-1594938298603-c8148c4dae35  PRODUCT: Two-Piece Suit — Charcoal
+[ProductImage rid=21] {'id': 'cmther5k40047nvku13k0uyji'}
+    -> photo-1593032465175-481ac7f401a0  PRODUCT: Two-Piece Suit — Charcoal
+[ProductImage rid=22] {'id': 'cmther5k7004fnvkuaiwv1aqi'}
+    -> photo-1591047139829-d91aecb6caea  PRODUCT: Bomber Jacket — Olive
+[ProductImage rid=23] {'id': 'cmther5k7004gnvkursybwaxa'}
+    -> photo-1551537482-f2075a1d41f2  PRODUCT: Bomber Jacket — Olive
+[ProductImage rid=24] {'id': 'cmther5ka004onvkug106j1sw'}
+    -> photo-1556821840-3a63f95609a7  PRODUCT: Heavyweight Hoodie — Heather Grey
+[ProductImage rid=25] {'id': 'cmther5ka004pnvkuc2nt2jgn'}
+    -> photo-1620799140408-edc6dcb6d633  PRODUCT: Heavyweight Hoodie — Heather Grey
+[ProductImage rid=26] {'id': 'cmther5kd004xnvkubc207eba'}
+    -> photo-1620799140408-edc6dcb6d633  PRODUCT: Heavyweight Hoodie — Black
+[ProductImage rid=27] {'id': 'cmther5kd004ynvku4u6v2nhl'}
+    -> photo-1556821840-3a63f95609a7  PRODUCT: Heavyweight Hoodie — Black
+[ProductImage rid=28] {'id': 'cmther5kh0056nvkudci1d8g6'}
+    -> photo-1473966968600-fa801b869a1a  PRODUCT: Stretch Cotton Chinos — Stone
+[ProductImage rid=29] {'id': 'cmther5kl005fnvkujwswuosi'}
+    -> photo-1624206112918-f2f7f2c5b3e7  PRODUCT: Wool-Blend Formal Trousers — Charcoal
+[ProductImage rid=30] {'id': 'cmther5kn005onvkubub7h5z6'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Indigo
+[ProductImage rid=31] {'id': 'cmther5kn005pnvkue4yxkbcg'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Indigo
+[ProductImage rid=32] {'id': 'cmther5kq005ynvku2yj4zllo'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Black
+[ProductImage rid=33] {'id': 'cmther5kq005znvkuxpxvv7dr'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Black
+[ProductImage rid=34] {'id': 'cmther5kt0068nvku8cpp48kr'}
+    -> photo-1591195854234-9c5b4eaaab7c  PRODUCT: Tailored Chino Shorts — Khaki
+[ProductImage rid=35] {'id': 'cmther5kw006hnvkujaw7ntuo'}
+    -> photo-1552902865-b72c031ac5ea  PRODUCT: Tapered Joggers — Black
+[ProductImage rid=36] {'id': 'cmther5kz006qnvkuhozutj77'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Hand-Stitched Penny Loafers — Brown
+[ProductImage rid=37] {'id': 'cmther5kz006rnvkusmrdn0gq'}
+    -> photo-1533867617858-e7b97e060509  PRODUCT: Hand-Stitched Penny Loafers — Brown
+[ProductImage rid=38] {'id': 'cmther5l20070nvkuooecrchx'}
+    -> photo-1533867617858-e7b97e060509  PRODUCT: Oxford Dress Shoes — Black
+[ProductImage rid=39] {'id': 'cmther5l20071nvkuigx7ar0b'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Oxford Dress Shoes — Black
+[ProductImage rid=40] {'id': 'cmther5l4007anvkuxskt7vqd'}
+    -> photo-1542291026-7eec264c27ff  PRODUCT: Minimal Leather Sneakers — White
+[ProductImage rid=41] {'id': 'cmther5l4007bnvkuexdbv7qz'}
+    -> photo-1542291026-7eec264c27ff  PRODUCT: Minimal Leather Sneakers — White
+[ProductImage rid=42] {'id': 'cmther5l7007knvkusrjzhhx0'}
+    -> photo-1614253429340-98120bd6d753  PRODUCT: Suede Exotic Monk-Strap — Cognac
+[ProductImage rid=43] {'id': 'cmther5l7007lnvkuw50v4szh'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Suede Exotic Monk-Strap — Cognac
+[ProductImage rid=44] {'id': 'cmther5la007unvku43ft9ri0'}
+    -> photo-1572635196237-14b3f281503f  PRODUCT: Classic Aviator Sunglasses — Gold / Green
+[ProductImage rid=45] {'id': 'cmther5le007ynvkuoy8ruzvb'}
+    -> photo-1624222247344-550fb60583dc  PRODUCT: Full-Grain Leather Belt — Brown
+[ProductImage rid=46] {'id': 'cmther5lh0087nvku3omnrg0m'}
+    -> photo-1588850561407-ed78c282e89b  PRODUCT: Structured Cotton Cap — Black
+[ProductImage rid=47] {'id': 'cmther5ll008bnvkuwuts0yea'}
+    -> photo-1605518216938-7c31b7b14ad0  PRODUCT: Silk Pocket Square — Burgundy
+[ProductImage rid=48] {'id': 'cmther5ln008fnvkuqpke6cb9'}
+    -> photo-1584917865442-de89df76afd3  PRODUCT: Silk Tie — Midnight Navy
+[ProductImage rid=49] {'id': 'cmther5lr008jnvkuaj9wbgky'}
+    -> photo-1564859228273-274232fdb516  PRODUCT: Cotton Crew Socks — Three-Pack
+[ProductImage rid=50] {'id': 'cmther5lv008nnvkusknzxy65'}
+    -> photo-1627123424574-724758594e93  PRODUCT: Bifold Leather Wallet — Cognac
+[ProductImage rid=51] {'id': 'cmther5lv008onvkurecavp8t'}
+    -> photo-1624222247344-550fb60583dc  PRODUCT: Bifold Leather Wallet — Cognac
+[ProductImage rid=52] {'id': 'cmther5ly008snvkuy6oih8t3'}
+    -> photo-1541643600914-78b084683601  PRODUCT: Eau de Parfum — Oud & Amber
+[ProductImage rid=53] {'id': 'cmther5ly008tnvkuqavo7od0'}
+    -> photo-1592945403244-b3fbafd7f539  PRODUCT: Eau de Parfum — Oud & Amber
+[ProductImage rid=54] {'id': 'cmther5m0008xnvkuypyvzl31'}
+    -> photo-1592945403244-b3fbafd7f539  PRODUCT: Eau de Parfum — Rose & Musk
+[ProductImage rid=55] {'id': 'cmther5m0008ynvkukou83tic'}
+    -> photo-1541643600914-78b084683601  PRODUCT: Eau de Parfum — Rose & Musk
+[ProductImage rid=56] {'id': 'cmther5m30092nvkusewlzxl2'}
+    -> photo-1503951914875-452162b0f3f1  PRODUCT: Beard Grooming Kit
+[ProductImage rid=57] {'id': 'cmther5m30093nvku6555vuiz'}
+    -> photo-1556228720-195a672e8a03  PRODUCT: Beard Grooming Kit
+[ProductImage rid=58] {'id': 'cmther5m90097nvkuxo267p7q'}
+    -> photo-1556228720-195a672e8a03  PRODUCT: Cedarwood Beard Oil — 30ml
+[ProductImage rid=59] {'id': 'cmther5m90098nvkuv9ilz5am'}
+    -> photo-1503951914875-452162b0f3f1  PRODUCT: Cedarwood Beard Oil — 30ml
+[ProductImage rid=60] {'id': 'cmther5mb009cnvkui175qnhq'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Soft-Cotton Pyjama Set — Charcoal
+[ProductVariant rid=1] {'id': 'cmther5j8001znvkuacg9zp3y', 'sku': 'WC-SH-001-S'}
+    -> photo-1602810318383-e386cc2a3ccf  PRODUCT: Classic Long-Sleeve Dress Shirt — White / variant: cmther5j8001znvkuacg9zp3y
+[ProductVariant rid=2] {'id': 'cmther5j80020nvkuzy5dx8gl', 'sku': 'WC-SH-001-M'}
+    -> photo-1602810318383-e386cc2a3ccf  PRODUCT: Classic Long-Sleeve Dress Shirt — White / variant: cmther5j80020nvkuzy5dx8gl
+[ProductVariant rid=3] {'id': 'cmther5j80021nvku6q07no2v', 'sku': 'WC-SH-001-L'}
+    -> photo-1602810318383-e386cc2a3ccf  PRODUCT: Classic Long-Sleeve Dress Shirt — White / variant: cmther5j80021nvku6q07no2v
+[ProductVariant rid=4] {'id': 'cmther5j80022nvku4gtd8plv', 'sku': 'WC-SH-001-XL'}
+    -> photo-1602810318383-e386cc2a3ccf  PRODUCT: Classic Long-Sleeve Dress Shirt — White / variant: cmther5j80022nvku4gtd8plv
+[ProductVariant rid=5] {'id': 'cmther5j80023nvkub8pgt2ol', 'sku': 'WC-SH-001-XXL'}
+    -> photo-1602810318383-e386cc2a3ccf  PRODUCT: Classic Long-Sleeve Dress Shirt — White / variant: cmther5j80023nvkub8pgt2ol
+[ProductVariant rid=6] {'id': 'cmther5jd0028nvkus1ohde88', 'sku': 'WC-SH-002-S'}
+    -> photo-1596755094514-f87e34085b2c  PRODUCT: Oxford Casual Shirt — Sky Blue / variant: cmther5jd0028nvkus1ohde88
+[ProductVariant rid=7] {'id': 'cmther5jd0029nvkuv1xdzl4z', 'sku': 'WC-SH-002-M'}
+    -> photo-1596755094514-f87e34085b2c  PRODUCT: Oxford Casual Shirt — Sky Blue / variant: cmther5jd0029nvkuv1xdzl4z
+[ProductVariant rid=8] {'id': 'cmther5jd002anvkuiepkr44g', 'sku': 'WC-SH-002-L'}
+    -> photo-1596755094514-f87e34085b2c  PRODUCT: Oxford Casual Shirt — Sky Blue / variant: cmther5jd002anvkuiepkr44g
+[ProductVariant rid=9] {'id': 'cmther5jd002bnvku7kqkjfh8', 'sku': 'WC-SH-002-XL'}
+    -> photo-1596755094514-f87e34085b2c  PRODUCT: Oxford Casual Shirt — Sky Blue / variant: cmther5jd002bnvku7kqkjfh8
+[ProductVariant rid=10] {'id': 'cmther5jd002cnvku6iux81v4', 'sku': 'WC-SH-002-XXL'}
+    -> photo-1596755094514-f87e34085b2c  PRODUCT: Oxford Casual Shirt — Sky Blue / variant: cmther5jd002cnvku6iux81v4
+[ProductVariant rid=11] {'id': 'cmther5jg002hnvku41gj6828', 'sku': 'WC-SH-003-S'}
+    -> photo-1620012253295-c15cc3e65df4  PRODUCT: Linen Open-Collar Shirt — Sand / variant: cmther5jg002hnvku41gj6828
+[ProductVariant rid=12] {'id': 'cmther5jg002invkusx3zvamx', 'sku': 'WC-SH-003-M'}
+    -> photo-1620012253295-c15cc3e65df4  PRODUCT: Linen Open-Collar Shirt — Sand / variant: cmther5jg002invkusx3zvamx
+[ProductVariant rid=13] {'id': 'cmther5jg002jnvkulocpfbmh', 'sku': 'WC-SH-003-L'}
+    -> photo-1620012253295-c15cc3e65df4  PRODUCT: Linen Open-Collar Shirt — Sand / variant: cmther5jg002jnvkulocpfbmh
+[ProductVariant rid=14] {'id': 'cmther5jg002knvkuziwwsae0', 'sku': 'WC-SH-003-XL'}
+    -> photo-1620012253295-c15cc3e65df4  PRODUCT: Linen Open-Collar Shirt — Sand / variant: cmther5jg002knvkuziwwsae0
+[ProductVariant rid=15] {'id': 'cmther5jg002lnvkubivmfd8y', 'sku': 'WC-SH-003-XXL'}
+    -> photo-1620012253295-c15cc3e65df4  PRODUCT: Linen Open-Collar Shirt — Sand / variant: cmther5jg002lnvkubivmfd8y
+[ProductVariant rid=16] {'id': 'cmther5ji002qnvku1lldghoz', 'sku': 'WC-PO-001-S'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Black / variant: cmther5ji002qnvku1lldghoz
+[ProductVariant rid=17] {'id': 'cmther5ji002rnvku2ww4fbc6', 'sku': 'WC-PO-001-M'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Black / variant: cmther5ji002rnvku2ww4fbc6
+[ProductVariant rid=18] {'id': 'cmther5ji002snvkulp8d63vd', 'sku': 'WC-PO-001-L'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Black / variant: cmther5ji002snvkulp8d63vd
+[ProductVariant rid=19] {'id': 'cmther5ji002tnvkuh8qm06g6', 'sku': 'WC-PO-001-XL'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Black / variant: cmther5ji002tnvkuh8qm06g6
+[ProductVariant rid=20] {'id': 'cmther5ji002unvkugj1eucph', 'sku': 'WC-PO-001-XXL'}
+    -> photo-1586790170083-2f9ceadc732d  PRODUCT: Premium Cotton Polo — Black / variant: cmther5ji002unvkugj1eucph
+[ProductVariant rid=21] {'id': 'cmther5jo002znvkuuf0aoxjx', 'sku': 'WC-PO-002-S'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — Navy / variant: cmther5jo002znvkuuf0aoxjx
+[ProductVariant rid=22] {'id': 'cmther5jo0030nvkuq7p3uxon', 'sku': 'WC-PO-002-M'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — Navy / variant: cmther5jo0030nvkuq7p3uxon
+[ProductVariant rid=23] {'id': 'cmther5jo0031nvkueqgq9p2f', 'sku': 'WC-PO-002-L'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — Navy / variant: cmther5jo0031nvkueqgq9p2f
+[ProductVariant rid=24] {'id': 'cmther5jo0032nvkufte5kvar', 'sku': 'WC-PO-002-XL'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — Navy / variant: cmther5jo0032nvkufte5kvar
+[ProductVariant rid=25] {'id': 'cmther5jo0033nvkueg7y137s', 'sku': 'WC-PO-002-XXL'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — Navy / variant: cmther5jo0033nvkueg7y137s
+[ProductVariant rid=26] {'id': 'cmther5js0038nvkugo4fpcvt', 'sku': 'WC-PO-003-S'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — White / variant: cmther5js0038nvkugo4fpcvt
+[ProductVariant rid=27] {'id': 'cmther5js0039nvkuc13dotmr', 'sku': 'WC-PO-003-M'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — White / variant: cmther5js0039nvkuc13dotmr
+[ProductVariant rid=28] {'id': 'cmther5js003anvku7aquuyvh', 'sku': 'WC-PO-003-L'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — White / variant: cmther5js003anvku7aquuyvh
+[ProductVariant rid=29] {'id': 'cmther5js003bnvkuol0b0jw5', 'sku': 'WC-PO-003-XL'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — White / variant: cmther5js003bnvkuol0b0jw5
+[ProductVariant rid=30] {'id': 'cmther5js003cnvkuondnlc54', 'sku': 'WC-PO-003-XXL'}
+    -> photo-1626497764746-6dc3652e2c1e  PRODUCT: Premium Cotton Polo — White / variant: cmther5js003cnvkuondnlc54
+[ProductVariant rid=31] {'id': 'cmther5jw003hnvkuzrm8s719', 'sku': 'WC-TS-001-S'}
+    -> photo-1521572163474-6864f9cf17ab  PRODUCT: Heavyweight Cotton Tee — Off-White / variant: cmther5jw003hnvkuzrm8s719
+[ProductVariant rid=32] {'id': 'cmther5jw003invkuou5a52zs', 'sku': 'WC-TS-001-M'}
+    -> photo-1521572163474-6864f9cf17ab  PRODUCT: Heavyweight Cotton Tee — Off-White / variant: cmther5jw003invkuou5a52zs
+[ProductVariant rid=33] {'id': 'cmther5jw003jnvkuzko1ym2a', 'sku': 'WC-TS-001-L'}
+    -> photo-1521572163474-6864f9cf17ab  PRODUCT: Heavyweight Cotton Tee — Off-White / variant: cmther5jw003jnvkuzko1ym2a
+[ProductVariant rid=34] {'id': 'cmther5jw003knvkuse6tiif3', 'sku': 'WC-TS-001-XL'}
+    -> photo-1521572163474-6864f9cf17ab  PRODUCT: Heavyweight Cotton Tee — Off-White / variant: cmther5jw003knvkuse6tiif3
+[ProductVariant rid=35] {'id': 'cmther5jw003lnvkug590tzbg', 'sku': 'WC-TS-001-XXL'}
+    -> photo-1521572163474-6864f9cf17ab  PRODUCT: Heavyweight Cotton Tee — Off-White / variant: cmther5jw003lnvkug590tzbg
+[ProductVariant rid=36] {'id': 'cmther5jz003qnvkuserk4ukt', 'sku': 'WC-TS-002-S'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Heavyweight Cotton Tee — Black / variant: cmther5jz003qnvkuserk4ukt
+[ProductVariant rid=37] {'id': 'cmther5jz003rnvkufxtp8gt6', 'sku': 'WC-TS-002-M'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Heavyweight Cotton Tee — Black / variant: cmther5jz003rnvkufxtp8gt6
+[ProductVariant rid=38] {'id': 'cmther5jz003snvkuuip1gl0h', 'sku': 'WC-TS-002-L'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Heavyweight Cotton Tee — Black / variant: cmther5jz003snvkuuip1gl0h
+[ProductVariant rid=39] {'id': 'cmther5jz003tnvku08lh6dz9', 'sku': 'WC-TS-002-XL'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Heavyweight Cotton Tee — Black / variant: cmther5jz003tnvku08lh6dz9
+[ProductVariant rid=40] {'id': 'cmther5jz003unvkul6rv51cc', 'sku': 'WC-TS-002-XXL'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Heavyweight Cotton Tee — Black / variant: cmther5jz003unvkul6rv51cc
+[ProductVariant rid=41] {'id': 'cmther5k1003znvkubnyyuai1', 'sku': 'WC-BL-001-S'}
+    -> photo-1507679799987-c73779587ccf  PRODUCT: Tailored Wool-Blend Blazer — Navy / variant: cmther5k1003znvkubnyyuai1
+[ProductVariant rid=42] {'id': 'cmther5k20040nvku8dgfjclu', 'sku': 'WC-BL-001-M'}
+    -> photo-1507679799987-c73779587ccf  PRODUCT: Tailored Wool-Blend Blazer — Navy / variant: cmther5k20040nvku8dgfjclu
+[ProductVariant rid=43] {'id': 'cmther5k20041nvkure2654t8', 'sku': 'WC-BL-001-L'}
+    -> photo-1507679799987-c73779587ccf  PRODUCT: Tailored Wool-Blend Blazer — Navy / variant: cmther5k20041nvkure2654t8
+[ProductVariant rid=44] {'id': 'cmther5k20042nvku921w8dz3', 'sku': 'WC-BL-001-XL'}
+    -> photo-1507679799987-c73779587ccf  PRODUCT: Tailored Wool-Blend Blazer — Navy / variant: cmther5k20042nvku921w8dz3
+[ProductVariant rid=45] {'id': 'cmther5k20043nvku8w1zqklg', 'sku': 'WC-BL-001-XXL'}
+    -> photo-1507679799987-c73779587ccf  PRODUCT: Tailored Wool-Blend Blazer — Navy / variant: cmther5k20043nvku8w1zqklg
+[ProductVariant rid=46] {'id': 'cmther5k40048nvku40mhn5fi', 'sku': 'WC-ST-001-S'}
+    -> photo-1594938298603-c8148c4dae35  PRODUCT: Two-Piece Suit — Charcoal / variant: cmther5k40048nvku40mhn5fi
+[ProductVariant rid=47] {'id': 'cmther5k40049nvku8o3swk3d', 'sku': 'WC-ST-001-M'}
+    -> photo-1594938298603-c8148c4dae35  PRODUCT: Two-Piece Suit — Charcoal / variant: cmther5k40049nvku8o3swk3d
+[ProductVariant rid=48] {'id': 'cmther5k4004anvkun7eyxhqv', 'sku': 'WC-ST-001-L'}
+    -> photo-1594938298603-c8148c4dae35  PRODUCT: Two-Piece Suit — Charcoal / variant: cmther5k4004anvkun7eyxhqv
+[ProductVariant rid=49] {'id': 'cmther5k4004bnvkurm6egmrv', 'sku': 'WC-ST-001-XL'}
+    -> photo-1594938298603-c8148c4dae35  PRODUCT: Two-Piece Suit — Charcoal / variant: cmther5k4004bnvkurm6egmrv
+[ProductVariant rid=50] {'id': 'cmther5k4004cnvku62nqnkvd', 'sku': 'WC-ST-001-XXL'}
+    -> photo-1594938298603-c8148c4dae35  PRODUCT: Two-Piece Suit — Charcoal / variant: cmther5k4004cnvku62nqnkvd
+[ProductVariant rid=51] {'id': 'cmther5k7004hnvku5bi4ee2y', 'sku': 'WC-JK-001-S'}
+    -> photo-1591047139829-d91aecb6caea  PRODUCT: Bomber Jacket — Olive / variant: cmther5k7004hnvku5bi4ee2y
+[ProductVariant rid=52] {'id': 'cmther5k7004invku0ewp85y2', 'sku': 'WC-JK-001-M'}
+    -> photo-1591047139829-d91aecb6caea  PRODUCT: Bomber Jacket — Olive / variant: cmther5k7004invku0ewp85y2
+[ProductVariant rid=53] {'id': 'cmther5k7004jnvkupdfwsq5p', 'sku': 'WC-JK-001-L'}
+    -> photo-1591047139829-d91aecb6caea  PRODUCT: Bomber Jacket — Olive / variant: cmther5k7004jnvkupdfwsq5p
+[ProductVariant rid=54] {'id': 'cmther5k7004knvkuyjzftyqf', 'sku': 'WC-JK-001-XL'}
+    -> photo-1591047139829-d91aecb6caea  PRODUCT: Bomber Jacket — Olive / variant: cmther5k7004knvkuyjzftyqf
+[ProductVariant rid=55] {'id': 'cmther5k7004lnvkuo65idmji', 'sku': 'WC-JK-001-XXL'}
+    -> photo-1591047139829-d91aecb6caea  PRODUCT: Bomber Jacket — Olive / variant: cmther5k7004lnvkuo65idmji
+[ProductVariant rid=56] {'id': 'cmther5ka004qnvkukp4enhi9', 'sku': 'WC-HD-001-S'}
+    -> photo-1556821840-3a63f95609a7  PRODUCT: Heavyweight Hoodie — Heather Grey / variant: cmther5ka004qnvkukp4enhi9
+[ProductVariant rid=57] {'id': 'cmther5ka004rnvkukh4c6vpq', 'sku': 'WC-HD-001-M'}
+    -> photo-1556821840-3a63f95609a7  PRODUCT: Heavyweight Hoodie — Heather Grey / variant: cmther5ka004rnvkukh4c6vpq
+[ProductVariant rid=58] {'id': 'cmther5ka004snvku5mtgny5w', 'sku': 'WC-HD-001-L'}
+    -> photo-1556821840-3a63f95609a7  PRODUCT: Heavyweight Hoodie — Heather Grey / variant: cmther5ka004snvku5mtgny5w
+[ProductVariant rid=59] {'id': 'cmther5ka004tnvkus0shxki7', 'sku': 'WC-HD-001-XL'}
+    -> photo-1556821840-3a63f95609a7  PRODUCT: Heavyweight Hoodie — Heather Grey / variant: cmther5ka004tnvkus0shxki7
+[ProductVariant rid=60] {'id': 'cmther5ka004unvkudw4u2ym2', 'sku': 'WC-HD-001-XXL'}
+    -> photo-1556821840-3a63f95609a7  PRODUCT: Heavyweight Hoodie — Heather Grey / variant: cmther5ka004unvkudw4u2ym2
+[ProductVariant rid=61] {'id': 'cmther5kd004znvkupvkqlwj8', 'sku': 'WC-HD-002-S'}
+    -> photo-1620799140408-edc6dcb6d633  PRODUCT: Heavyweight Hoodie — Black / variant: cmther5kd004znvkupvkqlwj8
+[ProductVariant rid=62] {'id': 'cmther5kd0050nvku39skcuvf', 'sku': 'WC-HD-002-M'}
+    -> photo-1620799140408-edc6dcb6d633  PRODUCT: Heavyweight Hoodie — Black / variant: cmther5kd0050nvku39skcuvf
+[ProductVariant rid=63] {'id': 'cmther5kd0051nvkut1iauofz', 'sku': 'WC-HD-002-L'}
+    -> photo-1620799140408-edc6dcb6d633  PRODUCT: Heavyweight Hoodie — Black / variant: cmther5kd0051nvkut1iauofz
+[ProductVariant rid=64] {'id': 'cmther5kd0052nvkuetkgoe5a', 'sku': 'WC-HD-002-XL'}
+    -> photo-1620799140408-edc6dcb6d633  PRODUCT: Heavyweight Hoodie — Black / variant: cmther5kd0052nvkuetkgoe5a
+[ProductVariant rid=65] {'id': 'cmther5kd0053nvkuh0xvywr0', 'sku': 'WC-HD-002-XXL'}
+    -> photo-1620799140408-edc6dcb6d633  PRODUCT: Heavyweight Hoodie — Black / variant: cmther5kd0053nvkuh0xvywr0
+[ProductVariant rid=66] {'id': 'cmther5ki0057nvku2sd4yjq1', 'sku': 'WC-CH-001-30'}
+    -> photo-1473966968600-fa801b869a1a  PRODUCT: Stretch Cotton Chinos — Stone / variant: cmther5ki0057nvku2sd4yjq1
+[ProductVariant rid=67] {'id': 'cmther5ki0058nvku43f8s5sr', 'sku': 'WC-CH-001-32'}
+    -> photo-1473966968600-fa801b869a1a  PRODUCT: Stretch Cotton Chinos — Stone / variant: cmther5ki0058nvku43f8s5sr
+[ProductVariant rid=68] {'id': 'cmther5ki0059nvkud6ppvofs', 'sku': 'WC-CH-001-34'}
+    -> photo-1473966968600-fa801b869a1a  PRODUCT: Stretch Cotton Chinos — Stone / variant: cmther5ki0059nvkud6ppvofs
+[ProductVariant rid=69] {'id': 'cmther5ki005anvkuo7tg4y3o', 'sku': 'WC-CH-001-36'}
+    -> photo-1473966968600-fa801b869a1a  PRODUCT: Stretch Cotton Chinos — Stone / variant: cmther5ki005anvkuo7tg4y3o
+[ProductVariant rid=70] {'id': 'cmther5ki005bnvkuvrcpdxe6', 'sku': 'WC-CH-001-38'}
+    -> photo-1473966968600-fa801b869a1a  PRODUCT: Stretch Cotton Chinos — Stone / variant: cmther5ki005bnvkuvrcpdxe6
+[ProductVariant rid=71] {'id': 'cmther5ki005cnvkujx9vzf81', 'sku': 'WC-CH-001-40'}
+    -> photo-1473966968600-fa801b869a1a  PRODUCT: Stretch Cotton Chinos — Stone / variant: cmther5ki005cnvkujx9vzf81
+[ProductVariant rid=72] {'id': 'cmther5kl005gnvku4b9zza5p', 'sku': 'WC-TR-001-30'}
+    -> photo-1624206112918-f2f7f2c5b3e7  PRODUCT: Wool-Blend Formal Trousers — Charcoal / variant: cmther5kl005gnvku4b9zza5p
+[ProductVariant rid=73] {'id': 'cmther5kl005hnvkui1frf4em', 'sku': 'WC-TR-001-32'}
+    -> photo-1624206112918-f2f7f2c5b3e7  PRODUCT: Wool-Blend Formal Trousers — Charcoal / variant: cmther5kl005hnvkui1frf4em
+[ProductVariant rid=74] {'id': 'cmther5kl005invkufrn3us0u', 'sku': 'WC-TR-001-34'}
+    -> photo-1624206112918-f2f7f2c5b3e7  PRODUCT: Wool-Blend Formal Trousers — Charcoal / variant: cmther5kl005invkufrn3us0u
+[ProductVariant rid=75] {'id': 'cmther5kl005jnvkuot2x8s0j', 'sku': 'WC-TR-001-36'}
+    -> photo-1624206112918-f2f7f2c5b3e7  PRODUCT: Wool-Blend Formal Trousers — Charcoal / variant: cmther5kl005jnvkuot2x8s0j
+[ProductVariant rid=76] {'id': 'cmther5kl005knvkunyfqakbc', 'sku': 'WC-TR-001-38'}
+    -> photo-1624206112918-f2f7f2c5b3e7  PRODUCT: Wool-Blend Formal Trousers — Charcoal / variant: cmther5kl005knvkunyfqakbc
+[ProductVariant rid=77] {'id': 'cmther5kl005lnvkut1fykuea', 'sku': 'WC-TR-001-40'}
+    -> photo-1624206112918-f2f7f2c5b3e7  PRODUCT: Wool-Blend Formal Trousers — Charcoal / variant: cmther5kl005lnvkut1fykuea
+[ProductVariant rid=78] {'id': 'cmther5kn005qnvkul6uaqp1e', 'sku': 'WC-JN-001-30'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Indigo / variant: cmther5kn005qnvkul6uaqp1e
+[ProductVariant rid=79] {'id': 'cmther5kn005rnvkulq1fj9on', 'sku': 'WC-JN-001-32'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Indigo / variant: cmther5kn005rnvkulq1fj9on
+[ProductVariant rid=80] {'id': 'cmther5kn005snvku28f98a27', 'sku': 'WC-JN-001-34'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Indigo / variant: cmther5kn005snvku28f98a27
+[ProductVariant rid=81] {'id': 'cmther5kn005tnvkulj1nenuh', 'sku': 'WC-JN-001-36'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Indigo / variant: cmther5kn005tnvkulj1nenuh
+[ProductVariant rid=82] {'id': 'cmther5kn005unvkum8q4bxgv', 'sku': 'WC-JN-001-38'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Indigo / variant: cmther5kn005unvkum8q4bxgv
+[ProductVariant rid=83] {'id': 'cmther5kn005vnvku3q0kiscj', 'sku': 'WC-JN-001-40'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Indigo / variant: cmther5kn005vnvku3q0kiscj
+[ProductVariant rid=84] {'id': 'cmther5kq0060nvkuebrlgehs', 'sku': 'WC-JN-002-30'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Black / variant: cmther5kq0060nvkuebrlgehs
+[ProductVariant rid=85] {'id': 'cmther5kq0061nvku5qfkjgyu', 'sku': 'WC-JN-002-32'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Black / variant: cmther5kq0061nvku5qfkjgyu
+[ProductVariant rid=86] {'id': 'cmther5kq0062nvkuu0i9dqut', 'sku': 'WC-JN-002-34'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Black / variant: cmther5kq0062nvkuu0i9dqut
+[ProductVariant rid=87] {'id': 'cmther5kq0063nvkuht6lci2u', 'sku': 'WC-JN-002-36'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Black / variant: cmther5kq0063nvkuht6lci2u
+[ProductVariant rid=88] {'id': 'cmther5kq0064nvku7vg4aqzt', 'sku': 'WC-JN-002-38'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Black / variant: cmther5kq0064nvku7vg4aqzt
+[ProductVariant rid=89] {'id': 'cmther5kq0065nvkupkdu0tjc', 'sku': 'WC-JN-002-40'}
+    -> photo-1542272604-787c3835535d  PRODUCT: Slim-Fit Denim Jeans — Black / variant: cmther5kq0065nvkupkdu0tjc
+[ProductVariant rid=90] {'id': 'cmther5kt0069nvkuvyicwndq', 'sku': 'WC-SH-RT-001-30'}
+    -> photo-1591195854234-9c5b4eaaab7c  PRODUCT: Tailored Chino Shorts — Khaki / variant: cmther5kt0069nvkuvyicwndq
+[ProductVariant rid=91] {'id': 'cmther5kt006anvkuh70xhaxc', 'sku': 'WC-SH-RT-001-32'}
+    -> photo-1591195854234-9c5b4eaaab7c  PRODUCT: Tailored Chino Shorts — Khaki / variant: cmther5kt006anvkuh70xhaxc
+[ProductVariant rid=92] {'id': 'cmther5kt006bnvkudmb2glwy', 'sku': 'WC-SH-RT-001-34'}
+    -> photo-1591195854234-9c5b4eaaab7c  PRODUCT: Tailored Chino Shorts — Khaki / variant: cmther5kt006bnvkudmb2glwy
+[ProductVariant rid=93] {'id': 'cmther5kt006cnvkuoglc60iv', 'sku': 'WC-SH-RT-001-36'}
+    -> photo-1591195854234-9c5b4eaaab7c  PRODUCT: Tailored Chino Shorts — Khaki / variant: cmther5kt006cnvkuoglc60iv
+[ProductVariant rid=94] {'id': 'cmther5kt006dnvkus7j0jf4n', 'sku': 'WC-SH-RT-001-38'}
+    -> photo-1591195854234-9c5b4eaaab7c  PRODUCT: Tailored Chino Shorts — Khaki / variant: cmther5kt006dnvkus7j0jf4n
+[ProductVariant rid=95] {'id': 'cmther5kt006envkui5f97c4j', 'sku': 'WC-SH-RT-001-40'}
+    -> photo-1591195854234-9c5b4eaaab7c  PRODUCT: Tailored Chino Shorts — Khaki / variant: cmther5kt006envkui5f97c4j
+[ProductVariant rid=96] {'id': 'cmther5kw006invkuirzdk1t1', 'sku': 'WC-JG-001-30'}
+    -> photo-1552902865-b72c031ac5ea  PRODUCT: Tapered Joggers — Black / variant: cmther5kw006invkuirzdk1t1
+[ProductVariant rid=97] {'id': 'cmther5kw006jnvkuaifkw8o5', 'sku': 'WC-JG-001-32'}
+    -> photo-1552902865-b72c031ac5ea  PRODUCT: Tapered Joggers — Black / variant: cmther5kw006jnvkuaifkw8o5
+[ProductVariant rid=98] {'id': 'cmther5kw006knvkuqjilrfdr', 'sku': 'WC-JG-001-34'}
+    -> photo-1552902865-b72c031ac5ea  PRODUCT: Tapered Joggers — Black / variant: cmther5kw006knvkuqjilrfdr
+[ProductVariant rid=99] {'id': 'cmther5kw006lnvkuc7uxxgc3', 'sku': 'WC-JG-001-36'}
+    -> photo-1552902865-b72c031ac5ea  PRODUCT: Tapered Joggers — Black / variant: cmther5kw006lnvkuc7uxxgc3
+[ProductVariant rid=100] {'id': 'cmther5kw006mnvku5ntxknmu', 'sku': 'WC-JG-001-38'}
+    -> photo-1552902865-b72c031ac5ea  PRODUCT: Tapered Joggers — Black / variant: cmther5kw006mnvku5ntxknmu
+[ProductVariant rid=101] {'id': 'cmther5kw006nnvkuztgl8xsh', 'sku': 'WC-JG-001-40'}
+    -> photo-1552902865-b72c031ac5ea  PRODUCT: Tapered Joggers — Black / variant: cmther5kw006nnvkuztgl8xsh
+[ProductVariant rid=102] {'id': 'cmther5kz006snvkusp28s8wt', 'sku': 'WC-FW-001-40'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Hand-Stitched Penny Loafers — Brown / variant: cmther5kz006snvkusp28s8wt
+[ProductVariant rid=103] {'id': 'cmther5kz006tnvku7pwhauyu', 'sku': 'WC-FW-001-41'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Hand-Stitched Penny Loafers — Brown / variant: cmther5kz006tnvku7pwhauyu
+[ProductVariant rid=104] {'id': 'cmther5kz006unvku61utdn89', 'sku': 'WC-FW-001-42'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Hand-Stitched Penny Loafers — Brown / variant: cmther5kz006unvku61utdn89
+[ProductVariant rid=105] {'id': 'cmther5kz006vnvkuxv4dd6s8', 'sku': 'WC-FW-001-43'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Hand-Stitched Penny Loafers — Brown / variant: cmther5kz006vnvkuxv4dd6s8
+[ProductVariant rid=106] {'id': 'cmther5kz006wnvkuovdhlpw1', 'sku': 'WC-FW-001-44'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Hand-Stitched Penny Loafers — Brown / variant: cmther5kz006wnvkuovdhlpw1
+[ProductVariant rid=107] {'id': 'cmther5kz006xnvkunas1fa1l', 'sku': 'WC-FW-001-45'}
+    -> photo-1614252369475-531eba835eb1  PRODUCT: Hand-Stitched Penny Loafers — Brown / variant: cmther5kz006xnvkunas1fa1l
+[ProductVariant rid=108] {'id': 'cmther5l20072nvkucycq14yw', 'sku': 'WC-FW-002-40'}
+    -> photo-1533867617858-e7b97e060509  PRODUCT: Oxford Dress Shoes — Black / variant: cmther5l20072nvkucycq14yw
+[ProductVariant rid=109] {'id': 'cmther5l20073nvkunv11o9q2', 'sku': 'WC-FW-002-41'}
+    -> photo-1533867617858-e7b97e060509  PRODUCT: Oxford Dress Shoes — Black / variant: cmther5l20073nvkunv11o9q2
+[ProductVariant rid=110] {'id': 'cmther5l20074nvkujruwogw8', 'sku': 'WC-FW-002-42'}
+    -> photo-1533867617858-e7b97e060509  PRODUCT: Oxford Dress Shoes — Black / variant: cmther5l20074nvkujruwogw8
+[ProductVariant rid=111] {'id': 'cmther5l20075nvkufupqqx65', 'sku': 'WC-FW-002-43'}
+    -> photo-1533867617858-e7b97e060509  PRODUCT: Oxford Dress Shoes — Black / variant: cmther5l20075nvkufupqqx65
+[ProductVariant rid=112] {'id': 'cmther5l20076nvku9u7np3u6', 'sku': 'WC-FW-002-44'}
+    -> photo-1533867617858-e7b97e060509  PRODUCT: Oxford Dress Shoes — Black / variant: cmther5l20076nvku9u7np3u6
+[ProductVariant rid=113] {'id': 'cmther5l20077nvkucqv6znfw', 'sku': 'WC-FW-002-45'}
+    -> photo-1533867617858-e7b97e060509  PRODUCT: Oxford Dress Shoes — Black / variant: cmther5l20077nvkucqv6znfw
+[ProductVariant rid=114] {'id': 'cmther5l4007cnvkuwxqoyyz4', 'sku': 'WC-FW-003-40'}
+    -> photo-1542291026-7eec264c27ff  PRODUCT: Minimal Leather Sneakers — White / variant: cmther5l4007cnvkuwxqoyyz4
+[ProductVariant rid=115] {'id': 'cmther5l4007dnvkuz22itabj', 'sku': 'WC-FW-003-41'}
+    -> photo-1542291026-7eec264c27ff  PRODUCT: Minimal Leather Sneakers — White / variant: cmther5l4007dnvkuz22itabj
+[ProductVariant rid=116] {'id': 'cmther5l4007envku0lu4lnb7', 'sku': 'WC-FW-003-42'}
+    -> photo-1542291026-7eec264c27ff  PRODUCT: Minimal Leather Sneakers — White / variant: cmther5l4007envku0lu4lnb7
+[ProductVariant rid=117] {'id': 'cmther5l4007fnvkumzpebdsl', 'sku': 'WC-FW-003-43'}
+    -> photo-1542291026-7eec264c27ff  PRODUCT: Minimal Leather Sneakers — White / variant: cmther5l4007fnvkumzpebdsl
+[ProductVariant rid=118] {'id': 'cmther5l4007gnvkub6qmy5ki', 'sku': 'WC-FW-003-44'}
+    -> photo-1542291026-7eec264c27ff  PRODUCT: Minimal Leather Sneakers — White / variant: cmther5l4007gnvkub6qmy5ki
+[ProductVariant rid=119] {'id': 'cmther5l4007hnvkug4nzr2ss', 'sku': 'WC-FW-003-45'}
+    -> photo-1542291026-7eec264c27ff  PRODUCT: Minimal Leather Sneakers — White / variant: cmther5l4007hnvkug4nzr2ss
+[ProductVariant rid=120] {'id': 'cmther5l7007mnvkuexxo8jdo', 'sku': 'WC-FW-004-40'}
+    -> photo-1614253429340-98120bd6d753  PRODUCT: Suede Exotic Monk-Strap — Cognac / variant: cmther5l7007mnvkuexxo8jdo
+[ProductVariant rid=121] {'id': 'cmther5l7007nnvku8wjnjphl', 'sku': 'WC-FW-004-41'}
+    -> photo-1614253429340-98120bd6d753  PRODUCT: Suede Exotic Monk-Strap — Cognac / variant: cmther5l7007nnvku8wjnjphl
+[ProductVariant rid=122] {'id': 'cmther5l7007onvkua60grro0', 'sku': 'WC-FW-004-42'}
+    -> photo-1614253429340-98120bd6d753  PRODUCT: Suede Exotic Monk-Strap — Cognac / variant: cmther5l7007onvkua60grro0
+[ProductVariant rid=123] {'id': 'cmther5l8007pnvkuwpsa3zu3', 'sku': 'WC-FW-004-43'}
+    -> photo-1614253429340-98120bd6d753  PRODUCT: Suede Exotic Monk-Strap — Cognac / variant: cmther5l8007pnvkuwpsa3zu3
+[ProductVariant rid=124] {'id': 'cmther5l8007qnvkufk2bz5j1', 'sku': 'WC-FW-004-44'}
+    -> photo-1614253429340-98120bd6d753  PRODUCT: Suede Exotic Monk-Strap — Cognac / variant: cmther5l8007qnvkufk2bz5j1
+[ProductVariant rid=125] {'id': 'cmther5l8007rnvkuw7i3kh1y', 'sku': 'WC-FW-004-45'}
+    -> photo-1614253429340-98120bd6d753  PRODUCT: Suede Exotic Monk-Strap — Cognac / variant: cmther5l8007rnvkuw7i3kh1y
+[ProductVariant rid=126] {'id': 'cmther5la007vnvkuzuzx7czo', 'sku': 'WC-AC-001-OS'}
+    -> photo-1572635196237-14b3f281503f  PRODUCT: Classic Aviator Sunglasses — Gold / Green / variant: cmther5la007vnvkuzuzx7czo
+[ProductVariant rid=127] {'id': 'cmther5le007znvkudie7mp0e', 'sku': 'WC-AC-002-30'}
+    -> photo-1624222247344-550fb60583dc  PRODUCT: Full-Grain Leather Belt — Brown / variant: cmther5le007znvkudie7mp0e
+[ProductVariant rid=128] {'id': 'cmther5le0080nvkuu348lg5c', 'sku': 'WC-AC-002-32'}
+    -> photo-1624222247344-550fb60583dc  PRODUCT: Full-Grain Leather Belt — Brown / variant: cmther5le0080nvkuu348lg5c
+[ProductVariant rid=129] {'id': 'cmther5le0081nvkuerv4x945', 'sku': 'WC-AC-002-34'}
+    -> photo-1624222247344-550fb60583dc  PRODUCT: Full-Grain Leather Belt — Brown / variant: cmther5le0081nvkuerv4x945
+[ProductVariant rid=130] {'id': 'cmther5le0082nvkur34816o2', 'sku': 'WC-AC-002-36'}
+    -> photo-1624222247344-550fb60583dc  PRODUCT: Full-Grain Leather Belt — Brown / variant: cmther5le0082nvkur34816o2
+[ProductVariant rid=131] {'id': 'cmther5le0083nvkumiddowkw', 'sku': 'WC-AC-002-38'}
+    -> photo-1624222247344-550fb60583dc  PRODUCT: Full-Grain Leather Belt — Brown / variant: cmther5le0083nvkumiddowkw
+[ProductVariant rid=132] {'id': 'cmther5le0084nvkur1whxufm', 'sku': 'WC-AC-002-40'}
+    -> photo-1624222247344-550fb60583dc  PRODUCT: Full-Grain Leather Belt — Brown / variant: cmther5le0084nvkur1whxufm
+[ProductVariant rid=133] {'id': 'cmther5lh0088nvkukwbxmlst', 'sku': 'WC-AC-003-OS'}
+    -> photo-1588850561407-ed78c282e89b  PRODUCT: Structured Cotton Cap — Black / variant: cmther5lh0088nvkukwbxmlst
+[ProductVariant rid=134] {'id': 'cmther5ll008cnvkub71ung81', 'sku': 'WC-AC-004-OS'}
+    -> photo-1605518216938-7c31b7b14ad0  PRODUCT: Silk Pocket Square — Burgundy / variant: cmther5ll008cnvkub71ung81
+[ProductVariant rid=135] {'id': 'cmther5ln008gnvku20aqiypp', 'sku': 'WC-AC-005-OS'}
+    -> photo-1584917865442-de89df76afd3  PRODUCT: Silk Tie — Midnight Navy / variant: cmther5ln008gnvku20aqiypp
+[ProductVariant rid=136] {'id': 'cmther5lr008knvkumknx36zv', 'sku': 'WC-AC-006-OS'}
+    -> photo-1564859228273-274232fdb516  PRODUCT: Cotton Crew Socks — Three-Pack / variant: cmther5lr008knvkumknx36zv
+[ProductVariant rid=137] {'id': 'cmther5lv008pnvkul2uxqjo4', 'sku': 'WC-AC-007-OS'}
+    -> photo-1627123424574-724758594e93  PRODUCT: Bifold Leather Wallet — Cognac / variant: cmther5lv008pnvkul2uxqjo4
+[ProductVariant rid=138] {'id': 'cmther5ly008unvkuxhemh4ur', 'sku': 'WC-FR-001-OS'}
+    -> photo-1541643600914-78b084683601  PRODUCT: Eau de Parfum — Oud & Amber / variant: cmther5ly008unvkuxhemh4ur
+[ProductVariant rid=139] {'id': 'cmther5m0008znvkumcfx6x5w', 'sku': 'WC-FR-002-OS'}
+    -> photo-1592945403244-b3fbafd7f539  PRODUCT: Eau de Parfum — Rose & Musk / variant: cmther5m0008znvkumcfx6x5w
+[ProductVariant rid=140] {'id': 'cmther5m30094nvkufxw1jqpc', 'sku': 'WC-GR-001-OS'}
+    -> photo-1503951914875-452162b0f3f1  PRODUCT: Beard Grooming Kit / variant: cmther5m30094nvkufxw1jqpc
+[ProductVariant rid=141] {'id': 'cmther5m90099nvku6qur23n2', 'sku': 'WC-GR-002-OS'}
+    -> photo-1556228720-195a672e8a03  PRODUCT: Cedarwood Beard Oil — 30ml / variant: cmther5m90099nvku6qur23n2
+[ProductVariant rid=142] {'id': 'cmther5mb009dnvkup7gkxay1', 'sku': 'WC-ES-001-S'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Soft-Cotton Pyjama Set — Charcoal / variant: cmther5mb009dnvkup7gkxay1
+[ProductVariant rid=143] {'id': 'cmther5mb009envkuulbprwgz', 'sku': 'WC-ES-001-M'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Soft-Cotton Pyjama Set — Charcoal / variant: cmther5mb009envkuulbprwgz
+[ProductVariant rid=144] {'id': 'cmther5mb009fnvkuhx09dcas', 'sku': 'WC-ES-001-L'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Soft-Cotton Pyjama Set — Charcoal / variant: cmther5mb009fnvkuhx09dcas
+[ProductVariant rid=145] {'id': 'cmther5mb009gnvkuhvuffekd', 'sku': 'WC-ES-001-XL'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Soft-Cotton Pyjama Set — Charcoal / variant: cmther5mb009gnvkuhvuffekd
+[ProductVariant rid=146] {'id': 'cmther5mb009hnvkus44l61aq', 'sku': 'WC-ES-001-XXL'}
+    -> photo-1576566588028-4147f3842f27  PRODUCT: Soft-Cotton Pyjama Set — Charcoal / variant: cmther5mb009hnvkus44l61aq
+[OrderItem rid=1] {'id': 'cmug88qxd0004jduzjazyl5cj', 'sku': 'WC-SH-001-S'}
+    -> photo-1602810318383-e386cc2a3ccf
+[OrderItem rid=2] {'id': 'cmug8as3e0008jduzawocr039', 'sku': 'WC-SH-001-S'}
+    -> photo-1602810318383-e386cc2a3ccf
+[HomepageContent rid=1] {'id': 'singleton'}
+    -> photo-1490114538077-0a7f8cb49891
+[HomepageContent rid=1] {'id': 'singleton'}
+    -> photo-1507003211169-0a1dd7228f2d
+[HomepageContent rid=1] {'id': 'singleton'}
+    -> photo-1483985988355-763728e1935b
+    -> photo-1490114538077-0a7f8cb49891
+    -> photo-1490578474895-699cd4e2cf59
+    -> photo-1507003211169-0a1dd7228f2d
+    -> photo-1516257984-b1b4d707412e
+    -> photo-1617137968427-85924c800a22
+[PromotionalBanner rid=1] {'id': 'singleton-banner', 'title': 'New Season — Now Arriving'}
+    -> photo-1490578474895-699cd4e2cf59
+
+=== SRC FILE REFS ===
+photo-1490114538077-0a7f8cb49891: ['src:src/app/page.tsx', 'src:src/lib/services-data.ts', 'src:src/components/home/shop-by-world.tsx', 'src:src/components/home/instagram-section.tsx']
+photo-1483985988355-763728e1935b: ['src:src/lib/services-data.ts', 'src:src/app/services/page.tsx', 'src:src/app/about/page.tsx', 'src:src/components/home/instagram-section.tsx']
+photo-1593032465175-481ac7f401a0: ['src:src/lib/services-data.ts']
+photo-1507003211169-0a1dd7228f2d: ['src:src/lib/services-data.ts', 'src:src/app/services/page.tsx', 'src:src/components/home/instagram-section.tsx']
+photo-1614253429340-98120bd6d753: ['src:src/lib/services-data.ts']
+photo-1602810318383-e386cc2a3ccf: ['src:src/lib/services-data.ts']
+photo-1594938298603-c8148c4dae35: ['src:src/lib/services-data.ts']
+photo-1516257984-b1b4d707412e: ['src:src/app/about/page.tsx', 'src:src/components/home/instagram-section.tsx']
+photo-1: ['src:src/components/admin/product-form.tsx', 'src:src/components/admin/cms-form.tsx']
+photo-2: ['src:src/components/admin/product-form.tsx', 'src:src/components/admin/cms-form.tsx']
+photo-1617137968427-85924c800a22: ['src:src/components/home/instagram-section.tsx']
+photo-1490578474895-699cd4e2cf59: ['src:src/components/home/instagram-section.tsx']

@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://simonwillison.net",
+    "name": "Everything I built with Claude Artifacts this week",
+    "snippet": "Oct 21, 2024 — I'm a huge fan of Claude's Artifacts feature, which lets you prompt Claude to create an interactive Single Page App (using HTML, CSS and ...",
+    "host_name": "simonwillison.net",
+    "rank": 0,
+    "date": "Oct 21, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://academy.claude.com",
+    "name": "Use artifacts to visualize and create AI apps without ever",
+    "snippet": "Artifacts are like mini-apps you can build with Claude . Learn how to use them to illustrate ideas. Then customize, and share them right from your Claude app.",
+    "host_name": "academy.claude.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://albato.com",
+    "name": "What Are Claude Artifacts and How to Use Them (2026) - Albato",
+    "snippet": "Apr 29, 2026 — Unlike static wireframes or mockups , prototypes built with Artifacts include real business logic, data validation, and interactive elements.",
+    "host_name": "albato.com",
+    "rank": 2,
+    "date": "Apr 29, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.getmasset.com",
+    "name": "Claude Artifacts for Marketers: The Definitive 2026 Guide",
+    "snippet": "May 28, 2026 — A Claude Artifact is interactive content (Markdown, HTML, SVG, Mermaid, code, or React) that Claude renders in a side panel beside the chat.",
+    "host_name": "www.getmasset.com",
+    "rank": 3,
+    "date": "May 28, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://coursiv.io",
+    "name": "Claude Artifacts: What They Are and How to Use Them",
+    "snippet": "Sep 10, 2026 — Claude Artifacts open documents, code and interactive pieces in their own panel. How to trigger, edit and version them, share safely, ...",
+    "host_name": "coursiv.io",
+    "rank": 4,
+    "date": "Sep 10, 2026",
+    "favicon": ""
+  }
+]
