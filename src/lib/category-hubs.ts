@@ -78,7 +78,7 @@ export const HUBS: Record<string, HubConfig> = {
             slug: 'hoodies-sweatshirts',
             label: 'Hoodies & Sweatshirts',
             description:
-              'Off-duty layers with a premium hand-feel — for flights, Fridays and slow Sundays.',
+              'Off-duty layers with a distinguished hand-feel — for flights, Fridays and slow Sundays.',
           },
           {
             slug: 'jackets',
@@ -102,7 +102,7 @@ export const HUBS: Record<string, HubConfig> = {
             slug: 't-shirts',
             label: 'T-Shirts',
             description:
-              'Premium tees with weight and shape that survive the wash.',
+              'Distinguished tees with weight and shape that survive the wash.',
           },
         ],
       },

@@ -32,11 +32,12 @@ export const CLOTHING_MEGA: MegaGroup[] = [
   {
     label: 'Shop Clothing',
     links: [
-      { label: 'Shop All Clothing', href: '/shop?category=clothing', emphasized: true },
+      { label: 'Shop All Clothing', href: '/clothing', emphasized: true },
       { label: 'Blazers', href: '/shop?category=blazers' },
       { label: 'Casual Shirts', href: '/shop?category=casual-shirts' },
       { label: 'Formal / Office Shirts', href: '/shop?category=formal-shirts' },
       { label: 'Hoodies & Sweatshirts', href: '/shop?category=hoodies-sweatshirts' },
+      { label: 'Innerwear', href: '/shop?category=innerwear' },
       { label: 'Jackets', href: '/shop?category=jackets' },
       { label: 'Polo Shirts', href: '/shop?category=polo-shirts' },
       { label: 'Suits', href: '/shop?category=suits' },
@@ -46,7 +47,7 @@ export const CLOTHING_MEGA: MegaGroup[] = [
   {
     label: 'Shop Bottoms',
     links: [
-      { label: 'Shop All Bottoms', href: '/shop?category=bottoms', emphasized: true },
+      { label: 'Shop All Bottoms', href: '/bottoms', emphasized: true },
       { label: 'Chinos', href: '/shop?category=chinos' },
       { label: 'Jeans', href: '/shop?category=jeans' },
       { label: 'Joggers', href: '/shop?category=joggers' },

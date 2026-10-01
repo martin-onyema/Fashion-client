@@ -198,9 +198,9 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
     ],
   },
   {
-    id: 'premium-sourcing',
+    id: 'distinguished-sourcing',
     num: '07',
-    title: 'Premium Sourcing',
+    title: 'Distinguished Sourcing',
     tag: 'Coming Soon',
     items: [
       {
@@ -436,7 +436,7 @@ export const WHATSAPP_COMMANDS: { cmd: string; desc: string }[] = [
   { cmd: '/occasion', desc: 'Occasion Styling' },
   { cmd: '/gift', desc: 'Outfit Gifting' },
   { cmd: '/alterations', desc: 'Amendments & Alterations' },
-  { cmd: '/sourcing', desc: 'Premium Sourcing (Coming Soon)' },
+  { cmd: '/sourcing', desc: 'Distinguished Sourcing (Coming Soon)' },
   { cmd: '/traditionalwear', desc: 'Traditional Wear Consultation (Coming Soon)' },
   { cmd: '/exchange', desc: 'Exchange policy' },
   { cmd: '/order', desc: 'How to place an order' },

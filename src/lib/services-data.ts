@@ -30,7 +30,7 @@ export type Service = {
   tagline: string
   /** Longer description used on the service page hero. */
   description: string
-  /** Premium lifestyle image — Unsplash CDN. */
+  /** Distinguished lifestyle image — Unsplash CDN. */
   image: string
   /** Image alt text. */
   imageAlt: string
@@ -66,7 +66,7 @@ export const SERVICES: Service[] = [
     description:
       'Give us the brief — occasion, budget, taste — and we shop for you. You review a curated shortlist and only pay for what you keep.',
     image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1600&auto=format&fit=crop',
-    imageAlt: 'A curated rail of premium menswear pieces styled for a personal shopping brief',
+    imageAlt: 'A curated rail of distinguished menswear pieces styled for a personal shopping brief',
     startingPrice: 45000,
     priceLabel: 'From ₦45,000',
     priceUnit: 'Per trip',
@@ -235,15 +235,15 @@ export const SERVICES: Service[] = [
   },
 
   {
-    slug: 'premium-sourcing',
+    slug: 'distinguished-sourcing',
     number: '05',
     category: 'Sourcing',
-    name: 'Premium Sourcing',
+    name: 'Distinguished Sourcing',
     tagline: 'Access rare, exceptional, and hard-to-find luxury pieces through our sourcing network.',
     description:
       'For pieces that aren\'t on the shelf — limited drops, archive finds, made-to-measure, and international luxury. We work our network on your behalf.',
     image: 'https://images.unsplash.com/photo-1614253429340-98120bd6d753?q=80&w=1600&auto=format&fit=crop',
-    imageAlt: 'A display of rare luxury menswear accessories sourced through a premium network',
+    imageAlt: 'A display of rare luxury menswear accessories sourced through a distinguished network',
     startingPrice: 100000,
     priceLabel: 'From ₦100,000',
     priceUnit: 'Per item',
@@ -267,7 +267,7 @@ export const SERVICES: Service[] = [
       role: 'Collector, Lagos',
     },
     faqs: [
-      { q: 'What can you source?', a: 'Most categories of premium menswear: tailoring, footwear, leather goods, accessories, fragrance. If it exists, we can usually find it.' },
+      { q: 'What can you source?', a: 'Most categories of distinguished menswear: tailoring, footwear, leather goods, accessories, fragrance. If it exists, we can usually find it.' },
       { q: 'How does authentication work?', a: 'Every sourced piece comes with documented provenance. For luxury items, we use certified authenticators.' },
       { q: 'What\'s the lead time?', a: 'Depending on rarity, 2–8 weeks. We confirm expected timelines in your sourcing brief before you commit.' },
     ],
@@ -302,7 +302,7 @@ export const SERVICES: Service[] = [
     whatsIncluded: [
       { step: '01', title: 'Recipient Brief', body: 'You tell us about them — taste, size if known, occasion, budget.' },
       { step: '02', title: 'Curate', body: 'We assemble a complete outfit (e.g. shirt + trousers + accessory) around the brief.' },
-      { step: '03', title: 'Present', body: 'Premium gift-wrapped and delivered with a handwritten note.' },
+      { step: '03', title: 'Present', body: 'Distinguished gift-wrapped and delivered with a handwritten note.' },
     ],
     testimonial: {
       quote:

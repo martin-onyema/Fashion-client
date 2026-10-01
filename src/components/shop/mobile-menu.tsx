@@ -10,17 +10,9 @@ import {
 import { useUIStore } from '@/lib/stores/ui-store'
 import Link from 'next/link'
 import { X, ChevronRight } from 'lucide-react'
-import { SERVICES, SERVICE_GROUPS } from '@/lib/services-data'
+import { SERVICE_GROUPS } from '@/lib/services-data'
+import { NAV_ITEMS } from '@/lib/nav-data'
 
-const MENU_LINKS = [
-  { label: 'New Arrivals', href: '/shop?sort=newest', desc: 'The latest additions' },
-  { label: 'Clothing', href: '/shop?category=clothing', desc: 'Shirts, polos, tees, blazers, suits' },
-  { label: 'Bottoms', href: '/shop?category=bottoms', desc: 'Chinos, trousers, jeans, shorts' },
-  { label: 'Footwear', href: '/shop?category=footwear', desc: 'Loafers, dress shoes, sneakers' },
-  { label: 'Accessories', href: '/shop?category=accessories', desc: 'Sunglasses, belts, ties, wallets' },
-  { label: 'Fragrance & Grooming', href: '/shop?category=fragrance-grooming', desc: 'Eau de parfum, grooming kits' },
-  { label: 'Essentials', href: '/shop?category=essentials', desc: 'Loungewear and daily essentials' },
-]
 
 export function MobileMenu() {
   const open = useUIStore((s) => s.mobileMenuOpen)
@@ -103,31 +95,41 @@ export function MobileMenu() {
             </AccordionItem>
           </Accordion>
 
-          {/* Standard shop links */}
-          {MENU_LINKS.map((l) => (
-            <Link
-              key={l.label}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-between py-5 border-b border-border/60 group"
-            >
-              <div>
-                <p className="font-display text-xl tracking-wide">{l.label}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{l.desc}</p>
-              </div>
+          {/* Shop navigation with nested category accordions */}
+          {NAV_ITEMS.map((item) => item.mega?.length ? (
+            <Accordion key={item.label} type="single" collapsible className="border-b border-border/60">
+              <AccordionItem value={item.label} className="border-0">
+                <AccordionTrigger className="font-display text-xl tracking-wide py-5 hover:no-underline">
+                  {item.label}
+                </AccordionTrigger>
+                <AccordionContent className="pb-4">
+                  <Link href={item.href} onClick={() => setOpen(false)} className="block py-3 text-sm border-b border-border/40">
+                    View All {item.label} →
+                  </Link>
+                  {item.mega.map((group) => (
+                    <div key={group.label} className="mt-4">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">{group.label}</p>
+                      <div className="space-y-1">
+                        {group.links.map((link) => (
+                          <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="flex items-center justify-between py-2.5 text-sm">
+                            <span>{link.label}</span><ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          ) : (
+            <Link key={item.label} href={item.href} onClick={() => setOpen(false)} className="flex items-center justify-between py-5 border-b border-border/60 group">
+              <div><p className="font-display text-xl tracking-wide">{item.label}</p><p className="text-xs text-muted-foreground mt-0.5">The latest additions</p></div>
               <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 group-hover:text-foreground transition-all" strokeWidth={1.5} />
             </Link>
           ))}
         </nav>
         <div className="px-6 py-5 border-t border-border space-y-3">
-          <Link
-            href="/about"
-            onClick={() => setOpen(false)}
-            className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            About Wardrobecare
-          </Link>
-          <Link
+<Link
             href="/track-order"
             onClick={() => setOpen(false)}
             className="block text-sm text-muted-foreground hover:text-foreground transition-colors"

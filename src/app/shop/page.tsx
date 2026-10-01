@@ -9,7 +9,7 @@ import { ArrowRight } from 'lucide-react'
 
 export const metadata = {
   title: 'Shop All',
-  description: 'Browse the full Wardrobecare collection — premium men\'s fashion curated for everyday confidence.',
+  description: 'Browse the full Wardrobecare collection — distinguished men\'s fashion curated for everyday confidence.',
 }
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -46,7 +46,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
               {title}
             </h1>
             <p className="text-sm text-muted-foreground mt-4 max-w-xl leading-relaxed">
-              Premium men&apos;s fashion, curated for the modern wardrobe. From essential tees to tailored suits, fragrance to footwear.
+              Distinguished men&apos;s fashion, curated for the modern wardrobe. From essential tees to tailored suits, fragrance to footwear.
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
                 Explore our styling services.
               </h3>
               <p className="text-sm text-muted-foreground mt-2 max-w-md">
-                Personal shopping, wardrobe consultations, home fittings, and premium sourcing — built around you.
+                Personal shopping, wardrobe consultations, home fittings, and distinguished sourcing — built around you.
               </p>
             </div>
             <Link

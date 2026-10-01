@@ -540,7 +540,7 @@ export function PersonalShoppingContent({
         <SectionHead
           eyebrow="Scope"
           title="What we can source for you."
-          aside="If it belongs in a considered wardrobe, it belongs in a brief — most categories of premium menswear covered."
+          aside="If it belongs in a considered wardrobe, it belongs in a brief — most categories of distinguished menswear covered."
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {SOURCE_CATS.map((cat, i) => (

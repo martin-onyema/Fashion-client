@@ -175,7 +175,7 @@ function layout(opts: { title: string; preheader?: string; body: string }): stri
     <!-- Footer -->
     <tr><td style="padding:24px 8px;text-align:center;">
       <div style="color:${C.muted};font-family:Helvetica,Arial,sans-serif;font-size:11px;line-height:18px;">
-        &copy; ${year} Wardrobecare Clothing &middot; Your #1 Personal Shopper for premium men's fashion<br>
+        &copy; ${year} Wardrobecare Clothing &middot; Your #1 Personal Shopper for distinguished men's fashion<br>
         Questions? Reply to this email or reach us on WhatsApp &middot; <a href="${baseUrl()}/track-order" style="color:${C.ink};">Track your order</a>
       </div>
     </td></tr>

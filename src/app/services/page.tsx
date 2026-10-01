@@ -8,19 +8,19 @@ import { SERVICES, SERVICE_GROUPS } from '@/lib/services-data'
 import { ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Services — Personal Shopping, Style Consultations & Premium Sourcing',
+  title: 'Services — Personal Shopping, Style Consultations & Distinguished Sourcing',
   description:
-    'Seven ways to work with Wardrobecare — from one-off style consultations to fully sourced, in-home styling. Personal shopping, wardrobe audits, home fittings, premium sourcing, and traditional wear styling in Lagos and nationwide.',
+    'Seven ways to work with Wardrobecare — from one-off style consultations to fully sourced, in-home styling. Personal shopping, wardrobe audits, home fittings, distinguished sourcing, and traditional wear styling in Lagos and nationwide.',
   alternates: { canonical: '/services' },
   openGraph: {
     title: 'Wardrobecare Services — A more personal way to dress well.',
     description:
-      'Personal shopping, style consultations, home fittings, premium sourcing, and traditional wear styling. Built around you.',
+      'Personal shopping, style consultations, home fittings, distinguished sourcing, and traditional wear styling. Built around you.',
     type: 'website',
     images: [
       {
         url: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop',
-        alt: 'A curated rail of premium menswear pieces',
+        alt: 'A curated rail of distinguished menswear pieces',
       },
     ],
   },
@@ -37,7 +37,7 @@ export default function ServicesPage() {
           <div className="absolute inset-0 -z-10">
             <Image
               src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop"
-              alt="Premium menswear editorial image"
+              alt="Distinguished menswear editorial image"
               fill
               priority
               sizes="100vw"

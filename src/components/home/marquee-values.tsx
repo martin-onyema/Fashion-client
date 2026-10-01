@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 
 const VALUES = [
   { label: 'Personal Shopping', desc: 'Curated menswear, hand-picked with intent.' },
-  { label: 'Premium Quality', desc: 'Materials and construction that earn their place.' },
+  { label: 'Distinguished Quality', desc: 'Materials and construction that earn their place.' },
   { label: 'Delivered Nationwide', desc: 'Across Nigeria, with care.' },
 ]
 

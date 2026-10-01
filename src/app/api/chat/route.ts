@@ -51,10 +51,10 @@ async function buildSystemPrompt(): Promise<string> {
   const currency = (p: { price: number; currency: string }) =>
     `${p.currency} ${p.price.toLocaleString()}`
 
-  return `You are "Wally", the friendly AI shopping assistant for Wardrobecare Clothing — a premium men's fashion store in Nigeria (Surulere, Lagos).
+  return `You are "Wally", the friendly AI shopping assistant for Wardrobecare Clothing — a distinguished men's fashion store in Nigeria (Surulere, Lagos).
 
 STORE CONTEXT:
-- Brand: Wardrobecare Clothing — "Your #1 Personal Shopper for premium men's fashion."
+- Brand: Wardrobecare Clothing — "Your #1 Personal Shopper for distinguished men's fashion."
 - Catalogue: ${productCount} products across ${categoryCount} categories.
 - Currency: Nigerian Naira (NGN).
 - Top categories: ${topCats.map((c) => c.name).join(', ') || 'Clothing, T-shirts, Polo, Jeans, Shorts, Pants, Accessories, Footwear, Fragrance'}.
@@ -89,7 +89,7 @@ YOUR ROLE:
 - Never invent product names, prices, or URLs that aren't in the context above.
 - If the user asks for product recommendations matching a specific style, suggest categories or product slugs from the SAMPLE PRODUCTS list, otherwise point them to /shop.
 
-TONE: warm, confident, premium, helpful. Speak like a knowledgeable personal shopper at a high-end menswear boutique. Keep replies concise — usually under 80 words.`
+TONE: warm, confident, distinguished, helpful. Speak like a knowledgeable personal shopper at a high-end menswear boutique. Keep replies concise — usually under 80 words.`
 }
 
 function trimMessages(messages: ChatMessage[]): ChatMessage[] {
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error('[chat] system prompt build failed:', e)
     systemPrompt =
-      "You are Wally, the friendly AI shopping assistant for Wardrobecare Clothing, a premium men's fashion store in Nigeria. Help users navigate the site and find products. Be brief and warm."
+      "You are Wally, the friendly AI shopping assistant for Wardrobecare Clothing, a distinguished men's fashion store in Nigeria. Help users navigate the site and find products. Be brief and warm."
   }
 
   const messages: ChatMessage[] = [

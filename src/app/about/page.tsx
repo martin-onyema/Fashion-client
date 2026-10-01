@@ -7,7 +7,7 @@ import { ArrowRight } from 'lucide-react'
 
 export const metadata = {
   title: 'About',
-  description: 'Wardrobecare Clothing is your #1 personal shopper for premium men\'s fashion in Nigeria.',
+  description: 'Wardrobecare Clothing is your #1 personal shopper for distinguished men\'s fashion in Nigeria.',
 }
 
 export default async function AboutPage() {
@@ -25,7 +25,7 @@ export default async function AboutPage() {
         {/* Hero */}
         <section className="relative h-[60vh] min-h-[400px] bg-foreground overflow-hidden">
           <Image
-            src="https://images.unsplash.com/photo-1516257984-b1b4d707412e?q=80&w=2000&auto=format&fit=crop"
+            src="/about/styling-session.jpg"
             alt="Wardrobecare editorial"
             fill
             priority
@@ -52,17 +52,17 @@ export default async function AboutPage() {
               Our Positioning
             </p>
             <p className="font-display text-2xl md:text-4xl leading-[1.3] tracking-[-0.01em] text-center">
-              {settings?.storeTagline ?? "Your #1 Personal Shopper for premium men's fashion."}
+              {settings?.storeTagline ?? "Your #1 Personal Shopper for distinguished men's fashion."}
             </p>
             <div className="mt-12 space-y-6 text-sm md:text-base text-muted-foreground leading-relaxed">
               <p>
-                Wardrobecare Clothing is a Nigerian premium men&apos;s fashion and personal-shopping business built around a single idea: that the modern man deserves a wardrobe curated with intention — not a pile of random pieces, but a thoughtful edit of clothing, footwear, accessories and grooming that works together.
+                Wardrobecare Clothing is a Nigerian distinguished men&apos;s fashion and personal-shopping business built around a single idea: that the modern man deserves a wardrobe curated with intention — not a pile of random pieces, but a thoughtful edit of clothing, footwear, accessories and grooming that works together.
               </p>
               <p>
                 We operate at the intersection of editorial taste and everyday practicality. Every piece in our catalogue is selected to serve a purpose in the wardrobe of a man who values how he shows up — at work, on weekends, at the occasion, and everywhere between.
               </p>
               <p>
-                Beyond the catalogue itself, we offer a personal-shopping experience. Whether you prefer the convenience of online checkout secured by Paystack or the human touch of ordering via WhatsApp, we exist to make premium menswear accessible, trustworthy, and quietly excellent.
+                Beyond the catalogue itself, we offer a personal-shopping experience. Whether you prefer the convenience of online checkout secured by Paystack or the human touch of ordering via WhatsApp, we exist to make distinguished menswear accessible, trustworthy, and quietly excellent.
               </p>
             </div>
           </div>
@@ -130,7 +130,7 @@ export default async function AboutPage() {
               </div>
               <div className="relative aspect-[4/5] bg-muted overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop"
+                  src="/images/black-man-suit-editorial.jpg"
                   alt="Wardrobecare personal shopping"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -152,7 +152,7 @@ export default async function AboutPage() {
             </p>
             <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-left">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-background/50 mb-1">Premium</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-background/50 mb-1">Distinguished</p>
                 <p className="text-sm">Materials and construction that earn their place.</p>
               </div>
               <div>

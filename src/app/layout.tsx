@@ -20,16 +20,16 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "Wardrobecare Clothing — Premium Men's Fashion",
+    default: "Wardrobecare Clothing — Distinguished Men's Fashion",
     template: "%s · Wardrobecare Clothing",
   },
   description:
-    "Wardrobecare Clothing is your #1 personal shopper for premium men's fashion. Curated shirts, polos, trousers, footwear, accessories, fragrance and essentials — delivered across Nigeria.",
+    "Wardrobecare Clothing is your #1 personal shopper for distinguished men's fashion. Curated shirts, polos, trousers, footwear, accessories, fragrance and essentials — delivered across Nigeria.",
   keywords: [
     "Wardrobecare",
     "Wardrobecare Clothing",
     "men's fashion Nigeria",
-    "premium menswear Lagos",
+    "distinguished menswear Lagos",
     "men's shirts",
     "polos",
     "trousers",
@@ -48,15 +48,15 @@ export const metadata: Metadata = {
     locale: "en_NG",
     url: "https://wardrobecare.com.ng",
     siteName: "Wardrobecare Clothing",
-    title: "Wardrobecare Clothing — Premium Men's Fashion",
+    title: "Wardrobecare Clothing — Distinguished Men's Fashion",
     description:
-      "Your #1 personal shopper for premium men's fashion. Curated menswear, delivered across Nigeria.",
+      "Your #1 personal shopper for distinguished men's fashion. Curated menswear, delivered across Nigeria.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Wardrobecare Clothing",
     description:
-      "Premium men's fashion, curated for everyday confidence.",
+      "Distinguished men's fashion, curated for everyday confidence.",
   },
   robots: {
     index: true,
